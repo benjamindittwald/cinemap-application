@@ -17,6 +17,8 @@
 package de.dittwald.cinemap.repository.movie;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,14 +36,20 @@ public class MovieRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all movies.")
-    List<MovieDto> findAll() {
+    @Operation(summary = "Get all movies")
+    @ApiResponse(responseCode = "200", description = "Found movies")
+    public List<MovieDto> findAll() {
         return this.movieService.findAll();
     }
 
     @GetMapping(
             value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get a movie by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the movie"),
+            @ApiResponse(responseCode = "404", description = "Movie not found")
+    })
     public MovieDto findById(@PathVariable("id") Long id) throws NotFoundException {
         return this.movieService.findById(id);
     }
@@ -50,6 +58,11 @@ public class MovieRestController {
             value = "{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update movie with given id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Movie was updated"),
+            @ApiResponse(responseCode = "404", description = "Movie not found")
+    })
     public MovieDto updateMovie(@RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
         return this.movieService.update(movieDto);
     }
@@ -58,12 +71,21 @@ public class MovieRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new movie")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Movie was created")
+    })
     public MovieDto createMovie(@RequestBody MovieInputDto movieInputDto) {
         return this.movieService.save(movieInputDto);
     }
 
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete movie with given id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Movie was deleted"),
+            @ApiResponse(responseCode = "404", description = "Movie not found")
+    })
     public void deleteMovie(@PathVariable("id") Long id) throws NotFoundException {
         this.movieService.deleteById(id);
     }
