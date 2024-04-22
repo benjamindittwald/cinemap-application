@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,6 @@ import static org.mockito.Mockito.*;
 @WebMvcTest(MovieService.class)
 @AutoConfigureMockMvc
 public class MovieServiceTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @Autowired
     private MovieService movieService;
@@ -118,7 +114,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldDeleteMovie() throws NotFoundException {
+    public void shouldDeleteMovie()  {
         Optional<Movie> persistedMovie = Optional.of(new Movie(0L, Map.of("deu", "Der Kleine und der müde Joe", "eng"
                 , "Trinity " +
                         "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));

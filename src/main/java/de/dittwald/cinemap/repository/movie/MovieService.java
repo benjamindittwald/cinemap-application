@@ -19,7 +19,6 @@ package de.dittwald.cinemap.repository.movie;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MovieService {
@@ -35,7 +34,6 @@ public class MovieService {
     }
 
     public MovieDto findById(Long id) throws NotFoundException {
-        Optional<Movie> movie = movieRepository.findById(id);
         return MovieDTOMapper.movieToDTO(this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "Movie not found")));
     }
