@@ -16,60 +16,8 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Repository
-public class MovieRepository {
-
-    @PersistenceContext
-    private EntityManager em;
-
-    Logger log = LoggerFactory.getLogger(MovieRepository.class);
-
-    @Transactional(readOnly = true)
-    public List<Movie> findAll() {
-        List<Movie> movies = em.createQuery("Select a From Movie a", Movie.class).getResultList();
-        movies.forEach(movie -> log.debug("Found movie : {}", movie.toString()));
-        return movies;
-    }
-
-    @Transactional(readOnly = true)
-    public Movie findById(Long id) {
-        Movie movie = em.find(Movie.class, id);
-        log.debug("Found movie : {}", movie.toString());
-        return movie;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public List<Movie> saveAll(List<Movie> movies) {
-        movies.forEach(this::save);
-        return movies;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Movie save(Movie movie) {
-        em.persist(movie);
-        log.debug("Persisted Movie : {}", movie.toString());
-        return movie;
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(Movie movie) {
-        em.remove(movie);
-        log.debug("Removed Movie : {}", movie.toString());
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Movie update(Movie movie) {
-        Movie mergedMovie = em.merge(movie);
-        log.debug("Updated Movie : {}, Old movie : {}", mergedMovie.toString(), movie.toString());
-        return mergedMovie;
-    }
-}
+public interface MovieRepository extends ListCrudRepository<Movie, Long> {}

@@ -80,7 +80,7 @@ class MovieRepositoryTest {
     @Test
     public void shouldFindMovieById() {
         List<Movie> movies = this.movieRepository.findAll();
-        Movie movie = this.movieRepository.findById(movies.getFirst().getId());
+        Movie movie = this.movieRepository.findById(movies.getFirst().getId()).get();
         assertThat(movie.getId()).isEqualTo(movies.getFirst().getId());
     }
 
@@ -106,11 +106,11 @@ class MovieRepositoryTest {
     public void shouldUpdateMovie() {
         // Todo: Finish me!
         List<Movie> movies = this.movieRepository.findAll();
-        Movie movie = this.movieRepository.findById(movies.getFirst().getId());
+        Movie movie = this.movieRepository.findById(movies.getFirst().getId()).get();
         Map<String, String> newTitle = new HashMap<>(movie.getTitle());
         newTitle.put("fra", "Danse avec les loups");
         movie.setTitle(newTitle);
-        this.movieRepository.update(movie);
-        assertThat(this.movieRepository.findAll().getFirst().getTitle().get("fra")).isEqualTo("Danse avec les loups");
+        this.movieRepository.save(movie);
+        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getTitle().get("fra")).isEqualTo("Danse avec les loups");
     }
 }
