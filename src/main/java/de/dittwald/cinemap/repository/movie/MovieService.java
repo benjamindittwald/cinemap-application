@@ -38,6 +38,7 @@ public class MovieService {
                 "Movie not found")));
     }
 
+    // Todo: Implement check in order to avoid duplicates
     public MovieDto save(MovieInputDto movieDto) {
         return MovieDTOMapper.movieToDTO(this.movieRepository.save(MovieDTOMapper.inputDtoToMovie(movieDto)));
     }
