@@ -129,10 +129,6 @@ public class MovieServiceTest {
 
     @Test
     public void shouldThroughExceptionWhenTryToDeleteMovie() {
-        Optional<Movie> persistedMovie = Optional.of(new Movie(0L, Map.of("deu", "Der Kleine und der müde Joe", "eng"
-                , "Trinity " +
-                        "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
-        MovieRepository movieRepositoryMock = mock(MovieRepository.class);
         when(this.movieRepository.findById(0L)).thenReturn(Optional.empty());
         Exception exception = assertThrows(NotFoundException.class,
                 () -> this.movieService.deleteById(0L));
@@ -148,5 +144,13 @@ public class MovieServiceTest {
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
 
         assertThat(this.movieService.findById(0L)).isEqualTo(MovieDTOMapper.movieToDTO(persistedMovie.get()));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenTryToFindMovieById() {
+        when(this.movieRepository.findById(0L)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(NotFoundException.class,
+                () -> this.movieService.findById(0L));
+        assertThat(exception.getMessage()).isEqualTo("Movie not found");
     }
 }
