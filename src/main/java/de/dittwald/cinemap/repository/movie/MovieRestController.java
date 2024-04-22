@@ -17,10 +17,9 @@
 package de.dittwald.cinemap.repository.movie;
 
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,14 +33,38 @@ public class MovieRestController {
         this.movieService = movieService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all movies.")
     List<MovieDto> findAll() {
-        return movieService.findAll();
+        return this.movieService.findAll();
     }
 
-    @GetMapping("{id}")
-    MovieDto findById(@PathVariable("id") Long id) {
-        return null;
+    @GetMapping(
+            value = "{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public MovieDto findById(@PathVariable("id") Long id) throws NotFoundException {
+        return this.movieService.findById(id);
+    }
+
+    @PutMapping(
+            value = "{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public MovieDto updateMovie(@RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
+        return this.movieService.update(movieDto);
+    }
+
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public MovieDto createMovie(@RequestBody MovieInputDto movieInputDto) {
+        return this.movieService.save(movieInputDto);
+    }
+
+    @DeleteMapping(value = "{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMovie(@PathVariable("id") Long id) throws NotFoundException {
+        this.movieService.deleteById(id);
     }
 }

@@ -125,6 +125,7 @@ public class MovieServiceTest {
         MovieRepository movieRepositoryMock = mock(MovieRepository.class);
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
         doNothing().when(movieRepositoryMock).deleteById(0L);
+        // Todo: Implement proper assertion!
     }
 
     @Test
@@ -142,7 +143,6 @@ public class MovieServiceTest {
                         "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
 
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
-
         assertThat(this.movieService.findById(0L)).isEqualTo(MovieDTOMapper.movieToDTO(persistedMovie.get()));
     }
 

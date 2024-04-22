@@ -37,6 +37,8 @@ public class MovieService {
     public MovieDto findById(Long id) throws NotFoundException {
         Optional<Movie> movie = movieRepository.findById(id);
 
+        // Todo: Implement more elegant method with lambda
+        //return this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException("Movie not found"));
         if (movie.isPresent()) {
             return MovieDTOMapper.movieToDTO(movie.get());
         } else {
