@@ -55,13 +55,13 @@ public class MovieRestControllerTest {
     }
 
     @Test
-    public void shouldReturnStatus200() throws Exception {
+    public void shouldReturnStatus200forMovies() throws Exception {
         this.mockMvc.perform(get("/api/v1/movies")).andExpect(status().isOk());
     }
 
     @Test
-    public void shouldReturnStatus404() throws Exception {
-        this.mockMvc.perform(get("/api/v1/movie")).andExpect(status().isNotFound());
+    public void shouldReturnStatus404ForFake() throws Exception {
+        this.mockMvc.perform(get("/api/v1/movie-fake")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -96,5 +96,28 @@ public class MovieRestControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title.deu", is("Der mit dem Wolf tanzt")))
                 .andExpect(jsonPath("$[1].title.deu", is("Mein Name ist Nobody")));
+    }
+
+    @Test
+    public void shouldReturnStatus200ForMoviesId() throws Exception {
+        this.mockMvc.perform(get("/api/v1/movies/0")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnMovieByID() throws Exception {
+        String jsonResponse = """
+                {
+                    "id":0,
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        }
+                    "imdbWebsite":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
+        // Todo: Finish me!
+        //when(this.movieService.).thenReturn(movieDtos.getFirst());
     }
 }

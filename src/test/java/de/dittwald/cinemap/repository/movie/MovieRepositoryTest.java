@@ -104,7 +104,6 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldUpdateMovie() {
-        // Todo: Finish me!
         List<Movie> movies = this.movieRepository.findAll();
         Movie movie = this.movieRepository.findById(movies.getFirst().getId()).get();
         Map<String, String> newTitle = new HashMap<>(movie.getTitle());

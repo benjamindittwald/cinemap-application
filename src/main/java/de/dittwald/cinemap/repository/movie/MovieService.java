@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.movie;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MovieService {
@@ -33,7 +34,34 @@ public class MovieService {
         return MovieDTOMapper.movieListToDtoList(this.movieRepository.findAll());
     }
 
+    public MovieDto findById(Long id) throws NotFoundException {
+        Optional<Movie> movie = movieRepository.findById(id);
+
+        if (movie.isPresent()) {
+            return MovieDTOMapper.movieToDTO(movie.get());
+        } else {
+            throw new NotFoundException("Movie not found");
+        }
+    }
+
     public MovieDto save(MovieInputDto movieDto) {
         return MovieDTOMapper.movieToDTO(this.movieRepository.save(MovieDTOMapper.inputDtoToMovie(movieDto)));
     }
+
+    public MovieDto update(MovieDto movieDto) throws NotFoundException {
+        if (this.movieRepository.findById(movieDto.id()).isPresent()) {
+            return MovieDTOMapper.movieToDTO(this.movieRepository.save(MovieDTOMapper.dtoToMovie(movieDto)));
+        } else {
+            throw new NotFoundException("Movie not found");
+        }
+    }
+
+    public void deleteById(Long id) throws NotFoundException {
+        if (this.movieRepository.findById(id).isPresent()) {
+            this.movieRepository.deleteById(id);
+        } else {
+            throw new NotFoundException("Movie not found");
+        }
+    }
+
 }
