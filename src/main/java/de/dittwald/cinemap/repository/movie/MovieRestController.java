@@ -37,7 +37,7 @@ public class MovieRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all movies")
+    @Operation(summary = "Get all movies", description = "Responses a list with all movies")
     @ApiResponse(responseCode = "200", description = "Found movies")
     public List<MovieDto> findAll() {
         return this.movieService.findAll();
@@ -46,7 +46,7 @@ public class MovieRestController {
     @GetMapping(
             value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get a movie by its id")
+    @Operation(summary = "Get a movie", description = "Gets a movie by its id. Responses with status code 404 if the movie was not found.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the movie"),
             @ApiResponse(responseCode = "404", description = "Movie not found")
@@ -59,7 +59,7 @@ public class MovieRestController {
             value = "{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update movie with given id")
+    @Operation(summary = "Update movie", description = "Updates the movie with the given id. Responses with status code 404 if the movie was not found.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Movie was updated"),
             @ApiResponse(responseCode = "404", description = "Movie not found"),
@@ -73,18 +73,18 @@ public class MovieRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new movie")
+    @Operation(summary = "Create a new movie", description = "Creates a new movie with the given parameters. Note that the given value for the movie \"id\" will be ignored.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Movie was created"),
             @ApiResponse(responseCode = "400", description = "Invalid movie given")
     })
-    public MovieDto createMovie(@Valid @RequestBody MovieInputDto movieInputDto) {
-        return this.movieService.save(movieInputDto);
+    public MovieDto createMovie(@Valid @RequestBody MovieDto movieDto) {
+        return this.movieService.save(movieDto);
     }
 
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete movie with given id")
+    @Operation(summary = "Delete movie", description = "Deletes a movie with the given id. Responses with status code 404 if the movie cannot be found.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Movie was deleted"),
             @ApiResponse(responseCode = "404", description = "Movie not found")

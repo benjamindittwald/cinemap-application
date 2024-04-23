@@ -145,7 +145,7 @@ public class MovieRestControllerTest {
     @Test
     public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidLang() throws Exception {
 
-        String movieInputDtoJson = """
+        String movieDtoJson = """
                 {   "id":0,
                     "title":
                         {
@@ -160,14 +160,14 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(movieInputDtoJson))
+                        .content(movieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidUrl() throws Exception {
 
-        String movieInputDtoJson = """
+        String movieDtoJson = """
                 {   "id":0,
                     "title":
                         {
@@ -182,14 +182,14 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(movieInputDtoJson))
+                        .content(movieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldNotUpdateMovieAndReturnStatus400DueToTooLongUrl() throws Exception {
 
-        String movieInputDtoJson = """
+        String movieDtoJson = """
                 {   "id":0,
                     "title":
                         {
@@ -204,7 +204,7 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(movieInputDtoJson))
+                        .content(movieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 
@@ -222,7 +222,7 @@ public class MovieRestControllerTest {
     @Test
     public void shouldCreateMovie() throws Exception {
 
-        String movieInputDtoJson = """
+        String movieDtoJson = """
                 {
                     "title":
                         {
@@ -239,13 +239,13 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(movieInputDtoJson))
+                        .content(movieDtoJson))
                 .andExpect(status().isCreated());
     }
 
     @Test
     public void shouldReturnStatus400DueToInvalidUrl() throws Exception {
-        String invalidMovieInputDtoJson = """
+        String invalidMovieDtoJson = """
                 {
                     "title":
                         {
@@ -259,13 +259,13 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(invalidMovieInputDtoJson))
+                        .content(invalidMovieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldReturnStatus400DueToTooLongUrl() throws Exception {
-        String invalidMovieInputDtoJson = """
+        String invalidMovieDtoJson = """
                 {
                     "title":
                         {
@@ -279,13 +279,13 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(invalidMovieInputDtoJson))
+                        .content(invalidMovieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldReturnStatus400DueToNonIsoLang() throws Exception {
-        String invalidMovieInputDtoJson = """
+        String invalidMovieDtoJson = """
                 {
                     "title":
                         {
@@ -299,7 +299,7 @@ public class MovieRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(invalidMovieInputDtoJson))
+                        .content(invalidMovieDtoJson))
                 .andExpect(status().isBadRequest());
     }
 

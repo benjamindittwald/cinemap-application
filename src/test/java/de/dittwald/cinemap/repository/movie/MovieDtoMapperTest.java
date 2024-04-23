@@ -29,7 +29,6 @@ class MovieDtoMapperTest {
 
     private final List<Movie> movies = new ArrayList<>();
     private final List<MovieDto> movieDtos = new ArrayList<>();
-    private final List<MovieInputDto> movieInputDtos = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -42,11 +41,6 @@ class MovieDtoMapperTest {
                 "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
         movieDtos.add(new MovieDto(1L, Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www" +
                 ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
-
-        movieInputDtos.add(new MovieInputDto(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieInputDtos.add(new MovieInputDto(Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
-                ".com/title/tt0070215/?ref_=ext_shr_lnk"));
     }
 
     @Test
@@ -75,10 +69,5 @@ class MovieDtoMapperTest {
         assertThat(MovieDTOMapper.movieListToDtoList(movies).size()).isEqualTo(2);
         assertThat(MovieDTOMapper.movieListToDtoList(movies).getFirst().title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
         assertThat(MovieDTOMapper.movieListToDtoList(movies).getLast().title().get(1)).isEqualTo(movies.getLast().getTitle().get(1));
-    }
-
-    @Test
-    public void shouldConvertInputDtoToMovie() {
-        assertThat(MovieDTOMapper.inputDtoToMovie((this.movieInputDtos.getFirst())).getTitle().get("deu")).isEqualTo("Der mit dem Wolf tanzt");
     }
 }

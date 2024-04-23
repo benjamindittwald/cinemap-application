@@ -70,7 +70,7 @@ public class MovieServiceTest {
 
     @Test
     void shouldSaveMovie() {
-        MovieInputDto movieInputDto = new MovieInputDto(Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
+        MovieDto notYetPersistedMovie = new MovieDto(null, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
                 "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
         MovieDto persistedMovieDto = new MovieDto(0L, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
                 "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
@@ -79,7 +79,7 @@ public class MovieServiceTest {
 
         when(this.movieRepository.save(any())).thenReturn(persistedMovie);
 
-        assertThat(this.movieService.save(movieInputDto)).isEqualTo(persistedMovieDto);
+        assertThat(this.movieService.save(notYetPersistedMovie)).isEqualTo(persistedMovieDto);
     }
 
     @Test

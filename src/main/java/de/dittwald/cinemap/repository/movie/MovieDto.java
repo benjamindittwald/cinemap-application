@@ -25,7 +25,6 @@ import java.util.Map;
 
 public record MovieDto (
 
-        @NotNull
         Long id,
 
         @NotNull

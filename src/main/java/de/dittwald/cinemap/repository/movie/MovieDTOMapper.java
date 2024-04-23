@@ -39,14 +39,6 @@ public class MovieDTOMapper {
         );
     }
 
-    public static Movie inputDtoToMovie(MovieInputDto movie) {
-        return new Movie(
-                movie.title().entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue())),
-                movie.imdbWebsiteUrl()
-        );
-    }
-
     public static List<Movie> dtoListToMovieList(List<MovieDto> movies) {
         return movies.stream().map(MovieDTOMapper::dtoToMovie).collect(Collectors.toList());
     }
