@@ -62,7 +62,8 @@ public class MovieRestController {
     @Operation(summary = "Update movie with given id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Movie was updated"),
-            @ApiResponse(responseCode = "404", description = "Movie not found")
+            @ApiResponse(responseCode = "404", description = "Movie not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie given")
     })
     public MovieDto updateMovie(@Valid @RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
         return this.movieService.update(movieDto);
