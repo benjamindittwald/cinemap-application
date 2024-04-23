@@ -18,28 +18,17 @@ package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import de.dittwald.cinemap.repository.validation.UrlConstraint;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 
 public record MovieInputDto(
 
-        // Todo:
-        //  - Check titles key for ISO lang.
-        //  - Fix title constraints
-        //  - Fix Iso constraint
-        //  - Fix url constraint
-        //  - Test constraints
+        @NotNull
+        Map<@Iso639Constraint String, String> title,
 
-
-        @NotBlank
-        @Size(min = 1, max = 100)
-        @Iso639Constraint
-        Map<String, String> title,
-
-
-        @Size(min = 1, max = 100)
-        @UrlConstraint
+        @UrlConstraint(message = "URL is not valid")
+        @Size(min = 1, max = 100, message = "URL is not in scope on min=1 or max=100 characters")
         String imdbWebsiteUrl) {
 }

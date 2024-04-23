@@ -133,36 +133,174 @@ public class MovieRestControllerTest {
         when(this.movieService.update(this.movieDtos.getFirst())).thenReturn(this.movieDtos.getFirst());
 
         this.mockMvc.perform(put("/api/v1/movies/0")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(this.movieDtoJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieDtoJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(0)))
                 .andExpect(jsonPath("$.title.deu", is("Der mit dem Wolf tanzt")));
     }
 
     @Test
+    public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidLang() throws Exception {
+
+        String movieInputDtoJson = """
+                {   "id":0,
+                    "title":
+                        {
+                            "en":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(movieInputDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidUrl() throws Exception {
+
+        String movieInputDtoJson = """
+                {   "id":0,
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(movieInputDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotUpdateMovieAndReturnStatus400DueToTooLongUrl() throws Exception {
+
+        String movieInputDtoJson = """
+                {   "id":0,
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk/3aspKWmnBr1ZYAUVSbXtaS0jWBkDC41FKtnm3V3mYyD7dnudWKj13pCF9SCTuwTzPsntHEXdJKswp5QToEdkFbo3NuKC2Q9EjK12"
+                }
+                """;
+
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(movieInputDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnStatus404ForFakeIdUpdate() throws Exception {
         when(this.movieService.update(any())).thenThrow(NotFoundException.class);
         this.mockMvc.perform(put("/api/v1/movies/0")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(this.movieDtoJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieDtoJson))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldCreateMovie() throws Exception {
+
+        String movieInputDtoJson = """
+                {
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
         when(this.movieService.save(any())).thenReturn(this.movieDtos.getFirst());
 
         this.mockMvc.perform(post("/api/v1/movies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(this.movieDtoJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(movieInputDtoJson))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void shouldReturnStatus400DueToInvalidUrl() throws Exception {
+        String invalidMovieInputDtoJson = """
+                {
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"abcd//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(invalidMovieInputDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnStatus400DueToTooLongUrl() throws Exception {
+        String invalidMovieInputDtoJson = """
+                {
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk/3aspKWmnBr1ZYAUVSbXtaS0jWBkDC41FKtnm3V3mYyD7dnudWKj13pCF9SCTuwTzPsntHEXdJKswp5QToEdkFbo3NuKC2Q9EjK12"
+                }
+                """;
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(invalidMovieInputDtoJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnStatus400DueToNonIsoLang() throws Exception {
+        String invalidMovieInputDtoJson = """
+                {
+                    "title":
+                        {
+                            "en":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+        this.mockMvc.perform(post("/api/v1/movies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(invalidMovieInputDtoJson))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

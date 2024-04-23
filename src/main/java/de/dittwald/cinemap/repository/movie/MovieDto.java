@@ -16,22 +16,22 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import jakarta.validation.constraints.NotBlank;
+import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import de.dittwald.cinemap.repository.validation.UrlConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 
-public record MovieDto(
+public record MovieDto (
 
         @NotNull
         Long id,
 
-        @NotBlank
-        @Size(min = 1, max = 100)
-        Map<String, String> title,
+        @NotNull
+        Map<@Iso639Constraint String, String> title,
 
-
-        @Size(min = 1, max = 100)
+        @UrlConstraint(message = "URL is not valid")
+        @Size(min = 1, max = 100, message = "URL is not in scope on min=1 or max=100 characters")
         String imdbWebsiteUrl) {
 }

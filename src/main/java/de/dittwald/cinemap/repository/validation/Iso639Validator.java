@@ -18,31 +18,30 @@ package de.dittwald.cinemap.repository.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 
-public class Iso639Validator implements ConstraintValidator<Iso639Constraint, HashMap<String, String>> {
+public class Iso639Validator implements ConstraintValidator<Iso639Constraint, String> {
     @Override
     public void initialize(Iso639Constraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(HashMap<String, String> title, ConstraintValidatorContext constraintValidatorContext) {
-        boolean valid = true;
-        try (BufferedReader reader = new BufferedReader(new FileReader("iso-639-3_Name_Index.csv"))) {
+    public boolean isValid(String langcode, ConstraintValidatorContext constraintValidatorContext) {
+        boolean valid = false;
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/iso-639-3_Name_Index.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split("\\t");
-                for (String lang : title.keySet()) {
-                    if (!fields[0].contains(lang)) {
-                        valid = false;
-                        break;
-                    }
+
+                if (StringUtils.equals(fields[0], langcode)) {
+                    valid = true;
+                    break;
                 }
             }
         } catch (FileNotFoundException e) {

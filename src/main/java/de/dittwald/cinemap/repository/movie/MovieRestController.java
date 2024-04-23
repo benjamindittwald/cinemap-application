@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.movie;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +64,7 @@ public class MovieRestController {
             @ApiResponse(responseCode = "200", description = "Movie was updated"),
             @ApiResponse(responseCode = "404", description = "Movie not found")
     })
-    public MovieDto updateMovie(@RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
+    public MovieDto updateMovie(@Valid @RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
         return this.movieService.update(movieDto);
     }
 
@@ -73,9 +74,10 @@ public class MovieRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new movie")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Movie was created")
+            @ApiResponse(responseCode = "201", description = "Movie was created"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie given")
     })
-    public MovieDto createMovie(@RequestBody MovieInputDto movieInputDto) {
+    public MovieDto createMovie(@Valid @RequestBody MovieInputDto movieInputDto) {
         return this.movieService.save(movieInputDto);
     }
 

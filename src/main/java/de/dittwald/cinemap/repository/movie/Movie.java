@@ -16,7 +16,11 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import de.dittwald.cinemap.repository.validation.UrlConstraint;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +57,11 @@ public class Movie {
         )
         @MapKeyColumn(name = "title_locale")
         @Column(name = "title")
-        private Map<String, String> title = new HashMap<>();
+        @NotNull
+        private Map<@Iso639Constraint String, String> title = new HashMap<>();
 
+        @UrlConstraint
+        @NotBlank
         private String imdbWebsiteUrl;
 
         @Override
