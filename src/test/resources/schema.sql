@@ -14,25 +14,46 @@
  * limitations under the License.
  */
 
--- we don't know how to generate root <with-no-name> (class Root) :(
-
-comment on database postgres is 'default administrative connection database';
+create sequence movie_scenes_seq
+    increment by 50;
 
 create sequence movies_seq
     increment by 50;
 
 create table movies
 (
-    id                     bigint not null
+    id               bigint not null
         primary key,
-    version                bigint,
+    version          bigint,
     imdb_website_url varchar(255)
 );
 
-create table titel_locale_mapping
+create table movie_scenes
+(
+    id       bigint not null
+        primary key,
+    lat      bigint not null,
+    lon      bigint not null,
+    movie_id bigint
+        constraint fks0o0tnmdgg48w6ufup3l3pvt4
+            references movies,
+    version  bigint
+);
+
+create table description_locale_mapping
+(
+    locale_id          bigint       not null
+        constraint fkshjtu4vts0lygsyqthc78873k
+            references movie_scenes,
+    description        varchar(255),
+    description_locale varchar(255) not null,
+    primary key (locale_id, description_locale)
+);
+
+create table title_locale_mapping
 (
     locale_id    bigint       not null
-        constraint fkabrk02mhbf0u9kt8l8s85io1o
+        constraint fkmiyn8ju2algnd7mpopq03f6gd
             references movies,
     title        varchar(255),
     title_locale varchar(255) not null,
