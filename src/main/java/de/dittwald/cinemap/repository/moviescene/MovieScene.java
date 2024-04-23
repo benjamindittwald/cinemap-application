@@ -63,7 +63,8 @@ public class MovieScene {
     @NotNull
     private Map<@Iso639Constraint String, String> description = new HashMap<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
     @Override
@@ -89,6 +90,14 @@ public class MovieScene {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 
     public Long getLon() {

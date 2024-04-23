@@ -34,7 +34,7 @@ create table movie_scenes
         primary key,
     lat      bigint not null,
     lon      bigint not null,
-    movie_id bigint
+    movie_id bigint not null
         constraint fks0o0tnmdgg48w6ufup3l3pvt4
             references movies,
     version  bigint

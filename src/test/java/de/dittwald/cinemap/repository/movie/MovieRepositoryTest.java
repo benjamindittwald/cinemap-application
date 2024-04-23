@@ -80,8 +80,7 @@ class MovieRepositoryTest {
     @Test
     public void shouldFindMovieById() {
         List<Movie> movies = this.movieRepository.findAll();
-        Movie movie = this.movieRepository.findById(movies.getFirst().getId()).get();
-        assertThat(movie.getId()).isEqualTo(movies.getFirst().getId());
+        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getId()).isEqualTo(movies.getFirst().getId());
     }
 
     @Test
@@ -96,9 +95,9 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldDeleteMovie() {
-        assertThat(this.movieRepository.findAll().size()).isEqualTo(2);
+        assertThat(this.movieRepository.count()).isEqualTo(2);
         this.movieRepository.delete(this.movies.getFirst());
-        assertThat(this.movieRepository.findAll().size()).isEqualTo(1);
+        assertThat(this.movieRepository.count()).isEqualTo(1);
         assertThat(this.movieRepository.findAll().getFirst().getTitle().get("deu")).isEqualTo("Mein Name is Nobody");
     }
 

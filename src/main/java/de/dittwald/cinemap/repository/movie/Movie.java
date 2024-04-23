@@ -16,17 +16,15 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.moviescene.MovieScene;
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import de.dittwald.cinemap.repository.validation.UrlConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Entity
 @Table(name = "movies")
@@ -42,25 +40,16 @@ public class Movie {
         this.imdbWebsiteUrl = imdbWebsiteUrl;
     }
 
-    // Todo: Remove after migration
-    public Movie(Map<String, String> title, String imdbWebsiteUrl) {
-        this.title = title;
-        this.imdbWebsiteUrl = imdbWebsiteUrl;
-    }
-
-    public Movie(Long id, Long version, Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl,
-                 List<MovieScene> movieScene) {
+    public Movie(Long id, Long version, Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl) {
         this.id = id;
         this.version = version;
         this.title = title;
         this.imdbWebsiteUrl = imdbWebsiteUrl;
-        this.movieScene = movieScene;
     }
 
-    public Movie(Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl, List<MovieScene> movieScene) {
+    public Movie(Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl) {
         this.title = title;
         this.imdbWebsiteUrl = imdbWebsiteUrl;
-        this.movieScene = movieScene;
     }
 
     @Id
@@ -85,13 +74,6 @@ public class Movie {
     @NotBlank
     private String imdbWebsiteUrl;
 
-    @OneToMany(
-            mappedBy = "movie",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<MovieScene> movieScene = new ArrayList<>();
-
     @Override
     public String toString() {
         return "Movie{" +
@@ -99,28 +81,21 @@ public class Movie {
                 ", version=" + version +
                 ", title=" + title +
                 ", imdbWebsiteUrl='" + imdbWebsiteUrl + '\'' +
-                ", movieScene=" + movieScene +
                 '}';
     }
 
-    public void addMovieScene(MovieScene movieScene) {
-        this.movieScene.add(movieScene);
-        movieScene.setMovie(this);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return Objects.equals(id, movie.id);
     }
 
-    public void removeMovieScene(MovieScene movieScene) {
-        this.movieScene.remove(movieScene);
-        movieScene.setMovie(null);
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
-
-    public List<MovieScene> getMovieScene() {
-        return movieScene;
-    }
-
-    public void setMovieScene(List<MovieScene> movieScene) {
-        this.movieScene = movieScene;
-    }
-
 
     public Long getId() {
         return id;

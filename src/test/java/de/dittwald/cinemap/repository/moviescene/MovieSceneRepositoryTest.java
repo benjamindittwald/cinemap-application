@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(
         type = FilterType.ASSIGNABLE_TYPE, classes = {MovieSceneRepository.class, MovieRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class MovieSceneServiceTest {
+class MovieSceneRepositoryTest {
 
     @Container
     @ServiceConnection
@@ -53,12 +54,10 @@ class MovieSceneServiceTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    private List<Movie> movies;
-    private List<MovieScene> moviesScenes;
 
     @BeforeEach
     void setUp() {
-        movies = new ArrayList<>();
+        List<MovieScene> moviesScenes;
 
         Movie wolve = new Movie(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
                 ".imdb" +
@@ -66,18 +65,17 @@ class MovieSceneServiceTest {
         Movie nobody = new Movie(Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
                 ".com/title/tt0070215/?ref_=ext_shr_lnk");
 
-        this.moviesScenes = new ArrayList<>();
-        this.moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng",
+        moviesScenes = new ArrayList<>();
+        moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
+                "eng",
                 "Dances with Wolves scene 1"), wolve));
-        this. moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 2", "eng",
+        moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 2",
+                "eng",
                 "Dances with Wolves scene 2"), wolve));
 
-        wolve.addMovieScene(moviesScenes.getFirst());
-        wolve.addMovieScene(moviesScenes.getLast());
-        this.movies.add(wolve);
-        this.movies.add(nobody);
-
-        this.movieRepository.saveAll(movies);
+        this.movieRepository.save(wolve);
+        this.movieRepository.save(nobody);
+        this.movieSceneRepository.saveAll(moviesScenes);
     }
 
     @Test
@@ -92,5 +90,42 @@ class MovieSceneServiceTest {
         assertThat(movieScenes.size()).isEqualTo(2);
         assertThat(movieScenes.getFirst().getMovie().getTitle().get("deu")).isEqualTo("Der mit dem Wolf tanzt");
         assertThat(movieScenes.getFirst().getDescription().get("deu")).isEqualTo("Der mit dem Wolf tanzt Szene 1");
+    }
+
+    @Test
+    public void shouldFindMovieSceneById() {
+        List<MovieScene> movieScenes = this.movieSceneRepository.findAll();
+        assertThat(this.movieSceneRepository.findById(movieScenes.getFirst().getId()).get().getId()).isEqualTo(movieScenes.getFirst().getId());
+    }
+
+    @Test
+    public void shouldPersistMovieScene() {
+        Movie movie = this.movieRepository.findAll().getFirst();
+        MovieScene movieScene = new MovieScene(13434954L, 52534008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 3",
+                "eng",
+                "Dances with Wolves scene 3"), movie);
+
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        this.movieSceneRepository.save(movieScene);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3L);
+    }
+
+    @Test
+    public void shouldUpdateMovieScene() {
+        MovieScene movieScene = this.movieSceneRepository.findAll().getFirst();
+        assertThat(movieScene.getDescription().get("eng")).isEqualTo("Dances with Wolves scene 1");
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        movieScene.setDescription(new HashMap<>(Map.of("eng", "A new description")));
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        this.movieSceneRepository.save(movieScene);
+        assertThat(this.movieSceneRepository.findAll().getLast().getDescription().get("eng")).isEqualTo("A new " +
+                "description");
+    }
+
+    @Test
+    public void shouldDeleteMovieScene() {
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        this.movieSceneRepository.deleteById(this.movieSceneRepository.findAll().getFirst().getId());
+        assertThat(this.movieSceneRepository.count()).isEqualTo(1L);
     }
 }
