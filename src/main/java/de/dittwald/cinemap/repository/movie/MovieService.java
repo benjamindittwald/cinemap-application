@@ -30,22 +30,22 @@ public class MovieService {
     }
 
     public List<MovieDto> findAll() {
-        return MovieDTOMapper.movieListToDtoList(this.movieRepository.findAll());
+        return MovieDTOMapperLegacy.movieListToDtoList(this.movieRepository.findAll());
     }
 
     public MovieDto findById(Long id) throws NotFoundException {
-        return MovieDTOMapper.movieToDTO(this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "Movie not found")));
     }
 
     // Todo: Implement check in order to avoid duplicates
     public MovieDto save(MovieDto movieDto) {
-        return MovieDTOMapper.movieToDTO(this.movieRepository.save(MovieDTOMapper.dtoToMovie(movieDto)));
+        return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.save(MovieDTOMapperLegacy.dtoToMovie(movieDto)));
     }
 
     public MovieDto update(MovieDto movieDto) throws NotFoundException {
         if (this.movieRepository.findById(movieDto.id()).isPresent()) {
-            return MovieDTOMapper.movieToDTO(this.movieRepository.save(MovieDTOMapper.dtoToMovie(movieDto)));
+            return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.save(MovieDTOMapperLegacy.dtoToMovie(movieDto)));
         } else {
             throw new NotFoundException("Movie not found");
         }

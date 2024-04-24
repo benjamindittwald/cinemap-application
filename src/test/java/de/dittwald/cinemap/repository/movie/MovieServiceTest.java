@@ -98,7 +98,7 @@ public class MovieServiceTest {
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
         when(this.movieRepository.save(any())).thenReturn(persistedMovieUpdated);
 
-        assertThat(this.movieService.update(persistedMovieDto)).isEqualTo(MovieDTOMapper.movieToDTO(persistedMovieUpdated));
+        assertThat(this.movieService.update(persistedMovieDto)).isEqualTo(MovieDTOMapperLegacy.movieToDTO(persistedMovieUpdated));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class MovieServiceTest {
                         "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
 
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
-        assertThat(this.movieService.findById(0L)).isEqualTo(MovieDTOMapper.movieToDTO(persistedMovie.get()));
+        assertThat(this.movieService.findById(0L)).isEqualTo(MovieDTOMapperLegacy.movieToDTO(persistedMovie.get()));
     }
 
     @Test

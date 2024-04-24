@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MovieDTOMapper {
+public class MovieDTOMapperLegacy {
 
     public static MovieDto movieToDTO(Movie movie) {
         return new MovieDto(
@@ -40,10 +40,10 @@ public class MovieDTOMapper {
     }
 
     public static List<Movie> dtoListToMovieList(List<MovieDto> movies) {
-        return movies.stream().map(MovieDTOMapper::dtoToMovie).collect(Collectors.toList());
+        return movies.stream().map(MovieDTOMapperLegacy::dtoToMovie).collect(Collectors.toList());
     }
 
     public static List<MovieDto> movieListToDtoList(List<Movie> movies) {
-        return movies.stream().map(MovieDTOMapper::movieToDTO).collect(Collectors.toList());
+        return movies.stream().map(MovieDTOMapperLegacy::movieToDTO).collect(Collectors.toList());
     }
 }

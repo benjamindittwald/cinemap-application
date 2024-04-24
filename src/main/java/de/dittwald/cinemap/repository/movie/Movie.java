@@ -29,8 +29,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "movies")
 public class Movie {
-
-    protected Movie() {
+    public Movie() {
     }
 
     // Todo: Remove after migration
@@ -40,14 +39,14 @@ public class Movie {
         this.imdbWebsiteUrl = imdbWebsiteUrl;
     }
 
-    public Movie(Long id, Long version, Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl) {
+    public Movie(Long id, Long version, Map<String, String> title, String imdbWebsiteUrl) {
         this.id = id;
         this.version = version;
         this.title = title;
         this.imdbWebsiteUrl = imdbWebsiteUrl;
     }
 
-    public Movie(Map<@Iso639Constraint String, String> title, String imdbWebsiteUrl) {
+    public Movie(Map<String, String> title, String imdbWebsiteUrl) {
         this.title = title;
         this.imdbWebsiteUrl = imdbWebsiteUrl;
     }

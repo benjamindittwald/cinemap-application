@@ -45,29 +45,29 @@ class MovieDtoMapperTest {
 
     @Test
     void shouldConvertMovieToMovieDto() {
-        assertThat(MovieDTOMapper.movieToDTO(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(movies.getFirst().getImdbWebsiteUrl());
-        assertThat(MovieDTOMapper.movieToDTO(movies.getLast()).imdbWebsiteUrl()).isEqualTo(movies.getLast().getImdbWebsiteUrl());
-        assertThat(MovieDTOMapper.movieToDTO(movies.getFirst()).title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
+        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(movies.getFirst().getImdbWebsiteUrl());
+        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getLast()).imdbWebsiteUrl()).isEqualTo(movies.getLast().getImdbWebsiteUrl());
+        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getFirst()).title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
     }
 
     @Test
     void shouldConvertDtoMovieToMovie() {
-        assertThat(MovieDTOMapper.dtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getFirst().imdbWebsiteUrl());
-        assertThat(MovieDTOMapper.dtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getLast().imdbWebsiteUrl());
-        assertThat(MovieDTOMapper.dtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
+        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getFirst().imdbWebsiteUrl());
+        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getLast().imdbWebsiteUrl());
+        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
     }
 
     @Test
     public void shouldConvertMovieDtoListToMovieList() {
-        assertThat(MovieDTOMapper.dtoListToMovieList(movieDtos).size()).isEqualTo(2);
-        assertThat(MovieDTOMapper.dtoListToMovieList(movieDtos).getFirst().getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
-        assertThat(MovieDTOMapper.dtoListToMovieList(movieDtos).getLast().getTitle().get(1)).isEqualTo(movieDtos.getLast().title().get(1));
+        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).size()).isEqualTo(2);
+        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).getFirst().getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
+        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).getLast().getTitle().get(1)).isEqualTo(movieDtos.getLast().title().get(1));
     }
 
     @Test
     public void shouldConvertMovieListToMovieDtoList() {
-        assertThat(MovieDTOMapper.movieListToDtoList(movies).size()).isEqualTo(2);
-        assertThat(MovieDTOMapper.movieListToDtoList(movies).getFirst().title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
-        assertThat(MovieDTOMapper.movieListToDtoList(movies).getLast().title().get(1)).isEqualTo(movies.getLast().getTitle().get(1));
+        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).size()).isEqualTo(2);
+        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).getFirst().title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
+        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).getLast().title().get(1)).isEqualTo(movies.getLast().getTitle().get(1));
     }
 }
