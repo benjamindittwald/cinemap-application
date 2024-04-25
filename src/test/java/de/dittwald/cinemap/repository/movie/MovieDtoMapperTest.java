@@ -18,56 +18,49 @@ package de.dittwald.cinemap.repository.movie;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@WebMvcTest(MovieDtoMapper.class)
 class MovieDtoMapperTest {
 
     private final List<Movie> movies = new ArrayList<>();
     private final List<MovieDto> movieDtos = new ArrayList<>();
 
+    @Autowired
+    private MovieDtoMapper movieDtoMapper;
+
     @BeforeEach
     void setUp() {
-        movies.add(new Movie(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
                 ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movies.add(new Movie(Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
                 ".com/title/tt0070215/?ref_=ext_shr_lnk"));
 
-        movieDtos.add(new MovieDto(0L, Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https" +
+        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https" +
                 "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieDtos.add(new MovieDto(1L, Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www" +
+        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www" +
                 ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
     }
 
     @Test
     void shouldConvertMovieToMovieDto() {
-        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(movies.getFirst().getImdbWebsiteUrl());
-        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getLast()).imdbWebsiteUrl()).isEqualTo(movies.getLast().getImdbWebsiteUrl());
-        assertThat(MovieDTOMapperLegacy.movieToDTO(movies.getFirst()).title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(movies.getFirst().getImdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getLast()).imdbWebsiteUrl()).isEqualTo(movies.getLast().getImdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
     }
 
     @Test
     void shouldConvertDtoMovieToMovie() {
-        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getFirst().imdbWebsiteUrl());
-        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getLast().imdbWebsiteUrl());
-        assertThat(MovieDTOMapperLegacy.dtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
-    }
-
-    @Test
-    public void shouldConvertMovieDtoListToMovieList() {
-        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).size()).isEqualTo(2);
-        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).getFirst().getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
-        assertThat(MovieDTOMapperLegacy.dtoListToMovieList(movieDtos).getLast().getTitle().get(1)).isEqualTo(movieDtos.getLast().title().get(1));
-    }
-
-    @Test
-    public void shouldConvertMovieListToMovieDtoList() {
-        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).size()).isEqualTo(2);
-        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).getFirst().title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
-        assertThat(MovieDTOMapperLegacy.movieListToDtoList(movies).getLast().title().get(1)).isEqualTo(movies.getLast().getTitle().get(1));
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getFirst().imdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getLast().imdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
     }
 }

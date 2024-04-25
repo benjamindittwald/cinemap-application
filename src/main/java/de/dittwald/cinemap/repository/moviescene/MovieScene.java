@@ -24,15 +24,17 @@ import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "movie_scenes")
 public class MovieScene {
 
-    protected MovieScene() {
+    public MovieScene() {
     }
 
-    public MovieScene(Long lon, Long lat, Map<@Iso639Constraint String, String> description, Movie movie) {
+    public MovieScene(UUID uuid, Long lon, Long lat, Map<@Iso639Constraint String, String> description, Movie movie) {
+        this.uuid = uuid;
         this.lon = lon;
         this.lat = lat;
         this.description = description;
@@ -40,11 +42,12 @@ public class MovieScene {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Version
-    private Long version;
+    @NotNull
+    @Column(unique = true)
+    private UUID uuid;
 
     @NotNull
     private Long lon;
@@ -52,12 +55,12 @@ public class MovieScene {
     @NotNull
     private Long lat;
 
+    @Version
+    private Long version;
+
     @ElementCollection
-    @CollectionTable(
-            name = "description_locale_mapping",
-            joinColumns = {@JoinColumn(
-                    name = "locale_id", referencedColumnName = "id")}
-    )
+    @CollectionTable(name = "description_locale_mapping", joinColumns = {@JoinColumn(name = "locale_id",
+            referencedColumnName = "id")})
     @MapKeyColumn(name = "description_locale")
     @Column(name = "description")
     @NotNull
@@ -69,14 +72,8 @@ public class MovieScene {
 
     @Override
     public String toString() {
-        return "MovieScene{" +
-                "id=" + id +
-                ", version=" + version +
-                ", lon=" + lon +
-                ", lat=" + lat +
-                ", description=" + description +
-                ", movie=" + movie +
-                '}';
+        return "MovieScene{" + "id=" + id + ", version=" + version + ", lon=" + lon + ", lat=" + lat + ", description" +
+                "=" + description + ", movie=" + movie + '}';
     }
 
     @Override
@@ -98,6 +95,14 @@ public class MovieScene {
 
     public Long getVersion() {
         return version;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Long getLon() {

@@ -16,44 +16,61 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MovieService {
 
+    private final MovieDtoMapper movieDtoMapper;
+
     final MovieRepository movieRepository;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, MovieDtoMapper movieDtoMapper) {
         this.movieRepository = movieRepository;
+        this.movieDtoMapper = movieDtoMapper;
     }
 
     public List<MovieDto> findAll() {
-        return MovieDTOMapperLegacy.movieListToDtoList(this.movieRepository.findAll());
+        List<MovieDto> movieDtos = new ArrayList<>();
+
+        this.movieRepository.findAll().forEach(movie -> {
+            movieDtos.add(this.movieDtoMapper.movieToMovieDto(movie));
+        });
+
+        return movieDtos;
     }
 
-    public MovieDto findById(Long id) throws NotFoundException {
-        return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.findById(id).orElseThrow(() -> new NotFoundException(
+    public MovieDto findByUuid(UUID uuid) throws NotFoundException {
+        return movieDtoMapper.movieToMovieDto(this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException(
                 "Movie not found")));
     }
 
-    // Todo: Implement check in order to avoid duplicates
-    public MovieDto save(MovieDto movieDto) {
-        return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.save(MovieDTOMapperLegacy.dtoToMovie(movieDto)));
+    public MovieDto save(MovieDto movieDto) throws DataIntegrityViolationException {
+
+        if (this.movieRepository.findByUuid(movieDto.uuid()).isPresent()) {
+            throw new DataIntegrityViolationException("UUID already in use");
+        }
+
+        return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
     }
 
     public MovieDto update(MovieDto movieDto) throws NotFoundException {
-        if (this.movieRepository.findById(movieDto.id()).isPresent()) {
-            return MovieDTOMapperLegacy.movieToDTO(this.movieRepository.save(MovieDTOMapperLegacy.dtoToMovie(movieDto)));
+        if (this.movieRepository.findByUuid(movieDto.uuid()).isPresent()) {
+            // Fixme: Given Movie.id is probably lost here
+            return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
         } else {
             throw new NotFoundException("Movie not found");
         }
     }
 
-    public void deleteById(Long id) throws NotFoundException {
-        if (this.movieRepository.findById(id).isPresent()) {
-            this.movieRepository.deleteById(id);
+    public void deleteByUuid(UUID uuid) throws NotFoundException {
+        if (this.movieRepository.findByUuid(uuid).isPresent()) {
+            this.movieRepository.deleteByUuid(uuid);
         } else {
             throw new NotFoundException("Movie not found");
         }

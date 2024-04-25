@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -56,14 +57,14 @@ public class MovieRestControllerTest {
     @BeforeEach
     void setUp() {
         movieDtos = new ArrayList<>();
-        movieDtos.add(new MovieDto(0L, Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+        movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
                 "https" + "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieDtos.add(new MovieDto(1L, Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"), "https" +
+        movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"), "https" +
                 "://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
 
         this.movieDtoJson = """
                 {
-                    "id":0,
+                    "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                     "title":
                         {
                             "eng":"Dances with Wolves",
@@ -76,7 +77,7 @@ public class MovieRestControllerTest {
         this.movieDtosJson = """
                 [
                     {
-                        "id":0,
+                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                         "title":
                             {
                                 "eng":"Dances with Wolves",
@@ -85,7 +86,7 @@ public class MovieRestControllerTest {
                         "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
                     },
                     {
-                        "id":1,
+                        "uuid":"575c9ec9-fff0-4f04-a115-55fabf4acaee",
                         "title":
                             {
                                 "eng":"My Name Is Nobody",
@@ -116,29 +117,29 @@ public class MovieRestControllerTest {
     }
 
     @Test
-    public void shouldReturnMovieByID() throws Exception {
-        when(this.movieService.findById(0L)).thenReturn(movieDtos.getFirst());
-        this.mockMvc.perform(get("/api/v1/movies/0")).andExpect(status().isOk()).andExpect(jsonPath("$.title.deu",
+    public void shouldReturnMovieByUuid() throws Exception {
+        when(this.movieService.findByUuid(any())).thenReturn(movieDtos.getFirst());
+        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")).andExpect(status().isOk()).andExpect(jsonPath("$.title.deu",
                 is("Der mit dem Wolf tanzt")));
     }
 
     @Test
     public void shouldReturnStatus404ForFakeId() throws Exception {
-        when(this.movieService.findById(anyLong())).thenThrow(NotFoundException.class);
-        this.mockMvc.perform(get("/api/v1/movies/42")).andExpect(status().isNotFound());
+        when(this.movieService.findByUuid(any())).thenThrow(NotFoundException.class);
+        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")).andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnStatus200AndUpdateMovie() throws Exception {
         when(this.movieService.update(this.movieDtos.getFirst())).thenReturn(this.movieDtos.getFirst());
 
-        this.mockMvc.perform(put("/api/v1/movies/0")
+        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(this.movieDtoJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(0)))
+                .andExpect(jsonPath("$.uuid", is("aa7acd67-4052-421d-a63f-90440c683e6d")))
                 .andExpect(jsonPath("$.title.deu", is("Der mit dem Wolf tanzt")));
     }
 
@@ -146,7 +147,7 @@ public class MovieRestControllerTest {
     public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidLang() throws Exception {
 
         String movieDtoJson = """
-                {   "id":0,
+                {   "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                     "title":
                         {
                             "en":"Dances with Wolves",
@@ -168,7 +169,7 @@ public class MovieRestControllerTest {
     public void shouldNotUpdateMovieAndReturnStatus400DueToInvalidUrl() throws Exception {
 
         String movieDtoJson = """
-                {   "id":0,
+                {   "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                     "title":
                         {
                             "eng":"Dances with Wolves",
@@ -190,7 +191,7 @@ public class MovieRestControllerTest {
     public void shouldNotUpdateMovieAndReturnStatus400DueToTooLongUrl() throws Exception {
 
         String movieDtoJson = """
-                {   "id":0,
+                {   "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                     "title":
                         {
                             "eng":"Dances with Wolves",
@@ -211,7 +212,7 @@ public class MovieRestControllerTest {
     @Test
     public void shouldReturnStatus404ForFakeIdUpdate() throws Exception {
         when(this.movieService.update(any())).thenThrow(NotFoundException.class);
-        this.mockMvc.perform(put("/api/v1/movies/0")
+        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -306,17 +307,17 @@ public class MovieRestControllerTest {
     @Test
     public void shouldDeleteMovie() throws Exception {
         MovieService movieServiceMock = mock(MovieService.class);
-        doNothing().when(movieServiceMock).deleteById(anyLong());
+        doNothing().when(movieServiceMock).deleteByUuid(any());
 
-        this.mockMvc.perform(delete("/api/v1/movies/0"))
+        this.mockMvc.perform(delete("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void shouldReturnStatus404ForFakeIdDelete() throws Exception {
-        when(this.movieService.findById(anyLong())).thenThrow(NotFoundException.class);
+        when(this.movieService.findByUuid(any())).thenThrow(NotFoundException.class);
 
-        this.mockMvc.perform(delete("/api/v1/movies/0"))
+        this.mockMvc.perform(delete("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d"))
                 .andExpect(status().isNoContent());
     }
 }

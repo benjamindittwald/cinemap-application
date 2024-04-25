@@ -25,35 +25,28 @@ import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "movies")
 public class Movie {
+
     public Movie() {
     }
 
-    // Todo: Remove after migration
-    public Movie(Long id, Map<String, String> title, String imdbWebsiteUrl) {
-        this.id = id;
-        this.title = title;
-        this.imdbWebsiteUrl = imdbWebsiteUrl;
-    }
-
-    public Movie(Long id, Long version, Map<String, String> title, String imdbWebsiteUrl) {
-        this.id = id;
-        this.version = version;
-        this.title = title;
-        this.imdbWebsiteUrl = imdbWebsiteUrl;
-    }
-
-    public Movie(Map<String, String> title, String imdbWebsiteUrl) {
+    public Movie(UUID uuid, Map<String, String> title, String imdbWebsiteUrl) {
+        this.uuid = uuid;
         this.title = title;
         this.imdbWebsiteUrl = imdbWebsiteUrl;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(unique = true)
+    private UUID uuid;
 
     @Version
     private Long version;
@@ -94,6 +87,14 @@ public class Movie {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Long getId() {

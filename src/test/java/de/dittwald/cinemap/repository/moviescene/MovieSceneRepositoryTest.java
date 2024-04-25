@@ -26,16 +26,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
 @DataJpaTest(includeFilters = @ComponentScan.Filter(
@@ -59,21 +58,23 @@ class MovieSceneRepositoryTest {
     void setUp() {
         List<MovieScene> moviesScenes;
 
-        Movie wolve = new Movie(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
+        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
                 ".imdb" +
                 ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        Movie nobody = new Movie(Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
+        Movie nobody = new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
                 ".com/title/tt0070215/?ref_=ext_shr_lnk");
 
         moviesScenes = new ArrayList<>();
-        moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf " +
+                        "tanzt Szene 1",
                 "eng",
-                "Dances with Wolves scene 1"), wolve));
-        moviesScenes.add(new MovieScene(13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 2",
+                "Dances with Wolves scene 1"), wolf));
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf " +
+                        "tanzt Szene 2",
                 "eng",
-                "Dances with Wolves scene 2"), wolve));
+                "Dances with Wolves scene 2"), wolf));
 
-        this.movieRepository.save(wolve);
+        this.movieRepository.save(wolf);
         this.movieRepository.save(nobody);
         this.movieSceneRepository.saveAll(moviesScenes);
     }
@@ -101,7 +102,8 @@ class MovieSceneRepositoryTest {
     @Test
     public void shouldPersistMovieScene() {
         Movie movie = this.movieRepository.findAll().getFirst();
-        MovieScene movieScene = new MovieScene(13434954L, 52534008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 3",
+        MovieScene movieScene = new MovieScene(UUID.randomUUID(), 13434954L, 52534008L, Map.of("deu", "Der mit dem " +
+                        "Wolf tanzt Szene 3",
                 "eng",
                 "Dances with Wolves scene 3"), movie);
 
@@ -127,5 +129,40 @@ class MovieSceneRepositoryTest {
         assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
         this.movieSceneRepository.deleteById(this.movieSceneRepository.findAll().getFirst().getId());
         assertThat(this.movieSceneRepository.count()).isEqualTo(1L);
+    }
+
+    @Test
+    public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() {
+        UUID uuid = UUID.randomUUID();
+
+        Movie wolf = this.movieRepository.findAll().getFirst();
+
+        MovieScene movieScene_1 = new MovieScene(uuid, 13404954L, 52520008L, Map.of("deu", "Der mit dem " +
+                        "Wolf tanzt Szene 1",
+                "eng",
+                "Dances with Wolves scene 1"), wolf);
+        MovieScene movieScene_2 = new MovieScene(uuid, 13404954L, 52520008L, Map.of("deu", "Der mit dem " +
+                        "Wolf tanzt Szene 2",
+                "eng",
+                "Dances with Wolves scene 2"), wolf);
+
+        this.movieSceneRepository.save(movieScene_1);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            this.movieSceneRepository.save(movieScene_2);
+        });
+    }
+
+    @Test
+    public void shouldFindMovieSceneByUuid() {
+        MovieScene movieScene = this.movieSceneRepository.findAll().getFirst();
+        assertThat(this.movieSceneRepository.findByUuid(movieScene.getUuid()).get()).isEqualTo(movieScene);
+    }
+
+    @Test
+    public void shouldDeleteMovieSceneByUuid() {
+        MovieScene movieScene = this.movieSceneRepository.findAll().getFirst();
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2);
+        this.movieSceneRepository.deleteByUuid(movieScene.getUuid());
+        assertThat(this.movieSceneRepository.count()).isEqualTo(1);
     }
 }

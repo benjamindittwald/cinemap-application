@@ -19,5 +19,12 @@ package de.dittwald.cinemap.repository.movie;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
-public interface MovieRepository extends ListCrudRepository<Movie, Long> {}
+public interface MovieRepository extends ListCrudRepository<Movie, Long> {
+
+    Optional<Movie> findByUuid(UUID uuid);
+    void deleteByUuid(UUID uuid);
+}

@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.moviescene;
 import de.dittwald.cinemap.repository.movie.MovieDto;
 
 import java.util.Map;
+import java.util.UUID;
 
-public record MovieSceneDto(Long id, Long lon, Long lat, Map<String, String> description, MovieDto movie) {
+public record MovieSceneDto(UUID uuid, Long lon, Long lat, Map<String, String> description, MovieDto movie) {
 }

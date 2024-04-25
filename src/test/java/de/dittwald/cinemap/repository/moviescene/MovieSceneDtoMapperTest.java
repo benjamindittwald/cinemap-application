@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,37 +40,37 @@ class MovieSceneDtoMapperTest {
 
     @Test
     public void shouldMapMovieSceneToMovieSceneDto() {
-        Movie wolve = new Movie(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
+        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
                 ".imdb" +
                 ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        MovieScene movieSceneFromWolve = new MovieScene( 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
+        MovieScene movieSceneFromWolf = new MovieScene( UUID.randomUUID(),13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
                 "eng",
-                "Dances with Wolves scene 1"), wolve);
+                "Dances with Wolves scene 1"), wolf);
 
-        MovieSceneDto movieSceneDto = this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieSceneFromWolve);
+        MovieSceneDto movieSceneDto = this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieSceneFromWolf);
 
-        assertEquals(movieSceneDto.id(), movieSceneFromWolve.getId());
-        assertEquals(movieSceneDto.description(), movieSceneFromWolve.getDescription());
-        assertEquals(movieSceneDto.lat(), movieSceneFromWolve.getLat());
-        assertEquals(movieSceneDto.lon(), movieSceneFromWolve.getLon());
-        assertEquals(movieSceneDto.movie().imdbWebsiteUrl(), movieSceneFromWolve.getMovie().getImdbWebsiteUrl());
+        assertEquals(movieSceneDto.uuid(), movieSceneFromWolf.getUuid());
+        assertEquals(movieSceneDto.description(), movieSceneFromWolf.getDescription());
+        assertEquals(movieSceneDto.lat(), movieSceneFromWolf.getLat());
+        assertEquals(movieSceneDto.lon(), movieSceneFromWolf.getLon());
+        assertEquals(movieSceneDto.movie().imdbWebsiteUrl(), movieSceneFromWolf.getMovie().getImdbWebsiteUrl());
     }
 
     @Test
     public void shouldMapMovieSceneDtoToMovieScene() {
-        MovieDto wolveDto = new MovieDto(null,Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
+        MovieDto wolfDto = new MovieDto(null,Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
                 ".imdb" +
                 ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        MovieSceneDto movieSceneDtoFromWolve = new MovieSceneDto(null, 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
+        MovieSceneDto movieSceneDtoFromWolf = new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
                 "eng",
-                "Dances with Wolves scene 1"), wolveDto);
+                "Dances with Wolves scene 1"), wolfDto);
 
-        MovieScene movieScene = this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDtoFromWolve);
+        MovieScene movieScene = this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDtoFromWolf);
 
-        assertEquals(movieScene.getId(), movieSceneDtoFromWolve.id());
-        assertEquals(movieScene.getDescription(), movieSceneDtoFromWolve.description());
-        assertEquals(movieScene.getLat(), movieSceneDtoFromWolve.lat());
-        assertEquals(movieScene.getLon(), movieSceneDtoFromWolve.lon());
-        assertEquals(movieScene.getMovie().getImdbWebsiteUrl(), movieSceneDtoFromWolve.movie().imdbWebsiteUrl());
+        assertEquals(movieScene.getUuid(), movieSceneDtoFromWolf.uuid());
+        assertEquals(movieScene.getDescription(), movieSceneDtoFromWolf.description());
+        assertEquals(movieScene.getLat(), movieSceneDtoFromWolf.lat());
+        assertEquals(movieScene.getLon(), movieSceneDtoFromWolf.lon());
+        assertEquals(movieScene.getMovie().getImdbWebsiteUrl(), movieSceneDtoFromWolf.movie().imdbWebsiteUrl());
     }
 }

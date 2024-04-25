@@ -22,10 +22,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
+import java.util.UUID;
 
 public record MovieDto (
 
-        Long id,
+        UUID uuid,
 
         @NotNull
         Map<@Iso639Constraint String, String> title,

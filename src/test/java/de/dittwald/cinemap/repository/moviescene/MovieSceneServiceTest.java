@@ -21,7 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@WebMvcTest(MovieSceneService.class)
+@WebMvcTest({MovieSceneService.class, MovieSceneDtoMapper.class})
 @AutoConfigureMockMvc
 class MovieSceneServiceTest {
 

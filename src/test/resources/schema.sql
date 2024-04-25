@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-create sequence movie_scenes_seq
-    increment by 50;
-
-create sequence movies_seq
-    increment by 50;
-
 create table movies
 (
-    id               bigint not null
+    id               bigserial
         primary key,
     version          bigint,
+    uuid             uuid not null
+        unique,
     imdb_website_url varchar(255)
 );
 
 create table movie_scenes
 (
-    id       bigint not null
+    id       bigserial
         primary key,
     lat      bigint not null,
     lon      bigint not null,
     movie_id bigint not null
         constraint fks0o0tnmdgg48w6ufup3l3pvt4
             references movies,
-    version  bigint
+    version  bigint,
+    uuid     uuid   not null
+        unique
 );
 
 create table description_locale_mapping

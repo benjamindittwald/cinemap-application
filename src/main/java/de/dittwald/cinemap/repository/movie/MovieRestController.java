@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/movies")
@@ -44,19 +45,19 @@ public class MovieRestController {
     }
 
     @GetMapping(
-            value = "{id}",
+            value = "{uuid}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a movie", description = "Gets a movie by its id. Responses with status code 404 if the movie was not found.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the movie"),
             @ApiResponse(responseCode = "404", description = "Movie not found")
     })
-    public MovieDto findById(@PathVariable("id") Long id) throws NotFoundException {
-        return this.movieService.findById(id);
+    public MovieDto findById(@PathVariable("uuid") UUID uuid) throws NotFoundException {
+        return this.movieService.findByUuid(uuid);
     }
 
     @PutMapping(
-            value = "{id}",
+            value = "{uuid}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update movie", description = "Updates the movie with the given id. Responses with status code 404 if the movie was not found.")
@@ -65,7 +66,7 @@ public class MovieRestController {
             @ApiResponse(responseCode = "404", description = "Movie not found"),
             @ApiResponse(responseCode = "400", description = "Invalid movie given")
     })
-    public MovieDto updateMovie(@Valid @RequestBody MovieDto movieDto, @PathVariable("id") Long id) throws NotFoundException {
+    public MovieDto updateMovie(@Valid @RequestBody MovieDto movieDto, @PathVariable("uuid") UUID uuid) throws NotFoundException {
         return this.movieService.update(movieDto);
     }
 
@@ -82,14 +83,14 @@ public class MovieRestController {
         return this.movieService.save(movieDto);
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete movie", description = "Deletes a movie with the given id. Responses with status code 404 if the movie cannot be found.")
+    @Operation(summary = "Delete movie", description = "Deletes a movie with the given uuid. Responses with status code 404 if the movie cannot be found.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Movie was deleted"),
             @ApiResponse(responseCode = "404", description = "Movie not found")
     })
-    public void deleteMovie(@PathVariable("id") Long id) throws NotFoundException {
-        this.movieService.deleteById(id);
+    public void deleteMovie(@PathVariable("uuid") UUID uuid) throws NotFoundException {
+        this.movieService.deleteByUuid(uuid);
     }
 }

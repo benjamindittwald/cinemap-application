@@ -28,10 +28,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,9 +52,9 @@ class MovieRepositoryTest {
     @BeforeEach
     public void setUp() {
         movies = new ArrayList<>();
-        movies.add(new Movie(Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
                 ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movies.add(new Movie(Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
                 ".com/title/tt0070215/?ref_=ext_shr_lnk"));
         this.movieRepository.saveAll(movies);
     }
@@ -85,7 +82,7 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldPersistMovie() {
-        Movie movie = new Movie(Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity Is Still My Name"),
+        Movie movie = new Movie(UUID.randomUUID(), Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity Is Still My Name"),
                 "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
         this.movieRepository.save(movie);
         List<Movie> movies = this.movieRepository.findAll();
@@ -110,5 +107,19 @@ class MovieRepositoryTest {
         movie.setTitle(newTitle);
         this.movieRepository.save(movie);
         assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getTitle().get("fra")).isEqualTo("Danse avec les loups");
+    }
+
+    @Test
+    public void shouldFindMoviebyUuid() {
+        Movie movie = this.movieRepository.findAll().getFirst();
+        assertThat(this.movieRepository.findByUuid(movie.getUuid()).get()).isEqualTo(movie);
+    }
+
+    @Test
+    public void shouldDeleteByUuid() {
+        Movie movie = this.movieRepository.findAll().getFirst();
+        assertThat(this.movieRepository.count()).isEqualTo(2);
+        this.movieRepository.deleteByUuid(movie.getUuid());
+        assertThat(this.movieRepository.count()).isEqualTo(1);
     }
 }
