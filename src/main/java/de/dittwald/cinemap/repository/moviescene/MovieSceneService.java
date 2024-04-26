@@ -16,16 +16,67 @@
 
 package de.dittwald.cinemap.repository.moviescene;
 
+import de.dittwald.cinemap.repository.movie.NotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MovieSceneService {
 
-    final MovieSceneRepository movieSceneRepository;
+    private final MovieSceneRepository movieSceneRepository;
+    private final MovieSceneDtoMapper movieSceneDtoMapper;
 
-    public MovieSceneService(MovieSceneRepository MovieSceneRepository) {
+    public MovieSceneService(MovieSceneRepository MovieSceneRepository, MovieSceneDtoMapper movieSceneDtoMapper) {
         this.movieSceneRepository = MovieSceneRepository;
+        this.movieSceneDtoMapper = movieSceneDtoMapper;
     }
 
+    public MovieSceneDto findByUuid(UUID uuid) throws NotFoundException {
+        Optional<MovieScene> movieScene = movieSceneRepository.findByUuid(uuid);
+        if (movieScene.isPresent()) {
+            return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieScene.get());
+        } else {
+            throw new NotFoundException("Movie scene not found");
+        }
+    }
 
+    public MovieSceneDto update(MovieSceneDto movieSceneDto) throws NotFoundException {
+        if (this.movieSceneRepository.existsByUuid(movieSceneDto.uuid())) {
+            return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(
+                    this.movieSceneRepository.save(this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDto)));
+        } else {
+            throw new NotFoundException("Movie scene not found");
+        }
+    }
+
+    public void deleteByUuid(UUID uuid) throws NotFoundException {
+        if (this.movieSceneRepository.existsByUuid(uuid)) {
+            this.movieSceneRepository.deleteByUuid(uuid);
+        } else {
+            throw new NotFoundException("Movie scene not found");
+        }
+    }
+
+    public MovieSceneDto save(MovieSceneDto movieSceneDto) {
+        if (this.movieSceneRepository.existsByUuid(movieSceneDto.uuid())) {
+            throw new DataIntegrityViolationException("UUID already in use");
+        } else {
+            return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(
+                    this.movieSceneRepository.save(this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDto)));
+        }
+    }
+
+    public List<MovieSceneDto> findAll() {
+        List<MovieSceneDto> movieSceneDtos = new ArrayList<>();
+        this.movieSceneRepository.findAll().forEach(movie -> {
+            movieSceneDtos.add(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movie));
+        });
+
+        return movieSceneDtos;
+    }
 }

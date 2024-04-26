@@ -21,5 +21,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface MovieSceneDtoMapper {
     MovieSceneDto movieSceneToMovieSceneDto(MovieScene movieScene);
+
     MovieScene movieSceneDtoToMovieScene(MovieSceneDto movieSceneDto);
 }

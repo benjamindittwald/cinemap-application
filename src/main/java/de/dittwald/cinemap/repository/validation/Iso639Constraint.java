@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = Iso639Validator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Iso639Constraint {
     String message() default "Invalid URI";

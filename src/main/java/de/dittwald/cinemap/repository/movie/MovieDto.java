@@ -24,14 +24,13 @@ import jakarta.validation.constraints.Size;
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieDto (
+public record MovieDto(
 
         UUID uuid,
 
-        @NotNull
-        Map<@Iso639Constraint String, String> title,
+        @NotNull Map<@Iso639Constraint String, String> title,
 
-        @UrlConstraint(message = "URL is not valid")
-        @Size(min = 1, max = 100, message = "URL is not in scope on min=1 or max=100 characters")
-        String imdbWebsiteUrl) {
+        @UrlConstraint(message = "URL is not valid") @Size(min = 1,
+                max = 100,
+                message = "URL is not in scope on min=1 or max=100 characters") String imdbWebsiteUrl) {
 }

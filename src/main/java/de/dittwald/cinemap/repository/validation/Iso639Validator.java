@@ -34,7 +34,8 @@ public class Iso639Validator implements ConstraintValidator<Iso639Constraint, St
     @Override
     public boolean isValid(String langcode, ConstraintValidatorContext constraintValidatorContext) {
         boolean valid = false;
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/iso-639-3_Name_Index.csv"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader("src/main/resources/iso-639-3_Name_Index.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split("\\t");

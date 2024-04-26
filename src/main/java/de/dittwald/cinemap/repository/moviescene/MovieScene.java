@@ -59,8 +59,8 @@ public class MovieScene {
     private Long version;
 
     @ElementCollection
-    @CollectionTable(name = "description_locale_mapping", joinColumns = {@JoinColumn(name = "locale_id",
-            referencedColumnName = "id")})
+    @CollectionTable(name = "description_locale_mapping",
+            joinColumns = {@JoinColumn(name = "locale_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "description_locale")
     @Column(name = "description")
     @NotNull
@@ -78,8 +78,10 @@ public class MovieScene {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         MovieScene that = (MovieScene) o;
         return Objects.equals(id, that.id);
     }

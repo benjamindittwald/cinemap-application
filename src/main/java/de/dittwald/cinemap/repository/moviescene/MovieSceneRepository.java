@@ -26,5 +26,8 @@ import java.util.UUID;
 public interface MovieSceneRepository extends ListCrudRepository<MovieScene, Long> {
 
     Optional<MovieScene> findByUuid(UUID uuid);
+
     void deleteByUuid(UUID uuid);
+
+    boolean existsByUuid(UUID uuid);
 }

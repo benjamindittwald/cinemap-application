@@ -57,10 +57,12 @@ public class MovieRestControllerTest {
     @BeforeEach
     void setUp() {
         movieDtos = new ArrayList<>();
-        movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+        movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"),
+                Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
                 "https" + "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"), "https" +
-                "://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+        movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"),
+                Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"),
+                "https" + "://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
 
         this.movieDtoJson = """
                 {
@@ -113,31 +115,37 @@ public class MovieRestControllerTest {
 
         when(this.movieService.findAll()).thenReturn(movieDtos);
 
-        this.mockMvc.perform(get("/api/v1/movies")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2))).andExpect(jsonPath("$[0].title.deu", is("Der mit dem Wolf tanzt"))).andExpect(jsonPath("$[1].title.deu", is("Mein Name ist Nobody")));
+        this.mockMvc.perform(get("/api/v1/movies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title.deu", is("Der mit dem Wolf tanzt")))
+                .andExpect(jsonPath("$[1].title.deu", is("Mein Name ist Nobody")));
     }
 
     @Test
     public void shouldReturnMovieByUuid() throws Exception {
         when(this.movieService.findByUuid(any())).thenReturn(movieDtos.getFirst());
-        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")).andExpect(status().isOk()).andExpect(jsonPath("$.title.deu",
-                is("Der mit dem Wolf tanzt")));
+        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title.deu", is("Der mit dem Wolf tanzt")));
     }
 
     @Test
     public void shouldReturnStatus404ForFakeId() throws Exception {
         when(this.movieService.findByUuid(any())).thenThrow(NotFoundException.class);
-        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")).andExpect(status().isNotFound());
+        this.mockMvc.perform(get("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnStatus200AndUpdateMovie() throws Exception {
         when(this.movieService.update(this.movieDtos.getFirst())).thenReturn(this.movieDtos.getFirst());
 
-        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(this.movieDtoJson))
+        this.mockMvc.perform(
+                        put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .characterEncoding("UTF-8")
+                                .content(this.movieDtoJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid", is("aa7acd67-4052-421d-a63f-90440c683e6d")))
                 .andExpect(jsonPath("$.title.deu", is("Der mit dem Wolf tanzt")));
@@ -157,12 +165,10 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(movieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -179,12 +185,10 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(movieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -201,23 +205,20 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(movieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldReturnStatus404ForFakeIdUpdate() throws Exception {
         when(this.movieService.update(any())).thenThrow(NotFoundException.class);
-        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d")
-                        .contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(
+                put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(this.movieDtoJson))
-                .andExpect(status().isNotFound());
+                        .content(this.movieDtoJson)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -236,12 +237,10 @@ public class MovieRestControllerTest {
 
         when(this.movieService.save(any())).thenReturn(this.movieDtos.getFirst());
 
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(movieDtoJson))
-                .andExpect(status().isCreated());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isCreated());
     }
 
     @Test
@@ -256,12 +255,10 @@ public class MovieRestControllerTest {
                     "imdbWebsiteUrl":"abcd//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
                 }
                 """;
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(invalidMovieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(invalidMovieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -276,12 +273,10 @@ public class MovieRestControllerTest {
                     "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk/3aspKWmnBr1ZYAUVSbXtaS0jWBkDC41FKtnm3V3mYyD7dnudWKj13pCF9SCTuwTzPsntHEXdJKswp5QToEdkFbo3NuKC2Q9EjK12"
                 }
                 """;
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(invalidMovieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(invalidMovieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -296,12 +291,10 @@ public class MovieRestControllerTest {
                     "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
                 }
                 """;
-        this.mockMvc.perform(post("/api/v1/movies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(invalidMovieDtoJson))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(invalidMovieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test

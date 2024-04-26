@@ -52,11 +52,8 @@ public class Movie {
     private Long version;
 
     @ElementCollection
-    @CollectionTable(
-            name = "title_locale_mapping",
-            joinColumns = {@JoinColumn(
-                    name = "locale_id", referencedColumnName = "id")}
-    )
+    @CollectionTable(name = "title_locale_mapping",
+            joinColumns = {@JoinColumn(name = "locale_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "title_locale")
     @Column(name = "title")
     @NotNull
@@ -68,18 +65,16 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", version=" + version +
-                ", title=" + title +
-                ", imdbWebsiteUrl='" + imdbWebsiteUrl + '\'' +
-                '}';
+        return "Movie{" + "id=" + id + ", version=" + version + ", title=" + title + ", imdbWebsiteUrl='" +
+                imdbWebsiteUrl + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Movie movie = (Movie) o;
         return Objects.equals(id, movie.id);
     }

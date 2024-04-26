@@ -21,22 +21,12 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 
-@OpenAPIDefinition(
-        info = @Info(
-                contact = @Contact(
-                        name = "Benjamin Dittwald",
-                        email = "dittwald.coding@posteo.net"
-                ),
-                description = "The cinemap repository API specification. Please note that the title property of a " +
-                        "movie is represented by a Map<String, String>. The map key is expecting an ISO 639 language " +
-                        "code and the value the title in the named language.",
-                title = "Cinemap repository API specification",
-                version = "0.1.0",
-                license = @License(
-                        name = "Apache 2.0",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0"
-                )
-        )
-)
+@OpenAPIDefinition(info = @Info(contact = @Contact(name = "Benjamin Dittwald", email = "dittwald.coding@posteo.net"),
+        description = "The cinemap repository API specification. Please note that the title property of a " +
+                "movie is represented by a Map<String, String>. The map key is expecting an ISO 639 language " +
+                "code and the value the title in the named language.",
+        title = "Cinemap repository API specification",
+        version = "0.1.0",
+        license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0")))
 public class RedocConfig {
 }

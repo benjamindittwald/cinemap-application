@@ -28,7 +28,7 @@ public class MovieService {
 
     private final MovieDtoMapper movieDtoMapper;
 
-    final MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
     public MovieService(MovieRepository movieRepository, MovieDtoMapper movieDtoMapper) {
         this.movieRepository = movieRepository;
@@ -38,29 +38,26 @@ public class MovieService {
     public List<MovieDto> findAll() {
         List<MovieDto> movieDtos = new ArrayList<>();
 
-        this.movieRepository.findAll().forEach(movie -> {
-            movieDtos.add(this.movieDtoMapper.movieToMovieDto(movie));
-        });
+        this.movieRepository.findAll().forEach(movie -> movieDtos.add(this.movieDtoMapper.movieToMovieDto(movie)));
 
         return movieDtos;
     }
 
     public MovieDto findByUuid(UUID uuid) throws NotFoundException {
-        return movieDtoMapper.movieToMovieDto(this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException(
-                "Movie not found")));
+        return movieDtoMapper.movieToMovieDto(
+                this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found")));
     }
 
     public MovieDto save(MovieDto movieDto) throws DataIntegrityViolationException {
-
-        if (this.movieRepository.findByUuid(movieDto.uuid()).isPresent()) {
+        if (this.movieRepository.existsByUuid(movieDto.uuid())) {
             throw new DataIntegrityViolationException("UUID already in use");
+        } else {
+            return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
         }
-
-        return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
     }
 
     public MovieDto update(MovieDto movieDto) throws NotFoundException {
-        if (this.movieRepository.findByUuid(movieDto.uuid()).isPresent()) {
+        if (this.movieRepository.existsByUuid(movieDto.uuid())) {
             // Fixme: Given Movie.id is probably lost here
             return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
         } else {
@@ -69,7 +66,7 @@ public class MovieService {
     }
 
     public void deleteByUuid(UUID uuid) throws NotFoundException {
-        if (this.movieRepository.findByUuid(uuid).isPresent()) {
+        if (this.movieRepository.existsByUuid(uuid)) {
             this.movieRepository.deleteByUuid(uuid);
         } else {
             throw new NotFoundException("Movie not found");

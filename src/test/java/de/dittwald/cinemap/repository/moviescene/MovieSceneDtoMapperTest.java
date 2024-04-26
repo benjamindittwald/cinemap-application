@@ -40,12 +40,10 @@ class MovieSceneDtoMapperTest {
 
     @Test
     public void shouldMapMovieSceneToMovieSceneDto() {
-        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
-                ".imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        MovieScene movieSceneFromWolf = new MovieScene( UUID.randomUUID(),13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
-                "eng",
-                "Dances with Wolves scene 1"), wolf);
+        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+        MovieScene movieSceneFromWolf = new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf);
 
         MovieSceneDto movieSceneDto = this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieSceneFromWolf);
 
@@ -58,12 +56,10 @@ class MovieSceneDtoMapperTest {
 
     @Test
     public void shouldMapMovieSceneDtoToMovieScene() {
-        MovieDto wolfDto = new MovieDto(null,Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
-                ".imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        MovieSceneDto movieSceneDtoFromWolf = new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf tanzt Szene 1",
-                "eng",
-                "Dances with Wolves scene 1"), wolfDto);
+        MovieDto wolfDto = new MovieDto(null, Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+        MovieSceneDto movieSceneDtoFromWolf = new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolfDto);
 
         MovieScene movieScene = this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDtoFromWolf);
 

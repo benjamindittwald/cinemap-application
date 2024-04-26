@@ -39,28 +39,35 @@ class MovieDtoMapperTest {
 
     @BeforeEach
     void setUp() {
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
-                ".com/title/tt0070215/?ref_=ext_shr_lnk"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                "https://www.imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www.imdb" + ".com/title/tt0070215/?ref_=ext_shr_lnk"));
 
-        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https" +
-                "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www" +
-                ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+        movieDtos.add(
+                new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                        "https" + "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
+        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www" + ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
     }
 
     @Test
     void shouldConvertMovieToMovieDto() {
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(movies.getFirst().getImdbWebsiteUrl());
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getLast()).imdbWebsiteUrl()).isEqualTo(movies.getLast().getImdbWebsiteUrl());
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).title().get(0)).isEqualTo(movies.getFirst().getTitle().get(0));
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).imdbWebsiteUrl()).isEqualTo(
+                movies.getFirst().getImdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getLast()).imdbWebsiteUrl()).isEqualTo(
+                movies.getLast().getImdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).title().get(0)).isEqualTo(
+                movies.getFirst().getTitle().get(0));
     }
 
     @Test
     void shouldConvertDtoMovieToMovie() {
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getFirst().imdbWebsiteUrl());
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(movieDtos.getLast().imdbWebsiteUrl());
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(movieDtos.getFirst().title().get(0));
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getImdbWebsiteUrl()).isEqualTo(
+                movieDtos.getFirst().imdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getLast()).getImdbWebsiteUrl()).isEqualTo(
+                movieDtos.getLast().imdbWebsiteUrl());
+        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(
+                movieDtos.getFirst().title().get(0));
     }
 }

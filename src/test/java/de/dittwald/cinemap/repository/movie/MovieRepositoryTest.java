@@ -34,15 +34,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
-@DataJpaTest(includeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE, classes = {MovieRepository.class}))
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+        classes = {MovieRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MovieRepositoryTest {
 
     @Container
     @ServiceConnection
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine")
-            .withInitScript("schema.sql");
+    static final PostgreSQLContainer<?> postgres =
+            new PostgreSQLContainer<>("postgres:16.2-alpine").withInitScript("schema.sql");
 
     @Autowired
     private MovieRepository movieRepository;
@@ -52,10 +52,10 @@ class MovieRepositoryTest {
     @BeforeEach
     public void setUp() {
         movies = new ArrayList<>();
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www.imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
-                ".com/title/tt0070215/?ref_=ext_shr_lnk"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                "https://www.imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www.imdb" + ".com/title/tt0070215/?ref_=ext_shr_lnk"));
         this.movieRepository.saveAll(movies);
     }
 
@@ -77,12 +77,14 @@ class MovieRepositoryTest {
     @Test
     public void shouldFindMovieById() {
         List<Movie> movies = this.movieRepository.findAll();
-        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getId()).isEqualTo(movies.getFirst().getId());
+        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getId()).isEqualTo(
+                movies.getFirst().getId());
     }
 
     @Test
     public void shouldPersistMovie() {
-        Movie movie = new Movie(UUID.randomUUID(), Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity Is Still My Name"),
+        Movie movie = new Movie(UUID.randomUUID(),
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity Is Still My Name"),
                 "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
         this.movieRepository.save(movie);
         List<Movie> movies = this.movieRepository.findAll();
@@ -106,7 +108,8 @@ class MovieRepositoryTest {
         newTitle.put("fra", "Danse avec les loups");
         movie.setTitle(newTitle);
         this.movieRepository.save(movie);
-        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getTitle().get("fra")).isEqualTo("Danse avec les loups");
+        assertThat(this.movieRepository.findById(movies.getFirst().getId()).get().getTitle().get("fra")).isEqualTo(
+                "Danse avec les loups");
     }
 
     @Test
@@ -121,5 +124,21 @@ class MovieRepositoryTest {
         assertThat(this.movieRepository.count()).isEqualTo(2);
         this.movieRepository.deleteByUuid(movie.getUuid());
         assertThat(this.movieRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldFailDeleteByUuidDueToNotFound() {
+        this.movieRepository.deleteByUuid(UUID.randomUUID());
+    }
+
+    @Test
+    public void shouldExist() {
+        assertThat(this.movieRepository.existsByUuid(this.movieRepository.findAll().getFirst().getUuid())).isEqualTo(
+                true);
+    }
+
+    @Test
+    public void shouldNotExist() {
+        assertThat(this.movieRepository.existsByUuid(UUID.randomUUID())).isEqualTo(false);
     }
 }

@@ -37,15 +37,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
-@DataJpaTest(includeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE, classes = {MovieSceneRepository.class, MovieRepository.class}))
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+        classes = {MovieSceneRepository.class, MovieRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MovieSceneRepositoryTest {
 
     @Container
     @ServiceConnection
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine")
-            .withInitScript("schema.sql");
+    static final PostgreSQLContainer<?> postgres =
+            new PostgreSQLContainer<>("postgres:16.2-alpine").withInitScript("schema.sql");
 
     @Autowired
     private MovieSceneRepository movieSceneRepository;
@@ -58,21 +58,16 @@ class MovieSceneRepositoryTest {
     void setUp() {
         List<MovieScene> moviesScenes;
 
-        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), "https://www" +
-                ".imdb" +
-                ".com/title/tt0099348/?ref_=ext_shr_lnk");
-        Movie nobody = new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www.imdb" +
-                ".com/title/tt0070215/?ref_=ext_shr_lnk");
+        Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+        Movie nobody = new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www.imdb" + ".com/title/tt0070215/?ref_=ext_shr_lnk");
 
         moviesScenes = new ArrayList<>();
-        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf " +
-                        "tanzt Szene 1",
-                "eng",
-                "Dances with Wolves scene 1"), wolf));
-        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L, Map.of("deu", "Der mit dem Wolf " +
-                        "tanzt Szene 2",
-                "eng",
-                "Dances with Wolves scene 2"), wolf));
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf));
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 2", "eng", "Dances with Wolves scene 2"), wolf));
 
         this.movieRepository.save(wolf);
         this.movieRepository.save(nobody);
@@ -96,16 +91,15 @@ class MovieSceneRepositoryTest {
     @Test
     public void shouldFindMovieSceneById() {
         List<MovieScene> movieScenes = this.movieSceneRepository.findAll();
-        assertThat(this.movieSceneRepository.findById(movieScenes.getFirst().getId()).get().getId()).isEqualTo(movieScenes.getFirst().getId());
+        assertThat(this.movieSceneRepository.findById(movieScenes.getFirst().getId()).get().getId()).isEqualTo(
+                movieScenes.getFirst().getId());
     }
 
     @Test
     public void shouldPersistMovieScene() {
         Movie movie = this.movieRepository.findAll().getFirst();
-        MovieScene movieScene = new MovieScene(UUID.randomUUID(), 13434954L, 52534008L, Map.of("deu", "Der mit dem " +
-                        "Wolf tanzt Szene 3",
-                "eng",
-                "Dances with Wolves scene 3"), movie);
+        MovieScene movieScene = new MovieScene(UUID.randomUUID(), 13434954L, 52534008L,
+                Map.of("deu", "Der mit dem " + "Wolf tanzt Szene 3", "eng", "Dances with Wolves scene 3"), movie);
 
         assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
         this.movieSceneRepository.save(movieScene);
@@ -120,8 +114,8 @@ class MovieSceneRepositoryTest {
         movieScene.setDescription(new HashMap<>(Map.of("eng", "A new description")));
         assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
         this.movieSceneRepository.save(movieScene);
-        assertThat(this.movieSceneRepository.findAll().getLast().getDescription().get("eng")).isEqualTo("A new " +
-                "description");
+        assertThat(this.movieSceneRepository.findAll().getLast().getDescription().get("eng")).isEqualTo(
+                "A new " + "description");
     }
 
     @Test
@@ -137,14 +131,10 @@ class MovieSceneRepositoryTest {
 
         Movie wolf = this.movieRepository.findAll().getFirst();
 
-        MovieScene movieScene_1 = new MovieScene(uuid, 13404954L, 52520008L, Map.of("deu", "Der mit dem " +
-                        "Wolf tanzt Szene 1",
-                "eng",
-                "Dances with Wolves scene 1"), wolf);
-        MovieScene movieScene_2 = new MovieScene(uuid, 13404954L, 52520008L, Map.of("deu", "Der mit dem " +
-                        "Wolf tanzt Szene 2",
-                "eng",
-                "Dances with Wolves scene 2"), wolf);
+        MovieScene movieScene_1 = new MovieScene(uuid, 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem " + "Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf);
+        MovieScene movieScene_2 = new MovieScene(uuid, 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem " + "Wolf tanzt Szene 2", "eng", "Dances with Wolves scene 2"), wolf);
 
         this.movieSceneRepository.save(movieScene_1);
         assertThrows(DataIntegrityViolationException.class, () -> {
@@ -164,5 +154,16 @@ class MovieSceneRepositoryTest {
         assertThat(this.movieSceneRepository.count()).isEqualTo(2);
         this.movieSceneRepository.deleteByUuid(movieScene.getUuid());
         assertThat(this.movieSceneRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldExist() {
+        assertThat(this.movieSceneRepository.existsByUuid(
+                this.movieSceneRepository.findAll().getFirst().getUuid())).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldNotExist() {
+        assertThat(this.movieSceneRepository.existsByUuid(UUID.randomUUID())).isEqualTo(false);
     }
 }

@@ -27,7 +27,8 @@ public class UrlValidator implements ConstraintValidator<UrlConstraint, String> 
 
     @Override
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
-        org.apache.commons.validator.routines.UrlValidator validator = new org.apache.commons.validator.routines.UrlValidator();
+        org.apache.commons.validator.routines.UrlValidator validator =
+                new org.apache.commons.validator.routines.UrlValidator();
         return validator.isValid(url);
     }
 }

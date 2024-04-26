@@ -16,10 +16,23 @@
 
 package de.dittwald.cinemap.repository.moviescene;
 
+import de.dittwald.cinemap.repository.movie.Movie;
+import de.dittwald.cinemap.repository.movie.MovieRepository;
+import de.dittwald.cinemap.repository.movie.NotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @WebMvcTest({MovieSceneService.class, MovieSceneDtoMapper.class})
 @AutoConfigureMockMvc
@@ -31,5 +44,112 @@ class MovieSceneServiceTest {
     @MockBean
     private MovieSceneRepository movieSceneRepository;
 
+    @MockBean
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private MovieSceneDtoMapper movieSceneDtoMapper;
+    ;
+
+    private List<MovieScene> moviesScenes = new ArrayList<>();
+
+    @BeforeEach
+    void setUp() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(
+                new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with " + "Wolves"),
+                        "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www" + ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+
+        moviesScenes = new ArrayList<>();
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 1", "eng", "Dances with Wolves scene 1"),
+                movies.getFirst()));
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 2", "eng", "Dances with Wolves scene 2"),
+                movies.getFirst()));
+    }
+
+    @Test
+    public void shouldSaveMovieScene() {
+        when(this.movieSceneRepository.save(any())).thenReturn(this.moviesScenes.getFirst());
+        assertThat(this.movieSceneService.save(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()))).isEqualTo(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+    }
+
+    @Test
+    public void shouldFailSaveMovieSceneAndShouldThrowException() {
+        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(true);
+
+        Exception exception = assertThrows(DataIntegrityViolationException.class, () -> this.movieSceneService.save(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst())));
+
+        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
+    }
+
+    @Test
+    public void shouldFindMovieSceneByUuid() {
+        when(this.movieSceneRepository.findByUuid(this.moviesScenes.getFirst().getUuid())).thenReturn(
+                Optional.of(this.moviesScenes.getFirst()));
+        assertThat(this.movieSceneRepository.findByUuid(this.moviesScenes.getFirst().getUuid()).get()).isEqualTo(
+                this.moviesScenes.getFirst());
+    }
+
+    @Test
+    public void shouldFailFindMovieSceneByUuidAndShouldThrowException() {
+        when(this.movieSceneRepository.save(any())).thenReturn(Optional.empty());
+
+        Exception exception =
+                assertThrows(NotFoundException.class, () -> this.movieSceneService.findByUuid(UUID.randomUUID()));
+
+        assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
+    }
+
+    @Test
+    public void shouldFindAllMovieScenes() {
+        when(this.movieSceneRepository.findAll()).thenReturn(moviesScenes);
+        assertThat(this.movieSceneService.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldDeleteByUuid() throws NotFoundException {
+        MovieSceneRepository movieSceneRepositoryMock = mock(MovieSceneRepository.class);
+        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(true);
+        doNothing().when(movieSceneRepositoryMock).delete(any());
+        this.movieSceneService.deleteByUuid(this.moviesScenes.getFirst().getUuid());
+        // Todo: Implement proper assertion!
+    }
+
+    @Test
+    public void shouldFailDeleteByUuidAndShouldThrowException() {
+        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(false);
+
+        Exception exception =
+                assertThrows(NotFoundException.class, () -> this.movieSceneService.deleteByUuid(UUID.randomUUID()));
+
+        assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
+    }
+
+    @Test
+    public void shouldUpdateMovieScene() throws NotFoundException {
+        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(true);
+        when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
+
+        assertThat(this.movieSceneService.update(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()))).isEqualTo(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+    }
+
+    @Test
+    public void shouldFailUpdateMovieScene() throws NotFoundException {
+        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(false);
+
+        Exception exception = assertThrows(NotFoundException.class, () -> this.movieSceneService.update(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst())));
+
+        assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
+    }
 
 }

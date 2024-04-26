@@ -49,10 +49,11 @@ public class MovieServiceTest {
     @BeforeEach
     void setUp() {
         movies = new ArrayList<>();
-        this.movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
-        this.movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"), "https://www" +
-                ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+        this.movies.add(
+                new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                        "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+        this.movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
+                "https://www" + ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
     }
 
     @Test
@@ -72,12 +73,15 @@ public class MovieServiceTest {
     @Test
     void shouldSaveMovie() {
         UUID uuid = UUID.randomUUID();
-        MovieDto notYetPersistedMovie = new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
-                "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
-        MovieDto persistedMovieDto = new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
-                "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
-        Movie persistedMovie = new Movie(uuid,  Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
-                "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+        MovieDto notYetPersistedMovie =
+                new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+        MovieDto persistedMovieDto =
+                new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+        Movie persistedMovie =
+                new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
 
         when(this.movieRepository.save(any())).thenReturn(persistedMovie);
 
@@ -87,40 +91,42 @@ public class MovieServiceTest {
     @Test
     public void shouldUpdateMovie() throws NotFoundException {
         UUID uuid = UUID.randomUUID();
-        MovieDto persistedMovieDto = new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
-                "Is Still My Name", "fra", "On continue à l'appeler Trinita"), "https://www.imdb" +
-                ".com/title/tt0068154/?ref_=ext_shr_lnk");
-        Optional<Movie> persistedMovie = Optional.of(new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng"
-                , "Trinity " +
-                        "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
-        Movie persistedMovieUpdated = new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe"
-                , "eng", "Trinity " +
-                        "Is Still My Name", "fra", "On continue à l'appeler Trinita"), "https://www.imdb" +
-                ".com/title/tt0068154/?ref_=ext_shr_lnk");
+        MovieDto persistedMovieDto = new MovieDto(uuid,
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
+                        "On continue à l'appeler Trinita"),
+                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
+        Optional<Movie> persistedMovie = Optional.of(
+                new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
+        Movie persistedMovieUpdated = new Movie(uuid,
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
+                        "On continue à l'appeler Trinita"),
+                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
 
-        when(this.movieRepository.findByUuid(any())).thenReturn(persistedMovie);
+        when(this.movieRepository.existsByUuid(any())).thenReturn(true);
         when(this.movieRepository.save(any())).thenReturn(persistedMovieUpdated);
 
-        assertThat(this.movieService.update(persistedMovieDto)).isEqualTo(this.movieDtoMapper.movieToMovieDto(persistedMovieUpdated));
+        assertThat(this.movieService.update(persistedMovieDto)).isEqualTo(
+                this.movieDtoMapper.movieToMovieDto(persistedMovieUpdated));
     }
 
     @Test
     public void shouldThrowNotFoundException() {
-        MovieDto persistedMovieDto = new MovieDto(UUID.randomUUID(), Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " +
-                "Is Still My Name", "fra", "On continue à l'appeler Trinita"), "https://www.imdb" +
-                ".com/title/tt0068154/?ref_=ext_shr_lnk");
-        when(this.movieRepository.findById(0L)).thenReturn(Optional.empty());
+        MovieDto persistedMovieDto = new MovieDto(UUID.randomUUID(),
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
+                        "On continue à l'appeler Trinita"),
+                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
+        when(this.movieRepository.findById(any())).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(NotFoundException.class,
-                () -> this.movieService.update(persistedMovieDto));
+        Exception exception = assertThrows(NotFoundException.class, () -> this.movieService.update(persistedMovieDto));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
     }
 
     @Test
-    public void shouldDeleteMovie()  {
-        Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(), Map.of("deu", "Der Kleine und der müde Joe", "eng"
-                , "Trinity " +
-                        "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
+    public void shouldDeleteMovie() {
+        Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(),
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
         MovieRepository movieRepositoryMock = mock(MovieRepository.class);
         when(this.movieRepository.findById(0L)).thenReturn(persistedMovie);
         doNothing().when(movieRepositoryMock).deleteById(0L);
@@ -130,33 +136,34 @@ public class MovieServiceTest {
     @Test
     public void shouldThroughExceptionWhenTryToDeleteMovie() {
         when(this.movieRepository.findByUuid(any())).thenReturn(Optional.empty());
-        Exception exception = assertThrows(NotFoundException.class,
-                () -> this.movieService.deleteByUuid(UUID.randomUUID()));
+        Exception exception =
+                assertThrows(NotFoundException.class, () -> this.movieService.deleteByUuid(UUID.randomUUID()));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
     }
 
     @Test
     public void shouldFindMovieById() throws NotFoundException {
-        Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(), Map.of("deu", "Der Kleine und der müde Joe", "eng"
-                , "Trinity " +
-                        "Is Still My Name"), "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
+        Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(),
+                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
+                "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
 
         when(this.movieRepository.findByUuid(any())).thenReturn(persistedMovie);
-        assertThat(this.movieService.findByUuid(UUID.randomUUID())).isEqualTo(this.movieDtoMapper.movieToMovieDto(persistedMovie.get()));
+        assertThat(this.movieService.findByUuid(UUID.randomUUID())).isEqualTo(
+                this.movieDtoMapper.movieToMovieDto(persistedMovie.get()));
     }
 
     @Test
     public void shouldThrowExceptionWhenTryToFindMovieById() {
         when(this.movieRepository.findById(any())).thenReturn(Optional.empty());
-        Exception exception = assertThrows(NotFoundException.class,
-                () -> this.movieService.findByUuid(UUID.randomUUID()));
+        Exception exception =
+                assertThrows(NotFoundException.class, () -> this.movieService.findByUuid(UUID.randomUUID()));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
     }
 
     @Test
-    public void shouldFailSaveAndThrowDataIntegrityViolationException()  {
+    public void shouldFailSaveAndThrowDataIntegrityViolationException() {
 
-        when(this.movieRepository.findByUuid(any())).thenReturn(Optional.of(movies.getFirst()));
+        when(this.movieRepository.existsByUuid(any())).thenReturn(true);
 
         Exception exception = assertThrows(DataIntegrityViolationException.class,
                 () -> this.movieService.save(this.movieDtoMapper.movieToMovieDto(this.movies.getFirst())));
