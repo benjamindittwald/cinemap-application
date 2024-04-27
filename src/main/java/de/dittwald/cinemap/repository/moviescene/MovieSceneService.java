@@ -16,8 +16,9 @@
 
 package de.dittwald.cinemap.repository.moviescene;
 
-import de.dittwald.cinemap.repository.movie.NotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
+import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.movie.MovieRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,10 +31,13 @@ public class MovieSceneService {
 
     private final MovieSceneRepository movieSceneRepository;
     private final MovieSceneDtoMapper movieSceneDtoMapper;
+    private final MovieRepository movieRepository;
 
-    public MovieSceneService(MovieSceneRepository MovieSceneRepository, MovieSceneDtoMapper movieSceneDtoMapper) {
+    public MovieSceneService(MovieSceneRepository MovieSceneRepository, MovieSceneDtoMapper movieSceneDtoMapper,
+                             MovieRepository movieRepository) {
         this.movieSceneRepository = MovieSceneRepository;
         this.movieSceneDtoMapper = movieSceneDtoMapper;
+        this.movieRepository = movieRepository;
     }
 
     public MovieSceneDto findByUuid(UUID uuid) throws NotFoundException {
@@ -62,9 +66,11 @@ public class MovieSceneService {
         }
     }
 
-    public MovieSceneDto save(MovieSceneDto movieSceneDto) {
+    public MovieSceneDto save(MovieSceneDto movieSceneDto) throws NotFoundException, UuidInUseException {
         if (this.movieSceneRepository.existsByUuid(movieSceneDto.uuid())) {
-            throw new DataIntegrityViolationException("UUID already in use");
+            throw new UuidInUseException("UUID already in use");
+        } else if (!this.movieRepository.existsByUuid(movieSceneDto.movie().uuid())) {
+            throw new NotFoundException("Movie not found");
         } else {
             return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(
                     this.movieSceneRepository.save(this.movieSceneDtoMapper.movieSceneDtoToMovieScene(movieSceneDto)));

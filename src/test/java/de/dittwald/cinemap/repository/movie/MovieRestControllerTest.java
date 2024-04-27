@@ -16,6 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,9 +239,11 @@ public class MovieRestControllerTest {
         when(this.movieService.save(any())).thenReturn(this.movieDtos.getFirst());
 
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(movieDtoJson)).andExpect(status().isCreated());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(movieDtoJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title.eng").value("Dances with Wolves"));
     }
 
     @Test

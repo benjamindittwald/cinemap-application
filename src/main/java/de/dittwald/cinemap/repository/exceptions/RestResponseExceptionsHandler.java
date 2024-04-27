@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.exceptions;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,12 +26,19 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class MovieRestResponseExceptionsHandler extends ResponseEntityExceptionHandler {
+public class RestResponseExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = {UuidInUseException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<Object> handleUuidInUseException(UuidInUseException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

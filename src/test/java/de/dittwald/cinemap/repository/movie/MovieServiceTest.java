@@ -16,6 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.exceptions;
 
-public class NotFoundException extends Exception {
-    public NotFoundException(String message) {
+public class UuidInUseException extends Exception {
+    public UuidInUseException(String message) {
         super(message);
     }
 }
