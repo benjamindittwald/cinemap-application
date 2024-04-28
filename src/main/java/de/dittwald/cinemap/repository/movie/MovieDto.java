@@ -26,9 +26,9 @@ import java.util.UUID;
 
 public record MovieDto(
 
-        UUID uuid,
+        @NotNull UUID uuid,
 
-        @NotNull Map<@Iso639Constraint String, String> title,
+        @NotNull Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title,
 
         @UrlConstraint(message = "URL is not valid") @Size(min = 1,
                 max = 100,

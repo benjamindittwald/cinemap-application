@@ -45,6 +45,7 @@ public class MovieServiceTest {
     @MockBean
     private MovieRepository movieRepository;
 
+
     List<Movie> movies = new ArrayList<>();
 
     @BeforeEach
@@ -104,10 +105,10 @@ public class MovieServiceTest {
                         "On continue à l'appeler Trinita"),
                 "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
 
-        when(this.movieRepository.existsByUuid(any())).thenReturn(true);
+        when(this.movieRepository.findByUuid(uuid)).thenReturn(persistedMovie);
         when(this.movieRepository.save(any())).thenReturn(persistedMovieUpdated);
 
-        assertThat(this.movieService.update(persistedMovieDto)).isEqualTo(
+        assertThat(this.movieService.update(persistedMovieDto, uuid)).isEqualTo(
                 this.movieDtoMapper.movieToMovieDto(persistedMovieUpdated));
     }
 
@@ -119,7 +120,7 @@ public class MovieServiceTest {
                 "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
         when(this.movieRepository.findById(any())).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(NotFoundException.class, () -> this.movieService.update(persistedMovieDto));
+        Exception exception = assertThrows(NotFoundException.class, () -> this.movieService.update(persistedMovieDto, persistedMovieDto.uuid()));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
     }
 

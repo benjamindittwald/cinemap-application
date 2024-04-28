@@ -16,12 +16,18 @@
 
 package de.dittwald.cinemap.repository.moviescene;
 
-import org.mapstruct.Mapper;
+import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Mapper(componentModel = "spring")
-public interface MovieSceneDtoMapper {
-    MovieSceneDto movieSceneToMovieSceneDto(MovieScene movieScene);
-    MovieScene movieSceneDtoToMovieScene(MovieSceneDto movieSceneDto);
+import java.util.Map;
+import java.util.UUID;
 
-    MovieScene movieSceneOnlyDtoToMovieScene(MovieSceneOnlyDto movieSceneOnlyDto);
+public record MovieSceneOnlyDto(@NotNull UUID uuid,
+
+                                @NotNull Long lon,
+
+                                @NotNull Long lat,
+
+                                Map<@Iso639Constraint String, @Size(min = 1, max = 2000) String> description) {
 }

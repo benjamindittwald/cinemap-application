@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Iso639Constraint {
-    String message() default "Invalid URI";
+    String message() default "Invalid ISO 638 language code given";
 
     Class<?>[] groups() default {};
 

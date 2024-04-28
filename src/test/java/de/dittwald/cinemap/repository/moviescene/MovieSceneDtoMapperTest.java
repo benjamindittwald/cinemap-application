@@ -18,7 +18,6 @@ package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.movie.Movie;
 import de.dittwald.cinemap.repository.movie.MovieDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,16 +26,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @WebMvcTest(MovieSceneDtoMapper.class)
 class MovieSceneDtoMapperTest {
+
     @Autowired
     private MovieSceneDtoMapper movieSceneDtoMapper;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     public void shouldMapMovieSceneToMovieSceneDto() {
@@ -68,5 +64,19 @@ class MovieSceneDtoMapperTest {
         assertEquals(movieScene.getLat(), movieSceneDtoFromWolf.lat());
         assertEquals(movieScene.getLon(), movieSceneDtoFromWolf.lon());
         assertEquals(movieScene.getMovie().getImdbWebsiteUrl(), movieSceneDtoFromWolf.movie().imdbWebsiteUrl());
+    }
+
+    @Test
+    public void shouldMapMovieSceneOnlyDtoToMovieSceene() {
+        MovieSceneOnlyDto movieSceneOnly = new MovieSceneOnlyDto(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"));
+
+        MovieScene movieScene = this.movieSceneDtoMapper.movieSceneOnlyDtoToMovieScene(movieSceneOnly);
+
+        assertEquals(movieScene.getUuid(), movieSceneOnly.uuid());
+        assertEquals(movieScene.getDescription(), movieSceneOnly.description());
+        assertEquals(movieScene.getLat(), movieSceneOnly.lat());
+        assertEquals(movieScene.getLon(), movieSceneOnly.lon());
+        assertNull(movieScene.getMovie());
     }
 }

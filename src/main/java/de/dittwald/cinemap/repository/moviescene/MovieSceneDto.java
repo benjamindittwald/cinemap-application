@@ -17,9 +17,22 @@
 package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.movie.MovieDto;
+import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieSceneDto(UUID uuid, Long lon, Long lat, Map<String, String> description, MovieDto movie) {
+public record MovieSceneDto(
+
+        @NotNull UUID uuid,
+
+        @NotNull Long lon,
+
+        @NotNull Long lat,
+
+        Map<@Iso639Constraint String, @Size(min = 1, max = 2000) String> description,
+
+        MovieDto movie) {
 }

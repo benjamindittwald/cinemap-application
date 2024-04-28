@@ -17,19 +17,19 @@
 package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/moviescenes")
+@RequestMapping("/api/v1/scenes")
 public class MovieSceneRestController {
 
     private final MovieSceneService movieSceneService;
@@ -38,28 +38,35 @@ public class MovieSceneRestController {
         this.movieSceneService = movieSceneService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new movie scene",
-            description = "Creates a new movie scene with the given parameters.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie scene was created"),
-            @ApiResponse(responseCode = "400", description = "Invalid movie scene given")})
-    public MovieSceneDto create(@RequestBody @Valid MovieSceneDto movieSceneDto)
-            throws NotFoundException, UuidInUseException {
-        return this.movieSceneService.save(movieSceneDto);
+    @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get a movie scene",
+            description = "Gets a movie and its corresponding movie by its UUID. Responses with status code 404 if " +
+                    "the movie scene was not found.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie scene"),
+            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
+            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
+    public MovieSceneDto findByUuid(@PathVariable("uuid") @UuidConstraint String uuid) throws NotFoundException {
+        return this.movieSceneService.findByUuid(UUID.fromString(uuid));
     }
-
-    // Update
-
-    // Delete
-
-    // FindByUUID
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all movie scenes", description = "Responses a list with all movies scenes")
-    @ApiResponse(responseCode = "200", description = "Found movies")
+    @ApiResponse(responseCode = "200", description = "Found movie scenes")
     public List<MovieSceneDto> findAll() {
         return this.movieSceneService.findAll();
     }
 
+    @DeleteMapping(value = "{uuid}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete movie scene",
+            description = "Deletes a movie scene with the given uuid. Responses with status code 404 if the movie cannot be" +
+                    " found.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie scene was deleted"),
+            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
+            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
+    public void scene(@PathVariable("uuid") @UuidConstraint String uuid) throws NotFoundException {
+        this.movieSceneService.deleteByUuid(UUID.fromString(uuid));
+    }
+
+    // Delete All
 }

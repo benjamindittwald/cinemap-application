@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UrlConstraint {
-    String message() default "Invalid URI";
+    String message() default "Invalid URL given";
 
     Class<?>[] groups() default {};
 

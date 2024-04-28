@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,10 +58,15 @@ public class MovieService {
         }
     }
 
-    public MovieDto update(MovieDto movieDto) throws NotFoundException {
-        if (this.movieRepository.existsByUuid(movieDto.uuid())) {
-            // Fixme: Given Movie.id is probably lost here
-            return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
+    public MovieDto update(MovieDto movieDto, UUID uuid) throws NotFoundException {
+
+        Optional<Movie> movieOptional = this.movieRepository.findByUuid(uuid);
+
+        if (movieOptional.isPresent()) {
+            Movie movie = movieOptional.get();
+            movie.setTitle(movieDto.title());
+            movie.setImdbWebsiteUrl(movieDto.imdbWebsiteUrl());
+            return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movie));
         } else {
             throw new NotFoundException("Movie not found");
         }

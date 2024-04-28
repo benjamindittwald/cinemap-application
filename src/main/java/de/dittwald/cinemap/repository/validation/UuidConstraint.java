@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.validation;
 
-import org.mapstruct.Mapper;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-@Mapper(componentModel = "spring")
-public interface MovieSceneDtoMapper {
-    MovieSceneDto movieSceneToMovieSceneDto(MovieScene movieScene);
-    MovieScene movieSceneDtoToMovieScene(MovieSceneDto movieSceneDto);
+import java.lang.annotation.*;
 
-    MovieScene movieSceneOnlyDtoToMovieScene(MovieSceneOnlyDto movieSceneOnlyDto);
+@Documented
+@Constraint(validatedBy = UuidValidator.class)
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface UuidConstraint {
+    String message() default "Invalid UUID given";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

@@ -17,15 +17,14 @@
 package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.MovieDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -34,8 +33,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,8 +62,9 @@ public class MovieSceneRestControllerTest {
                         "https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk");
 
         movieSceneDtos = new ArrayList<>();
-        movieSceneDtos.add(new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
-                Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf));
+        movieSceneDtos.add(
+                new MovieSceneDto(UUID.fromString("b2989ce9-eddc-4772-b32c-5c26cb255a9e"), 13404954L, 52520008L,
+                        Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf));
         movieSceneDtos.add(new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf tanzt Szene 2", "eng", "Dances with Wolves scene 2"), wolf));
 
@@ -91,46 +93,48 @@ public class MovieSceneRestControllerTest {
     }
 
     @Test
-    public void shouldCreateNewMovieSceneAndReturn() throws Exception {
-        when(this.movieSceneService.save(any())).thenReturn(this.movieSceneDtos.getFirst());
-        mockMvc.perform(post("/api/v1/moviescenes").contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(this.movieSceneDtoJson))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.description.eng").value("Dances with Wolves scene 1"));
-    }
-
-    @Test
-    public void shouldFailToCreateNewMovieSceneDueToMovieNotExist() throws Exception {
-        when(this.movieSceneService.save(any())).thenThrow(NotFoundException.class);
-        mockMvc.perform(post("/api/v1/moviescenes").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(this.movieSceneDtoJson)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void shouldFailToCreateNewMovieSceneDueToUuidAlreadyExist() throws Exception {
-        when(this.movieSceneService.save(any())).thenThrow(UuidInUseException.class);
-        mockMvc.perform(post("/api/v1/moviescenes").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(this.movieSceneDtoJson)).andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void shouldFindAllMovieScenes() throws Exception {
         when(this.movieSceneService.findAll()).thenReturn(movieSceneDtos);
-        mockMvc.perform(get("/api/v1/moviescenes")).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/scenes"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].description.eng").value("Dances with Wolves scene 1"));
     }
 
-    // FindByUuid
+    @Test
+    public void shouldFindMovieSceneByUuid() throws Exception {
+        when(this.movieSceneService.findByUuid(this.movieSceneDtos.getFirst().uuid())).thenReturn(
+                this.movieSceneDtos.getFirst());
+        this.mockMvc.perform(get("/api/v1/scenes/" + this.movieSceneDtos.getFirst().uuid()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid").value("b2989ce9-eddc-4772-b32c-5c26cb255a9e"));
+    }
 
-    // FindAllByMovieUuid
+    @Test
+    public void shouldNotFindMovieSceneByUuid() throws Exception {
+        when(this.movieSceneService.findByUuid(any())).thenThrow(NotFoundException.class);
+        this.mockMvc.perform(get("/api/v1/scenes/" + UUID.randomUUID())).andExpect(status().isNotFound());
+    }
 
-    // Update
+    @Test
+    public void shouldDeleteMovieSceneByUuid() throws Exception {
+        doNothing().when(this.movieSceneService).deleteByUuid(any());
+        this.mockMvc.perform(delete("/api/v1/scenes/" + movieSceneDtos.getFirst().uuid()))
+                .andExpect(status().isNoContent());
+    }
 
-    // DeleteByUuid
+    @Test
+    public void shouldFailDeleteMovieSceneByUuidDueToMovieSceneNotFound() throws Exception {
+        Mockito.doThrow(NotFoundException.class)
+                .when(this.movieSceneService)
+                .deleteByUuid(this.movieSceneDtos.getFirst().uuid());
+        this.mockMvc.perform(delete("/api/v1/scenes/" + movieSceneDtos.getFirst().uuid()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldFailDeleteMovieSceneByUuidDueToInvalidMovieSceneUuid() throws Exception {
+        String invalidUuid = "b2989ce9-eddc-4772-5c26cb255a9e";
+        this.mockMvc.perform(delete("/api/v1/scenes/"+ invalidUuid))
+                .andExpect(status().isBadRequest());
+    }
 }

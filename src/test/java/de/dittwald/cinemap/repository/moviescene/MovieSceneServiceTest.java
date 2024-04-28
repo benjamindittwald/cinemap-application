@@ -20,6 +20,7 @@ import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.Movie;
 import de.dittwald.cinemap.repository.movie.MovieRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,8 @@ class MovieSceneServiceTest {
 
     private List<MovieScene> moviesScenes = new ArrayList<>();
 
+    private MovieSceneOnlyDto movieSceneOnlyDto;
+
     @BeforeEach
     void setUp() {
         List<Movie> movies = new ArrayList<>();
@@ -68,37 +71,17 @@ class MovieSceneServiceTest {
         moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 2", "eng", "Dances with Wolves scene 2"),
                 movies.getFirst()));
-    }
 
-    @Test
-    public void shouldSaveMovieScene() throws Exception {
-        when(this.movieRepository.existsByUuid(any())).thenReturn(true);
-        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(false);
-        when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
-        assertThat(this.movieSceneService.save(
-                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()))).isEqualTo(
-                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
-    }
-
-    @Test
-    public void shouldFailSaveMovieSceneAndShouldThrowException() {
-        when(this.movieRepository.existsByUuid(any())).thenReturn(true);
-        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(true);
-
-        Exception exception = assertThrows(UuidInUseException.class, () -> this.movieSceneService.save(
-                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst())));
-
-        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
+        movieSceneOnlyDto = new MovieSceneOnlyDto(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 1", "eng", "Dances with Wolves scene 1"));
     }
 
     @Test
     public void shouldFailSaveMovieSceneDueToNotExistingMovie() throws Exception {
-        when(this.movieRepository.existsByUuid(any())).thenReturn(false);
-        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(false);
+        when(this.movieRepository.findByUuid(any())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class, () -> {
-            this.movieSceneService.save(
-                    this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+            this.movieSceneService.save(this.movieSceneOnlyDto, UUID.randomUUID());
         });
 
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
@@ -149,22 +132,44 @@ class MovieSceneServiceTest {
 
     @Test
     public void shouldUpdateMovieScene() throws NotFoundException {
-        when(this.movieSceneRepository.existsByUuid(any())).thenReturn(true);
+        when(this.movieSceneRepository.findByUuid(any())).thenReturn(Optional.of(this.moviesScenes.getFirst()));
         when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
+        when(this.movieRepository.findByUuid(this.moviesScenes.getFirst().getMovie().getUuid())).thenReturn(Optional.of(this.moviesScenes.getFirst().getMovie()));
 
-        assertThat(this.movieSceneService.update(
-                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()))).isEqualTo(
+        Assertions.assertThat(this.movieSceneService.update(movieSceneOnlyDto, this.moviesScenes.getFirst().getMovie().getUuid())).isEqualTo(
                 this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
     }
 
     @Test
-    public void shouldFailUpdateMovieScene() throws NotFoundException {
+    public void shouldFailUpdateMovieSceneDueToNotExistingMovieScene() throws NotFoundException {
         when(this.movieSceneRepository.existsByUuid(any())).thenReturn(false);
 
         Exception exception = assertThrows(NotFoundException.class, () -> this.movieSceneService.update(
-                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst())));
+                this.movieSceneOnlyDto, this.moviesScenes.getFirst().getMovie().getUuid()
+        ));
 
-        assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
+        Assertions.assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
+    }
+
+    @Test
+    public void shouldSaveNewMovieScene() throws Exception {
+        when(this.movieRepository.findByUuid(any())).thenReturn(Optional.of(this.moviesScenes.getFirst().getMovie()));
+        when(this.movieSceneRepository.findByUuid(any())).thenReturn(Optional.empty());
+        when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
+        Assertions.assertThat(this.movieSceneService.save(this.movieSceneOnlyDto, this.moviesScenes.getFirst().getUuid())).isEqualTo(
+                this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+    }
+
+    @Test
+    public void shouldFailSaveMovieSceneAndShouldThrowUuidInUseException() {
+        when(this.movieRepository.findByUuid(any())).thenReturn(Optional.of(this.moviesScenes.getFirst().getMovie()));
+        when(this.movieSceneRepository.findByUuid(any())).thenReturn(Optional.of(this.moviesScenes.getFirst()));
+
+        Exception exception = assertThrows(UuidInUseException.class, () -> this.movieSceneService.save(
+                this.movieSceneOnlyDto, this.moviesScenes.getFirst().getUuid()
+        ));
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("UUID already in use");
     }
 
 }

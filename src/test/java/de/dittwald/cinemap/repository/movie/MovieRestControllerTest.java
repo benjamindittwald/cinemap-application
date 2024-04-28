@@ -17,6 +17,10 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.moviescene.MovieSceneDto;
+import de.dittwald.cinemap.repository.moviescene.MovieSceneOnlyDto;
+import de.dittwald.cinemap.repository.moviescene.MovieSceneService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,19 +53,30 @@ public class MovieRestControllerTest {
     @MockBean
     private MovieService movieService;
 
+    @MockBean
+    private MovieSceneService movieSceneService;
+
     private List<MovieDto> movieDtos;
 
     private String movieDtoJson;
 
     private String movieDtosJson;
 
+    private String movieSceneDtoJson;
+
+    private List<MovieSceneDto> movieSceneDtos;
+
+    private String movieSceneOnlyDtoJson;
+
+    private MovieSceneOnlyDto movieSceneOnlyDto;
+
     @BeforeEach
     void setUp() {
-        movieDtos = new ArrayList<>();
-        movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"),
+        this.movieDtos = new ArrayList<>();
+        this.movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"),
                 Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
                 "https" + "://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
-        movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"),
+        this.movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"),
                 Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"),
                 "https" + "://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
 
@@ -98,6 +113,55 @@ public class MovieRestControllerTest {
                         "imdbWebsiteUrl":"https://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"
                     }
                 ]
+                """;
+
+        this.movieSceneDtoJson = """
+                {
+                    "uuid": "b2989ce9-eddc-4772-b32c-5c26cb255a9e",
+                    "lon": "",
+                    "lat": "",
+                    "description":
+                        {
+                            "deu":"Der mit dem Wolf tanzt Szene 1",
+                            "eng":"Dances with Wolves scene 1"
+                        },
+                    "movie":
+                        {
+                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                        "title":
+                            {
+                                "eng":"Dances with Wolves",
+                                "deu":"Der mit dem Wolf tanzt"
+                            },
+                        "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                        }
+                }
+                """;
+
+        this.movieSceneDtos = new ArrayList<>();
+        this.movieSceneDtos.add(
+                new MovieSceneDto(UUID.fromString("b2989ce9-eddc-4772-b32c-5c26cb255a9e"), 13404954L, 52520008L,
+                        Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"),
+                        this.movieDtos.getFirst()));
+        this.movieSceneDtos.add(new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf tanzt Szene 2", "eng", "Dances with Wolves scene 2"),
+                this.movieDtos.getFirst()));
+
+        this.movieSceneOnlyDto =
+                new MovieSceneOnlyDto(this.movieSceneDtos.getFirst().uuid(), this.movieSceneDtos.getFirst().lon(),
+                        this.movieSceneDtos.getFirst().lat(), this.movieSceneDtos.getFirst().description());
+
+        this.movieSceneOnlyDtoJson = """
+                {
+                    "uuid": "b2989ce9-eddc-4772-b32c-5c26cb255a9e",
+                    "lon": "13404954",
+                    "lat": "52520008",
+                    "description":
+                        {
+                            "deu":"Der mit dem Wolf tanzt Szene 1",
+                            "eng":"Dances with Wolves scene 1"
+                        }
+                }
                 """;
     }
 
@@ -139,8 +203,14 @@ public class MovieRestControllerTest {
     }
 
     @Test
+    public void shouldFailFindByUuidDueToInvalidUuid() throws Exception {
+        String invalidUuid = "aa7acd67-4052-a63f-90440c683e6d";
+        this.mockMvc.perform(get("/api/v1/movies/"+invalidUuid)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnStatus200AndUpdateMovie() throws Exception {
-        when(this.movieService.update(this.movieDtos.getFirst())).thenReturn(this.movieDtos.getFirst());
+        when(this.movieService.update(this.movieDtos.getFirst(), this.movieDtos.getFirst().uuid())).thenReturn(this.movieDtos.getFirst());
 
         this.mockMvc.perform(
                         put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +236,7 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(movieDtoJson)).andExpect(status().isBadRequest());
@@ -186,7 +256,7 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(movieDtoJson)).andExpect(status().isBadRequest());
@@ -206,7 +276,7 @@ public class MovieRestControllerTest {
                 }
                 """;
 
-        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(movieDtoJson)).andExpect(status().isBadRequest());
@@ -214,7 +284,7 @@ public class MovieRestControllerTest {
 
     @Test
     public void shouldReturnStatus404ForFakeIdUpdate() throws Exception {
-        when(this.movieService.update(any())).thenThrow(NotFoundException.class);
+        when(this.movieService.update(this.movieDtos.getFirst(), this.movieDtos.getFirst().uuid())).thenThrow(NotFoundException.class);
         this.mockMvc.perform(
                 put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -223,10 +293,21 @@ public class MovieRestControllerTest {
     }
 
     @Test
+    public void shouldFailUpdateMovieDueToInvalidUuid() throws Exception {
+        String invalidUuid = "aa7acd67-4052-a63f-90440c683e6d";
+        this.mockMvc.perform(
+                put("/api/v1/movies/" + invalidUuid).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieDtoJson)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldCreateMovie() throws Exception {
 
         String movieDtoJson = """
                 {
+                    "uuid": "aa7acd67-4052-421d-a63f-90440c683e6d",
                     "title":
                         {
                             "eng":"Dances with Wolves",
@@ -244,6 +325,49 @@ public class MovieRestControllerTest {
                         .content(movieDtoJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title.eng").value("Dances with Wolves"));
+    }
+
+    @Test
+    public void shouldFailCreateMovieDueToMissingUuid() throws Exception {
+        String movieDtoJson = """
+                {
+                    "uuid":"aa7acd67-4052-421d-a63f-90440c66d",
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
+        when(this.movieService.save(any())).thenReturn(this.movieDtos.getFirst());
+
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldFailCreateMovieDueToInvalidUuid() throws Exception {
+        String movieDtoJson = """
+                {
+                    "title":
+                        {
+                            "eng":"Dances with Wolves",
+                            "deu":"Der mit dem Wolf tanzt"
+                        },
+                    "imdbWebsiteUrl":"http://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                }
+                """;
+
+        when(this.movieService.save(any())).thenReturn(this.movieDtos.getFirst());
+
+        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(movieDtoJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -310,10 +434,60 @@ public class MovieRestControllerTest {
     }
 
     @Test
+    public void shouldFailDeleteMovieDueToInvalidUuid() throws Exception {
+        String invalidUuid = "aa7acd67-4052-421d-90440c683e6d";
+        this.mockMvc.perform(delete("/api/v1/movies/" + invalidUuid))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnStatus404ForFakeIdDelete() throws Exception {
         when(this.movieService.findByUuid(any())).thenThrow(NotFoundException.class);
 
         this.mockMvc.perform(delete("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void shouldCreateNewMovieSceneAndReturnStatus201() throws Exception {
+        when(this.movieSceneService.save(this.movieSceneOnlyDto,
+                UUID.fromString("b2989ce9-eddc-4772-b32c-5c26cb255a9e"))).thenReturn(this.movieSceneDtos.getFirst());
+        this.mockMvc.perform(post("/api/v1/movies/b2989ce9-eddc-4772-b32c-5c26cb255a9e/scenes").contentType(
+                                MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieSceneOnlyDtoJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.description.eng").value("Dances with Wolves scene 1"));
+    }
+
+    @Test
+    public void shouldFailToCreateNewMovieSceneDueToMovieNotExist() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        when(this.movieSceneService.save(this.movieSceneOnlyDto, uuid)).thenThrow(NotFoundException.class);
+        this.mockMvc.perform(
+                post("/api/v1/movies/" + uuid + "/scenes").contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieSceneOnlyDtoJson)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldFailToCreateNewMovieSceneDueToUuidAlreadyExist() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        when(this.movieSceneService.save(this.movieSceneOnlyDto, uuid)).thenThrow(UuidInUseException.class);
+        this.mockMvc.perform(post("/api/v1/movies/" + uuid + "/scenes").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(this.movieSceneOnlyDtoJson)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldFailToCreateNewMoveSceneDueToPathVariableMovieUuidInvalid() throws Exception {
+        String invalidUuid = "b2989ce9-eddc-b32c-5c26cb255a9e";
+        this.mockMvc.perform(post("/api/v1/movies/" + invalidUuid + "/scenes").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(this.movieSceneOnlyDtoJson)).andExpect(status().isBadRequest());
     }
 }
