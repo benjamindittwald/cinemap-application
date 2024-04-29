@@ -68,6 +68,8 @@ class MovieSceneRepositoryTest {
                 Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf));
         moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 2", "eng", "Dances with Wolves scene 2"), wolf));
+        moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
+                Map.of("deu", "Der mit dem Wolf " + "tanzt Szene 3", "eng", "Dances with Wolves scene 3"), nobody));
 
         this.movieRepository.save(wolf);
         this.movieRepository.save(nobody);
@@ -83,7 +85,7 @@ class MovieSceneRepositoryTest {
     @Test
     public void shouldFindTwoMovieScenes() {
         List<MovieScene> movieScenes = this.movieSceneRepository.findAll();
-        assertThat(movieScenes.size()).isEqualTo(2);
+        assertThat(movieScenes.size()).isEqualTo(3);
         assertThat(movieScenes.getFirst().getMovie().getTitle().get("deu")).isEqualTo("Der mit dem Wolf tanzt");
         assertThat(movieScenes.getFirst().getDescription().get("deu")).isEqualTo("Der mit dem Wolf tanzt Szene 1");
     }
@@ -101,18 +103,18 @@ class MovieSceneRepositoryTest {
         MovieScene movieScene = new MovieScene(UUID.randomUUID(), 13434954L, 52534008L,
                 Map.of("deu", "Der mit dem " + "Wolf tanzt Szene 3", "eng", "Dances with Wolves scene 3"), movie);
 
-        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3);
         this.movieSceneRepository.save(movieScene);
-        assertThat(this.movieSceneRepository.count()).isEqualTo(3L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(4);
     }
 
     @Test
     public void shouldUpdateMovieScene() {
         MovieScene movieScene = this.movieSceneRepository.findAll().getFirst();
         assertThat(movieScene.getDescription().get("eng")).isEqualTo("Dances with Wolves scene 1");
-        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3);
         movieScene.setDescription(new HashMap<>(Map.of("eng", "A new description")));
-        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3);
         this.movieSceneRepository.save(movieScene);
         assertThat(this.movieSceneRepository.findAll().getLast().getDescription().get("eng")).isEqualTo(
                 "A new " + "description");
@@ -120,9 +122,9 @@ class MovieSceneRepositoryTest {
 
     @Test
     public void shouldDeleteMovieScene() {
-        assertThat(this.movieSceneRepository.count()).isEqualTo(2L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3);
         this.movieSceneRepository.deleteById(this.movieSceneRepository.findAll().getFirst().getId());
-        assertThat(this.movieSceneRepository.count()).isEqualTo(1L);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2);
     }
 
     @Test
@@ -151,9 +153,9 @@ class MovieSceneRepositoryTest {
     @Test
     public void shouldDeleteMovieSceneByUuid() {
         MovieScene movieScene = this.movieSceneRepository.findAll().getFirst();
-        assertThat(this.movieSceneRepository.count()).isEqualTo(2);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(3);
         this.movieSceneRepository.deleteByUuid(movieScene.getUuid());
-        assertThat(this.movieSceneRepository.count()).isEqualTo(1);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(2);
     }
 
     @Test
@@ -166,4 +168,25 @@ class MovieSceneRepositoryTest {
     public void shouldNotExist() {
         assertThat(this.movieSceneRepository.existsByUuid(UUID.randomUUID())).isEqualTo(false);
     }
+
+    @Test
+    public void shouldFindAllMovieScenesFromMovie() {
+        assertThat(this.movieSceneRepository.findAllScenesFromMovie(this.movieRepository.findAll().getFirst().getUuid())
+                .get()).hasSize(2);
+    }
+
+    @Test
+    public void shouldDeleteAllGivenScenesWithDeleteAll() {
+        Optional<List<MovieScene>> movieScenes = this.movieSceneRepository.findAllScenesFromMovie(this.movieRepository.findAll().getFirst().getUuid());
+        movieScenes.ifPresent(this.movieSceneRepository::deleteAll);
+        assertThat(this.movieSceneRepository.count()).isEqualTo(1);
+    }
+
+
+    // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
+//    @Test
+//    public void shouldDeleteAllMovieScenesFromMovie() {
+//        this.movieSceneRepository.deleteAllScenesFromMovie(this.movieRepository.findAll().getLast().getUuid());
+//        assertThat(this.movieSceneRepository.findAll()).hasSize(0);
+//    }
 }

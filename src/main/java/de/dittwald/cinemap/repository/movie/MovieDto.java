@@ -18,6 +18,7 @@ package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import de.dittwald.cinemap.repository.validation.UrlConstraint;
+import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -26,7 +27,7 @@ import java.util.UUID;
 
 public record MovieDto(
 
-        @NotNull UUID uuid,
+        @NotNull @UuidConstraint UUID uuid,
 
         @NotNull Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title,
 

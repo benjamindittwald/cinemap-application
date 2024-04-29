@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.moviescene;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,4 +31,11 @@ public interface MovieSceneRepository extends ListCrudRepository<MovieScene, Lon
     void deleteByUuid(UUID uuid);
 
     boolean existsByUuid(UUID uuid);
+
+    Optional<List<MovieScene>> findAllScenesFromMovie(UUID movieUuid);
+
+    // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
+//    @Modifying
+//    @Query("delete from MovieScene ms where ms.movie.uuid = :movieUuid")
+//    void deleteAllScenesFromMovie(@Param("movieUuid") UUID movieUuid);
 }

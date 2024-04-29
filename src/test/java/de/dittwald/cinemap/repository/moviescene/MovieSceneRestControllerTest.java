@@ -33,8 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -136,5 +135,14 @@ public class MovieSceneRestControllerTest {
         String invalidUuid = "b2989ce9-eddc-4772-5c26cb255a9e";
         this.mockMvc.perform(delete("/api/v1/scenes/"+ invalidUuid))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldDeleteAllMovieScenes() throws Exception {
+        doNothing().when(this.movieSceneService).deleteAll();
+        this.mockMvc.perform(delete("/api/v1/scenes"))
+                .andExpect(status().isNoContent());
+
+        verify(this.movieSceneService, times(1)).deleteAll();
     }
 }

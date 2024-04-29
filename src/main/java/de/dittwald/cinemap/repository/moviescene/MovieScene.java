@@ -28,6 +28,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "movie_scenes")
+@NamedQuery(name = "MovieScene.findAllScenesFromMovie",
+        query = "select ms from MovieScene ms where ms.movie.uuid = :movieUuid")
 public class MovieScene {
 
     public MovieScene() {

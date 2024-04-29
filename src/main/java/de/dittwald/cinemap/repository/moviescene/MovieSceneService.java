@@ -109,4 +109,8 @@ public class MovieSceneService {
 
         return movieSceneDtos;
     }
+
+    public void deleteAll() {
+        this.movieSceneRepository.deleteAll();
+    }
 }

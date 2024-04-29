@@ -17,6 +17,7 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.moviescene.MovieSceneRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +33,13 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
 
-    public MovieService(MovieRepository movieRepository, MovieDtoMapper movieDtoMapper) {
+    private final MovieSceneRepository movieSceneRepository;
+
+    public MovieService(MovieRepository movieRepository, MovieDtoMapper movieDtoMapper,
+                        MovieSceneRepository movieSceneRepository) {
         this.movieRepository = movieRepository;
         this.movieDtoMapper = movieDtoMapper;
+        this.movieSceneRepository = movieSceneRepository;
     }
 
     public List<MovieDto> findAll() {
@@ -73,8 +78,8 @@ public class MovieService {
     }
 
     public void deleteByUuid(UUID uuid) throws NotFoundException {
-        // Todo: Also delete all nested movie scenes!
         if (this.movieRepository.existsByUuid(uuid)) {
+            this.movieSceneRepository.findAllScenesFromMovie(uuid).ifPresent(this.movieSceneRepository::deleteAll);
             this.movieRepository.deleteByUuid(uuid);
         } else {
             throw new NotFoundException("Movie not found");

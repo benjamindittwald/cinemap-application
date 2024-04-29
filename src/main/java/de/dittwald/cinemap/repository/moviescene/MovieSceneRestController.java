@@ -59,8 +59,8 @@ public class MovieSceneRestController {
     @DeleteMapping(value = "{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete movie scene",
-            description = "Deletes a movie scene with the given uuid. Responses with status code 404 if the movie cannot be" +
-                    " found.")
+            description =
+                    "Deletes a movie scene with the given uuid.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie scene was deleted"),
             @ApiResponse(responseCode = "404", description = "Movie scene not found"),
             @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
@@ -68,5 +68,13 @@ public class MovieSceneRestController {
         this.movieSceneService.deleteByUuid(UUID.fromString(uuid));
     }
 
-    // Delete All
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete all movie scenes",
+            description =
+                    "Deletes all movie scenes.")
+    @ApiResponses(value = @ApiResponse(responseCode = "204", description = "All movie scene were deleted"))
+    public void deleteAll() {
+        this.movieSceneService.deleteAll();
+    }
 }
