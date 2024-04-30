@@ -50,17 +50,21 @@ public class MovieSceneService {
         }
     }
 
-    public MovieSceneDto update(MovieSceneOnlyDto movieSceneOnlyDto, UUID movieUuid) throws NotFoundException {
-        Optional<MovieScene> movieSceneOptional = movieSceneRepository.findByUuid(movieSceneOnlyDto.uuid());
-        MovieScene movieScene;
+    public MovieSceneDto update(MovieSceneOnlyDto movieSceneOnlyDto, UUID movieUuid, UUID movieSceneUuid)
+            throws NotFoundException {
+        Optional<MovieScene> movieSceneOptional = movieSceneRepository.findByUuid(movieSceneUuid);
 
         if (movieSceneOptional.isPresent()) {
-            movieScene = movieSceneOptional.get();
+
+            MovieScene movieScene = movieSceneOptional.get();
+            movieScene.setUuid(movieSceneUuid);
+            movieScene.setDescription(movieSceneOnlyDto.description());
+            movieScene.setLat(movieSceneOnlyDto.lat());
+            movieScene.setLon(movieSceneOnlyDto.lon());
 
             Optional<Movie> movieOptional = movieRepository.findByUuid(movieUuid);
-
             if (movieOptional.isPresent()) {
-                if (movieOptional.get().getUuid() != movieSceneOnlyDto.uuid()) {
+                if (movieUuid != movieScene.getMovie().getUuid()) {
                     movieScene.setMovie(movieOptional.get());
                 }
             } else {

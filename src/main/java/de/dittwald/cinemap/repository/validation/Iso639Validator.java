@@ -32,7 +32,7 @@ public class Iso639Validator implements ConstraintValidator<Iso639Constraint, St
     }
 
     @Override
-    public boolean isValid(String langcode, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String langCode, ConstraintValidatorContext constraintValidatorContext) {
         boolean valid = false;
         try (BufferedReader reader = new BufferedReader(
                 new FileReader("src/main/resources/iso-639-3_Name_Index.csv"))) {
@@ -40,13 +40,13 @@ public class Iso639Validator implements ConstraintValidator<Iso639Constraint, St
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split("\\t");
 
-                if (StringUtils.equals(fields[0], langcode)) {
+                if (StringUtils.equals(fields[0], langCode)) {
                     valid = true;
                     break;
                 }
             }
         } catch (FileNotFoundException e) {
-            // Todo: Add Exceptionhandler to send 500
+            // Todo: Add ExceptionHandler to send 500
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);

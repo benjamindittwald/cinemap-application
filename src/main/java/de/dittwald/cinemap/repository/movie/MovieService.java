@@ -71,6 +71,7 @@ public class MovieService {
             Movie movie = movieOptional.get();
             movie.setTitle(movieDto.title());
             movie.setImdbWebsiteUrl(movieDto.imdbWebsiteUrl());
+            movie.setUuid(uuid);
             return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movie));
         } else {
             throw new NotFoundException("Movie not found");

@@ -146,7 +146,7 @@ class MovieSceneServiceTest {
                 Optional.of(this.moviesScenes.getFirst().getMovie()));
         when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
 
-        Assertions.assertThat(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid))
+        Assertions.assertThat(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid, movieSceneUuid))
                 .isEqualTo(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
 
         verify(this.movieSceneRepository, times(1)).findByUuid(movieSceneUuid);
@@ -160,7 +160,7 @@ class MovieSceneServiceTest {
 
         Exception exception = assertThrows(NotFoundException.class,
                 () -> this.movieSceneService.update(this.movieSceneOnlyDto,
-                        this.moviesScenes.getFirst().getMovie().getUuid()));
+                        this.moviesScenes.getFirst().getMovie().getUuid(), this.movieSceneOnlyDto.uuid()));
 
         Assertions.assertThat(exception.getMessage()).isEqualTo("Movie scene not found");
         verify(this.movieSceneRepository, times(1)).findByUuid(this.movieSceneOnlyDto.uuid());
@@ -210,5 +210,17 @@ class MovieSceneServiceTest {
         this.movieSceneService.findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid());
         verify(this.movieRepository, times(1)).existsByUuid(this.moviesScenes.getFirst().getMovie().getUuid());
         verify(this.movieSceneRepository, times(1)).findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid());
+    }
+
+    @Test
+    public void shouldFailFindAllMovieScenesOfMovieDueToNotExistingMovie() throws NotFoundException {
+        when(this.movieRepository.existsByUuid(this.moviesScenes.getFirst().getMovie().getUuid())).thenReturn(false);
+
+        Exception exception = assertThrows(NotFoundException.class,
+                () -> this.movieSceneService.findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid()));
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("Movie not found");
+
+        verify(this.movieRepository, times(1)).existsByUuid(this.moviesScenes.getFirst().getMovie().getUuid());
     }
 }

@@ -19,6 +19,8 @@ package de.dittwald.cinemap.repository.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.net.URI;
+
 public class UrlValidator implements ConstraintValidator<UrlConstraint, String> {
     @Override
     public void initialize(UrlConstraint constraintAnnotation) {
@@ -27,8 +29,11 @@ public class UrlValidator implements ConstraintValidator<UrlConstraint, String> 
 
     @Override
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
-        org.apache.commons.validator.routines.UrlValidator validator =
-                new org.apache.commons.validator.routines.UrlValidator();
-        return validator.isValid(url);
+        try {
+            new URI(url).toURL();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

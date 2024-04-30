@@ -3,16 +3,7 @@
 This is the repository of the `cinemap` project. It provides RESTful services
 for movie CRUD operations.
 
-This service is still under development. Things that are not finished yet:
-
-- Entity model - The current model is not sufficient and is only used for
-  testing purposes
-  - Restore InputDTOs in order to carefully handle null ID
-  - Replace dbIds with UUIDs in DTOs
-- Security - It needs to get decided if security is a matter or not. Maybe this
-  service will not be accessible from the outside.
-- Encryption
-- Configuration
+This service is still under development.
 
 # Run the repository
 

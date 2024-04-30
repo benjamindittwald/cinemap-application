@@ -522,27 +522,27 @@ public class MovieRestControllerTest {
     public void shouldUpdateMovieScene() throws Exception {
         UUID movieUuid = this.movieDtos.getFirst().uuid();
         UUID sceneUuid = this.movieSceneOnlyDto.uuid();
-        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid)).thenReturn(
+        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid, sceneUuid)).thenReturn(
                 this.movieSceneDtos.getFirst());
         this.mockMvc.perform(
                 put("/api/v1/movies/" + movieUuid + "/scenes/" + sceneUuid).contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(this.movieSceneOnlyDtoJson)).andExpect(status().isOk());
-        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid);
+        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid, sceneUuid);
     }
 
     @Test
     public void shouldFailToUpdateMovieSceneDueToMovieOrSceneDoesNotExist() throws Exception {
         UUID movieUuid = this.movieDtos.getFirst().uuid();
         UUID sceneUuid = this.movieSceneOnlyDto.uuid();
-        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid)).thenThrow(NotFoundException.class);
+        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid, sceneUuid)).thenThrow(NotFoundException.class);
         this.mockMvc.perform(
                 put("/api/v1/movies/" + movieUuid + "/scenes/" + sceneUuid).contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(this.movieSceneOnlyDtoJson)).andExpect(status().isNotFound());
-        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid);
+        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid, sceneUuid);
     }
 
     @Test

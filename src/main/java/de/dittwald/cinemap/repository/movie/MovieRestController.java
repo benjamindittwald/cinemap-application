@@ -66,7 +66,8 @@ public class MovieRestController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update movie",
             description = "Updates the movie with the given id. Responses with status code 404 if the movie was not " +
-                    "found.")
+                    "found. Please note that the title property of a movie is represented by a Map<String, String>. " +
+                    "The map key is expecting an ISO 639 language code and the value the title in the named language.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Movie was updated"),
             @ApiResponse(responseCode = "404", description = "Movie not found"),
             @ApiResponse(responseCode = "400", description = "Invalid movie given or given UUID is not a valid UUID")})
@@ -79,7 +80,9 @@ public class MovieRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new movie",
             description = "Creates a new movie with the given parameters. Note that the given value for the movie " +
-                    "\"id\" will be ignored.")
+                    "\"id\" will be ignored. Please note that the title property of a movie is represented by a " +
+                    "Map<String, String>. The map key is expecting an ISO 639 language code and the value the title " +
+                    "in the named language.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie was created"),
             @ApiResponse(responseCode = "400", description = "Invalid movie given")})
     public MovieDto createMovie(@Valid @RequestBody MovieDto movieDto) {
@@ -104,7 +107,9 @@ public class MovieRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new movie scene",
             description = "Creates a new movie scene with the given parameters. The corresponding move must exist " +
-                    "before the movie scene creation.")
+                    "before the movie scene creation. Please note that the description property of a movie is " +
+                    "represented by a Map<String, String>. The map key is expecting an ISO 639 language code and the " +
+                    "value the description in the named language.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie scene was created"), @ApiResponse(
             responseCode = "400",
             description = "Invalid movie scene given or given UUID is not a valid UUID")})
@@ -122,20 +127,22 @@ public class MovieRestController {
         this.movieService.deleteAll();
     }
 
-    // Todo: Also use movieSceneUUID for check!
     @PutMapping(value = "{movieUuid}/scenes/{sceneUuid}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Updates a scene",
-            description = "Updates a scene with the given parameters. The corresponding movie and scene must exist.")
+            description = "Updates a scene with the given parameters. The corresponding movie and scene must exist. " +
+                    "Please note that the description property of a movie is represented by a Map<String, String>. " +
+                    "The map key is expecting an ISO 639 language code and the value the description in the named " +
+                    "language.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie scene was created"),
             @ApiResponse(responseCode = "400", description = "Invalid scene given or given UUID is not a valid UUID")})
     public MovieSceneDto updateMovieScene(@RequestBody @Valid MovieSceneOnlyDto movieSceneOnlyDto,
                                           @PathVariable("movieUuid") @Valid @UuidConstraint String movieUuid,
                                           @PathVariable("sceneUuid") @Valid @UuidConstraint String sceneUuid)
             throws NotFoundException {
-        return this.movieSceneService.update(movieSceneOnlyDto, UUID.fromString(movieUuid));
+        return this.movieSceneService.update(movieSceneOnlyDto, UUID.fromString(movieUuid), UUID.fromString(sceneUuid));
     }
 
     @DeleteMapping(value = "{movieUuid}/scenes/{sceneUuid}")
