@@ -21,6 +21,7 @@ import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/scenes")
+@Tag(name = "Scene API")
 public class MovieSceneRestController {
 
     private final MovieSceneService movieSceneService;
@@ -41,7 +43,7 @@ public class MovieSceneRestController {
 
     @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a movie scene",
-            description = "Gets a movie and its corresponding movie by its UUID. Responses with status code 404 if " +
+            description = "Gets a movie and its corresponding movie by its UUID. Responds with status code 404 if " +
                     "the movie scene was not found.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie scene"),
             @ApiResponse(responseCode = "404", description = "Movie scene not found"),
@@ -51,7 +53,7 @@ public class MovieSceneRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all movie scenes", description = "Responses a list with all movies scenes")
+    @Operation(summary = "Get all movie scenes", description = "Responds a list with all movies scenes")
     @ApiResponse(responseCode = "200", description = "Found movie scenes")
     public List<MovieSceneDto> findAll() {
         return this.movieSceneService.findAll();

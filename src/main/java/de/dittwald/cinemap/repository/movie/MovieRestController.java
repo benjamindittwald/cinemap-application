@@ -25,6 +25,7 @@ import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/movies")
+@Tag(name = "Movie API")
 public class MovieRestController {
 
     private final MovieService movieService;
@@ -46,7 +48,7 @@ public class MovieRestController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all movies", description = "Responses a list with all movies")
+    @Operation(summary = "Get all movies", description = "Responds a list with all movies")
     @ApiResponse(responseCode = "200", description = "Found movies")
     public List<MovieDto> findAll() {
         return this.movieService.findAll();
@@ -54,7 +56,7 @@ public class MovieRestController {
 
     @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a movie",
-            description = "Gets a movie by its UUID. Responses with status code 404 if the movie was not found.")
+            description = "Gets a movie by its UUID. Responds with status code 404 if the movie was not found.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
     public MovieDto findByUuid(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
@@ -65,7 +67,7 @@ public class MovieRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update movie",
-            description = "Updates the movie with the given id. Responses with status code 404 if the movie was not " +
+            description = "Updates the movie with the given id. Responds with status code 404 if the movie was not " +
                     "found. Please note that the title property of a movie is represented by a Map<String, String>. " +
                     "The map key is expecting an ISO 639 language code and the value the title in the named language.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Movie was updated"),
@@ -92,7 +94,7 @@ public class MovieRestController {
     @DeleteMapping(value = "{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete movie",
-            description = "Deletes a movie with the given uuid. Responses with status code 404 if the movie cannot be" +
+            description = "Deletes a movie with the given uuid. Responds with status code 404 if the movie cannot be" +
                     " found.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie was deleted"),
             @ApiResponse(responseCode = "404", description = "Movie not found"),
@@ -158,7 +160,7 @@ public class MovieRestController {
 
     @GetMapping(value = "{movieUuid}/scenes/{sceneUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a movie",
-            description = "Gets a movie by its UUID. Responses with status code 404 if the movie was not found.")
+            description = "Gets a movie by its UUID. Responds with status code 404 if the movie was not found.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie"),
             @ApiResponse(responseCode = "404", description = "Movie not found")})
     public MovieSceneDto findMovieSceneByUuid(@PathVariable("movieUuid") @Valid @UuidConstraint String movieUuid,
