@@ -79,11 +79,15 @@ public class MovieService {
 
     public void deleteByUuid(UUID uuid) throws NotFoundException {
         if (this.movieRepository.existsByUuid(uuid)) {
-            this.movieSceneRepository.findAllScenesFromMovie(uuid).ifPresent(this.movieSceneRepository::deleteAll);
+            this.movieSceneRepository.findAllScenesOfMovie(uuid).ifPresent(this.movieSceneRepository::deleteAll);
             this.movieRepository.deleteByUuid(uuid);
         } else {
             throw new NotFoundException("Movie not found");
         }
     }
 
+    public void deleteAll() {
+        this.movieRepository.deleteAll();
+        this.movieSceneRepository.deleteAll();
+    }
 }

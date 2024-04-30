@@ -203,4 +203,12 @@ class MovieSceneServiceTest {
         verify(this.movieSceneRepository, times(1)).deleteAll();
     }
 
+    @Test
+    public void shouldFindAllMovieScenesOfMovie() throws NotFoundException {
+        when(this.movieRepository.existsByUuid(this.moviesScenes.getFirst().getMovie().getUuid())).thenReturn(true);
+        when(this.movieSceneRepository.findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid())).thenReturn(Optional.of(this.moviesScenes));
+        this.movieSceneService.findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.moviesScenes.getFirst().getMovie().getUuid());
+        verify(this.movieSceneRepository, times(1)).findAllScenesOfMovie(this.moviesScenes.getFirst().getMovie().getUuid());
+    }
 }

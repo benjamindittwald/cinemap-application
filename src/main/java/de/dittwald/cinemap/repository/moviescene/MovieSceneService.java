@@ -113,4 +113,17 @@ public class MovieSceneService {
     public void deleteAll() {
         this.movieSceneRepository.deleteAll();
     }
+
+    public List<MovieSceneDto> findAllScenesOfMovie(UUID movieUuid) throws NotFoundException {
+        List<MovieSceneDto> movieSceneListDto = new ArrayList<>();
+        if (this.movieRepository.existsByUuid(movieUuid)) {
+            Optional<List<MovieScene>> movieScenesOptional = this.movieSceneRepository.findAllScenesOfMovie(movieUuid);
+            movieScenesOptional.ifPresent(movieScenes -> movieScenes.forEach(movieScene -> movieSceneListDto.add(
+                    this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieScene))));
+        } else {
+            throw new NotFoundException("Movie not found");
+        }
+
+        return movieSceneListDto;
+    }
 }

@@ -171,13 +171,13 @@ class MovieSceneRepositoryTest {
 
     @Test
     public void shouldFindAllMovieScenesFromMovie() {
-        assertThat(this.movieSceneRepository.findAllScenesFromMovie(this.movieRepository.findAll().getFirst().getUuid())
+        assertThat(this.movieSceneRepository.findAllScenesOfMovie(this.movieRepository.findAll().getFirst().getUuid())
                 .get()).hasSize(2);
     }
 
     @Test
     public void shouldDeleteAllGivenScenesWithDeleteAll() {
-        Optional<List<MovieScene>> movieScenes = this.movieSceneRepository.findAllScenesFromMovie(this.movieRepository.findAll().getFirst().getUuid());
+        Optional<List<MovieScene>> movieScenes = this.movieSceneRepository.findAllScenesOfMovie(this.movieRepository.findAll().getFirst().getUuid());
         movieScenes.ifPresent(this.movieSceneRepository::deleteAll);
         assertThat(this.movieSceneRepository.count()).isEqualTo(1);
     }

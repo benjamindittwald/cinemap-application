@@ -150,13 +150,13 @@ public class MovieServiceTest {
     @Test
     public void shouldDeleteMovie() throws NotFoundException {
         when(this.movieRepository.existsByUuid(this.movies.getFirst().getUuid())).thenReturn(true);
-        when(this.movieSceneRepository.findAllScenesFromMovie(this.movies.getFirst().getUuid())).thenReturn(
+        when(this.movieSceneRepository.findAllScenesOfMovie(this.movies.getFirst().getUuid())).thenReturn(
                 Optional.of(this.moviesScenes));
         doNothing().when(this.movieSceneRepository).deleteAll(this.moviesScenes);
         doNothing().when(this.movieRepository).deleteByUuid(this.movies.getFirst().getUuid());
         this.movieService.deleteByUuid(this.movies.getFirst().getUuid());
         verify(this.movieRepository, times(1)).existsByUuid(this.movies.getFirst().getUuid());
-        verify(this.movieSceneRepository, times(1)).findAllScenesFromMovie(this.movies.getFirst().getUuid());
+        verify(this.movieSceneRepository, times(1)).findAllScenesOfMovie(this.movies.getFirst().getUuid());
         verify(this.movieSceneRepository, times(1)).deleteAll(this.moviesScenes);
         verify(this.movieRepository, times(1)).deleteByUuid(this.movies.getFirst().getUuid());
     }
@@ -201,5 +201,14 @@ public class MovieServiceTest {
                 () -> this.movieService.save(this.movieDtoMapper.movieToMovieDto(this.movies.getFirst())));
         assertThat(exception.getMessage()).isEqualTo("UUID already in use");
         verify(this.movieRepository, times(1)).existsByUuid(existingMovieUuid);
+    }
+
+    @Test
+    public void shouldDeleteAllMovies() {
+        doNothing().when(this.movieRepository).deleteAll();
+        doNothing().when(this.movieSceneRepository).deleteAll();
+        this.movieService.deleteAll();
+        verify(this.movieRepository, times(1)).deleteAll();
+        verify(this.movieSceneRepository, times(1)).deleteAll();
     }
 }

@@ -21,6 +21,7 @@ import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class MovieSceneRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie scene"),
             @ApiResponse(responseCode = "404", description = "Movie scene not found"),
             @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
-    public MovieSceneDto findByUuid(@PathVariable("uuid") @UuidConstraint String uuid) throws NotFoundException {
+    public MovieSceneDto findByUuid(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
         return this.movieSceneService.findByUuid(UUID.fromString(uuid));
     }
 
@@ -64,7 +65,7 @@ public class MovieSceneRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie scene was deleted"),
             @ApiResponse(responseCode = "404", description = "Movie scene not found"),
             @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
-    public void scene(@PathVariable("uuid") @UuidConstraint String uuid) throws NotFoundException {
+    public void scene(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
         this.movieSceneService.deleteByUuid(UUID.fromString(uuid));
     }
 

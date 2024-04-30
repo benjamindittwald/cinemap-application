@@ -43,7 +43,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Todo: Verify all tests
 @WebMvcTest(MovieRestController.class)
 @AutoConfigureMockMvc
 public class MovieRestControllerTest {
@@ -475,7 +474,8 @@ public class MovieRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.description.eng").value("Dances with Wolves scene 1"));
 
-        verify(this.movieSceneService, times(1)).save(this.movieSceneOnlyDto, UUID.fromString("b2989ce9-eddc-4772-b32c-5c26cb255a9e"));
+        verify(this.movieSceneService, times(1)).save(this.movieSceneOnlyDto,
+                UUID.fromString("b2989ce9-eddc-4772-b32c-5c26cb255a9e"));
     }
 
     @Test
@@ -509,5 +509,91 @@ public class MovieRestControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(this.movieSceneOnlyDtoJson)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldDeleteAllMovies() throws Exception {
+        doNothing().when(this.movieService).deleteAll();
+        this.mockMvc.perform(delete("/api/v1/movies")).andExpect(status().isNoContent());
+        verify(this.movieService, times(1)).deleteAll();
+    }
+
+    @Test
+    public void shouldUpdateMovieScene() throws Exception {
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        UUID sceneUuid = this.movieSceneOnlyDto.uuid();
+        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid)).thenReturn(
+                this.movieSceneDtos.getFirst());
+        this.mockMvc.perform(
+                put("/api/v1/movies/" + movieUuid + "/scenes/" + sceneUuid).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieSceneOnlyDtoJson)).andExpect(status().isOk());
+        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid);
+    }
+
+    @Test
+    public void shouldFailToUpdateMovieSceneDueToMovieOrSceneDoesNotExist() throws Exception {
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        UUID sceneUuid = this.movieSceneOnlyDto.uuid();
+        when(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid)).thenThrow(NotFoundException.class);
+        this.mockMvc.perform(
+                put("/api/v1/movies/" + movieUuid + "/scenes/" + sceneUuid).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(this.movieSceneOnlyDtoJson)).andExpect(status().isNotFound());
+        verify(this.movieSceneService, times(1)).update(this.movieSceneOnlyDto, movieUuid);
+    }
+
+    @Test
+    public void shouldDeleteMovieScene() throws Exception {
+        UUID movieSceneUuid = this.movieSceneOnlyDto.uuid();
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        doNothing().when(this.movieSceneService).deleteByUuid(movieSceneUuid);
+        this.mockMvc.perform(delete("/api/v1/movies/" + movieUuid + "/scenes/" + movieSceneUuid))
+                .andExpect(status().isNoContent());
+        verify(this.movieSceneService, times(1)).deleteByUuid(movieSceneUuid);
+    }
+
+    @Test
+    public void shouldFailDeleteMovieSceneDueToMovieSceneNotFound() throws Exception {
+        UUID movieSceneUuid = this.movieSceneOnlyDto.uuid();
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        doThrow(new NotFoundException("Movie scene not found")).when(this.movieSceneService)
+                .deleteByUuid(movieSceneUuid);
+        this.mockMvc.perform(delete("/api/v1/movies/" + movieUuid + "/scenes/" + movieSceneUuid))
+                .andExpect(status().isNotFound());
+        verify(this.movieSceneService, times(1)).deleteByUuid(movieSceneUuid);
+    }
+
+    @Test
+    public void shouldFindMovieSceneByUuid() throws Exception {
+        UUID movieSceneUuid = this.movieSceneOnlyDto.uuid();
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        when(this.movieSceneService.findByUuid(movieSceneUuid)).thenReturn(this.movieSceneDtos.getFirst());
+        this.mockMvc.perform(get("/api/v1/movies/" + movieUuid + "/scenes/" + movieSceneUuid))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uuid", is(movieSceneUuid.toString())));
+        verify(this.movieSceneService, times(1)).findByUuid(movieSceneUuid);
+    }
+
+    @Test
+    public void shouldFailFindMovieSceneByUuidDueToNotExistingUuid() throws Exception {
+        UUID movieSceneUuid = this.movieSceneOnlyDto.uuid();
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        when(this.movieSceneService.findByUuid(movieSceneUuid)).thenThrow(NotFoundException.class);
+        this.mockMvc.perform(get("/api/v1/movies/" + movieUuid + "/scenes/" + movieSceneUuid))
+                .andExpect(status().isNotFound());
+        verify(this.movieSceneService, times(1)).findByUuid(movieSceneUuid);
+    }
+
+    @Test
+    public void shouldFindAllMovieScenesOfMovie() throws Exception {
+        UUID movieUuid = this.movieDtos.getFirst().uuid();
+        when(this.movieSceneService.findAllScenesOfMovie(movieUuid)).thenReturn(this.movieSceneDtos);
+        this.mockMvc.perform(get("/api/v1/movies/" + movieUuid + "/scenes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].uuid", is(this.movieSceneDtos.getFirst().uuid().toString())));
+        verify(this.movieSceneService, times(1)).findAllScenesOfMovie(movieUuid);
     }
 }

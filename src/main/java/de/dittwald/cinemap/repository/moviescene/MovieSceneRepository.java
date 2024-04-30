@@ -32,7 +32,7 @@ public interface MovieSceneRepository extends ListCrudRepository<MovieScene, Lon
 
     boolean existsByUuid(UUID uuid);
 
-    Optional<List<MovieScene>> findAllScenesFromMovie(UUID movieUuid);
+    Optional<List<MovieScene>> findAllScenesOfMovie(UUID movieUuid);
 
     // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
 //    @Modifying
