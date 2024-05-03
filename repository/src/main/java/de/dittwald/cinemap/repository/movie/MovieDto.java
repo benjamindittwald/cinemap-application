@@ -17,7 +17,6 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
-import de.dittwald.cinemap.repository.validation.UrlConstraint;
 import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,7 +30,5 @@ public record MovieDto(
 
         @NotNull Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title,
 
-        @UrlConstraint(message = "URL is not valid") @Size(min = 1,
-                max = 100,
-                message = "URL is not in scope on min=1 or max=100 characters") String imdbWebsiteUrl) {
+        int tmdbId) {
 }

@@ -60,9 +60,9 @@ class MovieSceneServiceTest {
         List<Movie> movies = new ArrayList<>();
         movies.add(
                 new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with " + "Wolves"),
-                        "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+                        1051896));
         movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                "https://www" + ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+                1051896));
 
         this.moviesScenes = new ArrayList<>();
         this.moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,

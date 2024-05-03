@@ -59,9 +59,9 @@ class MovieSceneRepositoryTest {
         List<MovieScene> moviesScenes;
 
         Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+                1051896);
         Movie nobody = new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                "https://www.imdb" + ".com/title/tt0070215/?ref_=ext_shr_lnk");
+                1051896);
 
         moviesScenes = new ArrayList<>();
         moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,

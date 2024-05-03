@@ -75,10 +75,10 @@ public class MovieRestControllerTest {
         this.movieDtos = new ArrayList<>();
         this.movieDtos.add(new MovieDto(UUID.fromString("aa7acd67-4052-421d-a63f-90440c683e6d"),
                 Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"));
+                1051896));
         this.movieDtos.add(new MovieDto(UUID.fromString("575c9ec9-fff0-4f04-a115-55fabf4acaee"),
                 Map.of("deu", "Mein Name ist Nobody", "eng", "My Name Is Nobody"),
-                "https" + "://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+                1051896));
 
         this.movieDtoJson = """
                 {
@@ -88,7 +88,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
 
@@ -101,7 +101,7 @@ public class MovieRestControllerTest {
                                 "eng":"Dances with Wolves",
                                 "deu":"Der mit dem Wolf tanzt"
                             },
-                        "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                        "tmdbId":"1051896"
                     },
                     {
                         "uuid":"575c9ec9-fff0-4f04-a115-55fabf4acaee",
@@ -110,7 +110,7 @@ public class MovieRestControllerTest {
                                 "eng":"My Name Is Nobody",
                                 "deu":"Mein Name ist Nobody"
                             },
-                        "imdbWebsiteUrl":"https://www.imdb.com/title/tt0070215/?ref_=ext_shr_lnk"
+                        "tmdbId":"1051896"
                     }
                 ]
                 """;
@@ -133,7 +133,7 @@ public class MovieRestControllerTest {
                                 "eng":"Dances with Wolves",
                                 "deu":"Der mit dem Wolf tanzt"
                             },
-                        "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                        "tmdbId":"1051896"
                         }
                 }
                 """;
@@ -236,7 +236,7 @@ public class MovieRestControllerTest {
                             "en":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"http://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
 
@@ -257,7 +257,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"http//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896aa-INVALID"
                 }
                 """;
 
@@ -268,26 +268,6 @@ public class MovieRestControllerTest {
                         .content(movieDtoJson)).andExpect(status().isBadRequest());
     }
 
-    @Test
-    public void shouldFailToUpdateMovieDueToTooLongImdbWebsiteUrl() throws Exception {
-
-        String movieDtoJson = """
-                {   "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
-                    "title":
-                        {
-                            "eng":"Dances with Wolves",
-                            "deu":"Der mit dem Wolf tanzt"
-                        },
-                    "imdbWebsiteUrl":"http//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk/3aspKWmnBr1ZYAUVSbXtaS0jWBkDC41FKtnm3V3mYyD7dnudWKj13pCF9SCTuwTzPsntHEXdJKswp5QToEdkFbo3NuKC2Q9EjK12"
-                }
-                """;
-
-        this.mockMvc.perform(
-                put("/api/v1/movies/aa7acd67-4052-421d-a63f-90440c683e6d").contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(movieDtoJson)).andExpect(status().isBadRequest());
-    }
 
     @Test
     public void shouldFailUpdateMovieDueToNotExisingMovie() throws Exception {
@@ -322,7 +302,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
 
@@ -346,7 +326,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
         when(this.movieService.save(this.movieDtos.getFirst())).thenReturn(this.movieDtos.getFirst());
@@ -367,7 +347,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
 
@@ -379,6 +359,7 @@ public class MovieRestControllerTest {
                 .content(movieDtoJsonWithInvalidUuid)).andExpect(status().isBadRequest());
     }
 
+    // Fixme ID
     @Test
     public void shouldFailCreateMovieDueToInvalidImdbWebsiteUrl() throws Exception {
         String invalidMovieDtoJson = """
@@ -389,26 +370,7 @@ public class MovieRestControllerTest {
                             "eng":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"abcd//www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
-                }
-                """;
-        this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(invalidMovieDtoJson)).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void shouldFailCreateMovieDueToTooLongWebsiteUrl() throws Exception {
-        String invalidMovieDtoJson = """
-                {
-                    "uuid": "aa7acd67-4052-421d-a63f-90440c683e6d",
-                    "title":
-                        {
-                            "eng":"Dances with Wolves",
-                            "deu":"Der mit dem Wolf tanzt"
-                        },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk/3aspKWmnBr1ZYAUVSbXtaS0jWBkDC41FKtnm3V3mYyD7dnudWKj13pCF9SCTuwTzPsntHEXdJKswp5QToEdkFbo3NuKC2Q9EjK12"
+                    "tmdbId":"1051896-INVALID"
                 }
                 """;
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
@@ -427,7 +389,7 @@ public class MovieRestControllerTest {
                             "en":"Dances with Wolves",
                             "deu":"Der mit dem Wolf tanzt"
                         },
-                    "imdbWebsiteUrl":"https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk"
+                    "tmdbId":"1051896"
                 }
                 """;
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)

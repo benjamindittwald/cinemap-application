@@ -54,9 +54,9 @@ class MovieRepositoryTest {
     public void setUp() {
         movies = new ArrayList<>();
         movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www.imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+                1051896));
         movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                "https://www.imdb" + ".com/title/tt0070215/?ref_=ext_shr_lnk"));
+                1051896));
         this.movieRepository.saveAll(movies);
     }
 
@@ -86,7 +86,7 @@ class MovieRepositoryTest {
     public void shouldPersistMovie() {
         Movie movie = new Movie(UUID.randomUUID(),
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity Is Still My Name"),
-                "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+                1051896);
         this.movieRepository.save(movie);
         List<Movie> movies = this.movieRepository.findAll();
         assertThat(movies.size()).isEqualTo(3);

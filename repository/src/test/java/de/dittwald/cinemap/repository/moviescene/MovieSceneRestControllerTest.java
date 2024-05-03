@@ -58,7 +58,7 @@ public class MovieSceneRestControllerTest {
     void setUp() {
         MovieDto wolf =
                 new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        "https://www.imdb.com/title/tt0099348/?ref_=ext_shr_lnk");
+                        1051896);
 
         movieSceneDtos = new ArrayList<>();
         movieSceneDtos.add(

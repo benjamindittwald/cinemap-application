@@ -17,8 +17,9 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
-import de.dittwald.cinemap.repository.validation.UrlConstraint;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -34,10 +35,10 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(UUID uuid, Map<String, String> title, String imdbWebsiteUrl) {
+    public Movie(UUID uuid, Map<String, String> title, int tmdbId) {
         this.uuid = uuid;
         this.title = title;
-        this.imdbWebsiteUrl = imdbWebsiteUrl;
+        this.tmdbId = tmdbId;
     }
 
     @Id
@@ -59,14 +60,12 @@ public class Movie {
     @NotNull
     private Map<@Iso639Constraint String, String> title = new HashMap<>();
 
-    @UrlConstraint
-    @NotBlank
-    private String imdbWebsiteUrl;
+    @Min(value = 0)
+    private int tmdbId;
 
     @Override
     public String toString() {
-        return "Movie{" + "id=" + id + ", version=" + version + ", title=" + title + ", imdbWebsiteUrl='" +
-                imdbWebsiteUrl + '\'' + '}';
+        return "Movie{" + "id=" + id + ", version=" + version + ", title=" + title + ", tmdbId='" + tmdbId + '\'' + '}';
     }
 
     @Override
@@ -108,11 +107,11 @@ public class Movie {
         this.title = title;
     }
 
-    public String getImdbWebsiteUrl() {
-        return imdbWebsiteUrl;
+    public int getTmdbId() {
+        return tmdbId;
     }
 
-    public void setImdbWebsiteUrl(String imdbWebsiteUrl) {
-        this.imdbWebsiteUrl = imdbWebsiteUrl;
+    public void setTmdbId(int tmdbId) {
+        this.tmdbId = tmdbId;
     }
 }

@@ -37,7 +37,7 @@ class MovieSceneDtoMapperTest {
     @Test
     public void shouldMapMovieSceneToMovieSceneDto() {
         Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+                1051896);
         MovieScene movieSceneFromWolf = new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf);
 
@@ -47,13 +47,13 @@ class MovieSceneDtoMapperTest {
         assertEquals(movieSceneDto.description(), movieSceneFromWolf.getDescription());
         assertEquals(movieSceneDto.lat(), movieSceneFromWolf.getLat());
         assertEquals(movieSceneDto.lon(), movieSceneFromWolf.getLon());
-        assertEquals(movieSceneDto.movie().imdbWebsiteUrl(), movieSceneFromWolf.getMovie().getImdbWebsiteUrl());
+        assertEquals(movieSceneDto.movie().tmdbId(), movieSceneFromWolf.getMovie().getTmdbId());
     }
 
     @Test
     public void shouldMapMovieSceneDtoToMovieScene() {
         MovieDto wolfDto = new MovieDto(null, Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk");
+                1051896);
         MovieSceneDto movieSceneDtoFromWolf = new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolfDto);
 
@@ -63,7 +63,7 @@ class MovieSceneDtoMapperTest {
         assertEquals(movieScene.getDescription(), movieSceneDtoFromWolf.description());
         assertEquals(movieScene.getLat(), movieSceneDtoFromWolf.lat());
         assertEquals(movieScene.getLon(), movieSceneDtoFromWolf.lon());
-        assertEquals(movieScene.getMovie().getImdbWebsiteUrl(), movieSceneDtoFromWolf.movie().imdbWebsiteUrl());
+        assertEquals(movieScene.getMovie().getTmdbId(), movieSceneDtoFromWolf.movie().tmdbId());
     }
 
     @Test

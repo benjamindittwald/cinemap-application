@@ -58,9 +58,9 @@ public class MovieServiceTest {
         this.movies = new ArrayList<>();
         this.movies.add(
                 new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        "https://www" + ".imdb" + ".com/title/tt0099348/?ref_=ext_shr_lnk"));
+                        1051896));
         this.movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                "https://www" + ".imdb.com/title/tt0070215/?ref_=ext_shr_lnk"));
+                1051896));
 
         this.moviesScenes = new ArrayList<>();
         this.moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
@@ -92,13 +92,13 @@ public class MovieServiceTest {
         UUID uuid = UUID.randomUUID();
         MovieDto notYetPersistedMovie =
                 new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+                        1051896);
         MovieDto persistedMovieDto =
                 new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+                        1051896);
         Movie persistedMovie =
                 new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk");
+                        1051896);
 
         when(this.movieRepository.save(this.movieDtoMapper.movieDtoToMovie(notYetPersistedMovie))).thenReturn(
                 persistedMovie);
@@ -112,14 +112,14 @@ public class MovieServiceTest {
         MovieDto persistedMovieDto = new MovieDto(uuid,
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
                         "On continue à l'appeler Trinita"),
-                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
+                1051896);
         Optional<Movie> persistedMovie = Optional.of(
                 new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
+                        1051896));
         Movie persistedMovieUpdated = new Movie(uuid,
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
                         "On continue à l'appeler Trinita"),
-                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
+                1051896);
 
         when(this.movieRepository.findByUuid(uuid)).thenReturn(persistedMovie);
         when(this.movieRepository.save(this.movieDtoMapper.movieDtoToMovie(persistedMovieDto))).thenReturn(
@@ -138,7 +138,7 @@ public class MovieServiceTest {
         MovieDto persistedMovieDto = new MovieDto(UUID.randomUUID(),
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
                         "On continue à l'appeler Trinita"),
-                "https://www.imdb" + ".com/title/tt0068154/?ref_=ext_shr_lnk");
+                1051896);
         when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class,
@@ -175,7 +175,7 @@ public class MovieServiceTest {
     public void shouldFindMovieByUuid() throws NotFoundException {
         Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(),
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                "https://www.imdb.com/title/tt0068154/?ref_=ext_shr_lnk"));
+                1051896));
 
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
         assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid())).isEqualTo(
