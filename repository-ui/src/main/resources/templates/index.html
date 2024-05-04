@@ -15,11 +15,14 @@
 <div th:replace="~{navbar :: navbar}"></div>
 
 
-<div class="container text-center">
-    <h1>All stored movies</h1>
-    <div class="row align-items-start">
+<div class="container">
+    <div class="row mt-5">
+        <h1>All stored movies</h1>
+    </div>
+    <div class="row align-items-start text-center">
         <div th:each="movie : ${movies}" class="col-md gy-4">
-            <div class="card" style="width: 18rem;">
+            <div class="card shadow bg-body-tertiary rounded"
+                 style="width: 18rem;">
                 <img th:src="${movie.dtmdb.posterUrl()}"
                      class="img-fluid rounded-start"
                      alt="Movie poster">
@@ -27,15 +30,22 @@
                     <h5 class="card-title"><span
                             th:text="${movie.title.get('eng')}"> Title </span>
                     </h5>
-                    <p class="card-text"><small class="text-body-secondary"><span
-                            th:text="${movie.dtmdb.releaseYear}"> Release Year </span></small></p>
+                    <p class="card-text"><small
+                            class="text-body-secondary"><span
+                            th:text="${movie.dtmdb.releaseYear}"> Release Year </span></small>
+                    </p>
                     <p class="card-text multi-line-truncate"><span
                             th:text="${movie.dtmdb.tagline}"> Overview </span>
                     </p>
                 </div>
-                <div class="card-footer">
-                    <a href="#" class="card-link">25 Scenes</a>
-                    <a th:href="${movie.dtmdb.imdbUrl()}">IMDB</a>
+                <div class="card-footer d-flex justify-content-between">
+                    <div>
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                           href="#"><i class="bi bi-pencil-fill"></i></a>
+                    </div>
+                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                       target="_blank" rel="noopener noreferrer"
+                       th:href="${movie.dtmdb.imdbUrl()}">IMDB</a>
                 </div>
             </div>
         </div>
