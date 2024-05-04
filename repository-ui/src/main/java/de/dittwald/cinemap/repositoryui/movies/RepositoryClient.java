@@ -3,9 +3,11 @@ package de.dittwald.cinemap.repositoryui.movies;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.dittwald.cinemap.repositoryui.properties.Properties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +22,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RepositoryClient {
 
-    int timeout = 3000;
+    private final int timeout = 3000;
 
     public List<Movie> getAllMovies() throws JsonProcessingException {
-        ObjectMapper organizationsMapper = new ObjectMapper();
 
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.timeout)
@@ -42,7 +43,7 @@ public class RepositoryClient {
         List<Movie> movies = new ArrayList<>();
 
         try {
-            organizationsMapper.readTree(client.get().uri("api/v1/movies").retrieve().bodyToMono(String.class).block())
+            objectMapper.readTree(client.get().uri("api/v1/movies").retrieve().bodyToMono(String.class).block())
                     .forEach(node -> {
 
                         try {

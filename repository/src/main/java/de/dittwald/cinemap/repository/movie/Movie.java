@@ -18,10 +18,7 @@ package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +57,8 @@ public class Movie {
     @NotNull
     private Map<@Iso639Constraint String, String> title = new HashMap<>();
 
-    @Min(value = 0)
+    @Min(value = -2147483648) // From TMDB API Reference movie Details
+    @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
     private int tmdbId;
 
     @Override
