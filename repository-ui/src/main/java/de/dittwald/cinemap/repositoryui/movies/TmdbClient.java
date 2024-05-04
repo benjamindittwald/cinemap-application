@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -54,6 +56,7 @@ public class TmdbClient {
         String tagline = null;
         String imdbId;
         URL imdbMovieUrl = null;
+        String realeaseYear = null;
 
         try {
             JsonNode node = objectMapper.readTree(client.get()
@@ -65,16 +68,19 @@ public class TmdbClient {
 
             try {
                 posterPath = ((node.has("poster_path") && node.get("poster_path") == null) ?
-                        new URI(this.properties.getTmdbImageBaseUrl() + "/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg").toURL() :
+                        new URI(this.properties.getTmdbImageBaseUrl() +
+                                "/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg").toURL() :
                         new URI(this.properties.getTmdbImageBaseUrl() + "/w300/" + node.get("poster_path").asText() +
                                 ".jpg").toURL());
             } catch (MalformedURLException | URISyntaxException e) {
                 log.debug("Error parsing poster_path for movie {}", id, e);
             }
 
-            overview = (node.has("overview") ? node.get("overview").asText() : null);
-            tagline = (node.has("tagline") ? node.get("tagline").asText(): null);
-            imdbId = (node.has("imdb_id") ? node.get("imdb_id").asText(): null);
+            overview = (node.has("overview") ? node.get("overview").asText() : "N/A");
+            tagline = (node.has("tagline") ? node.get("tagline").asText() : "N/A");
+            imdbId = (node.has("imdb_id") ? node.get("imdb_id").asText() : null);
+            realeaseYear = (node.has("release_date") ?
+                    String.valueOf(LocalDate.parse(node.get("release_date").asText()).getYear()) : "N/A");
 
             try {
                 imdbMovieUrl = new URI("https://www.imdb.com/title/" + imdbId).toURL();
@@ -83,7 +89,7 @@ public class TmdbClient {
             }
 
 
-            movieTmdb = new MovieTmdb(posterPath, overview, tagline, imdbMovieUrl);
+            movieTmdb = new MovieTmdb(posterPath, overview, tagline, imdbMovieUrl, realeaseYear);
 
             return movieTmdb;
 
