@@ -65,8 +65,8 @@ public class TmdbClient {
 
             try {
                 posterPath = ((node.has("poster_path") && node.get("poster_path") == null) ?
-                        new URI(this.properties.getTmdbImageBaseUrl() + "/w154/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg").toURL() :
-                        new URI(this.properties.getTmdbImageBaseUrl() + "/w154/" + node.get("poster_path").asText() +
+                        new URI(this.properties.getTmdbImageBaseUrl() + "/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg").toURL() :
+                        new URI(this.properties.getTmdbImageBaseUrl() + "/w300/" + node.get("poster_path").asText() +
                                 ".jpg").toURL());
             } catch (MalformedURLException | URISyntaxException e) {
                 log.debug("Error parsing poster_path for movie {}", id, e);

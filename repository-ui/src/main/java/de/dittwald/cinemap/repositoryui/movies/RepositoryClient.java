@@ -22,7 +22,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RepositoryClient {
 
+    final Properties properties;
+
     private final int timeout = 3000;
+
+    public RepositoryClient(Properties properties) {
+        this.properties = properties;
+    }
 
     public List<Movie> getAllMovies() throws JsonProcessingException {
 
@@ -35,7 +41,7 @@ public class RepositoryClient {
 
         WebClient client = WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl("http://localhost:8080/")
+                .baseUrl(this.properties.getRepositoryUrl() + ":" + this.properties.getRepositoryPort())
                 .build();
 
 
@@ -43,7 +49,7 @@ public class RepositoryClient {
         List<Movie> movies = new ArrayList<>();
 
         try {
-            objectMapper.readTree(client.get().uri("api/v1/movies").retrieve().bodyToMono(String.class).block())
+            objectMapper.readTree(client.get().uri("/api/v1/movies").retrieve().bodyToMono(String.class).block())
                     .forEach(node -> {
 
                         try {

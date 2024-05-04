@@ -10,12 +10,18 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 public class Properties {
 
-    @Value("${tmdb.api.read_token}")
+    @Value("${de.cinemap.repositoryui.tmdb.api.readtoken}")
     private String tmdbApiReadToken;
 
-    @Value("${tmdb.api.base_url}")
+    @Value("${de.cinemap.repositoryui.tmdb.api.baseurl}")
     private String tmdbApiBaseUrl;
 
-    @Value("${tmdb.image.base_url}")
+    @Value("${de.cinemap.repositoryui.tmdb.image.baseurl}")
     private String tmdbImageBaseUrl;
+
+    @Value("${de.cinemap.repository.server.port}")
+    private String repositoryPort;
+
+    @Value("${de.cinemap.repository.server.url}")
+    private String repositoryUrl;
 }

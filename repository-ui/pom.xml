@@ -37,6 +37,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- Avoid "Unable to load
+		io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider" error
+		on Apple Silicon -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
