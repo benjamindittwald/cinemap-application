@@ -72,6 +72,7 @@ public class MovieScene {
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
+
     @Override
     public String toString() {
         return "MovieScene{" + "id=" + id + ", version=" + version + ", lon=" + lon + ", lat=" + lat + ", description" +
@@ -95,10 +96,6 @@ public class MovieScene {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getVersion() {
-        return version;
     }
 
     public UUID getUuid() {

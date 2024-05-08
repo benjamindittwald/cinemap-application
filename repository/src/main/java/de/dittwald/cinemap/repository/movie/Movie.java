@@ -20,10 +20,7 @@ import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "movies")
@@ -32,10 +29,17 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(UUID uuid, Map<String, String> title, int tmdbId) {
+    public Movie(UUID uuid, Map<String, String> title, int tmdbId, int releaseYear, Map<String, String> tagline,
+                 Map<String, String> overview, Map<Integer, String> genres, Byte[] poster, String imdbId) {
         this.uuid = uuid;
         this.title = title;
         this.tmdbId = tmdbId;
+        this.releaseYear = releaseYear;
+        this.tagline = tagline;
+        this.overview = overview;
+        this.genres = genres;
+        this.poster = poster;
+        this.imdbId = imdbId;
     }
 
     @Id
@@ -55,15 +59,49 @@ public class Movie {
     @MapKeyColumn(name = "title_locale")
     @Column(name = "title")
     @NotNull
-    private Map<@Iso639Constraint String, String> title = new HashMap<>();
+    private Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title = new HashMap<>();
 
     @Min(value = -2147483648) // From TMDB API Reference movie Details
     @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-    private int tmdbId;
+    private Integer tmdbId;
+
+    @Column
+    @Min(value = 1700)
+    private Integer releaseYear;
+
+    @ElementCollection
+    @CollectionTable(name = "tagline_locale_mapping",
+            joinColumns = {@JoinColumn(name = "locale_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "tagline_locale")
+    @Column(name = "tagline")
+    private Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> tagline = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name = "overview_locale_mapping",
+            joinColumns = {@JoinColumn(name = "locale_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "overview_locale")
+    @Column(name = "overview")
+    private Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> overview = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name = "genres_number_mapping",
+            joinColumns = {@JoinColumn(name = "number_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "genres_id")
+    @Column(name = "genres")
+    private Map<Integer, @Size(min = 1, max = 50) String> genres = new HashMap<>();
+
+    @Lob
+    private Byte[] poster;
+
+    @Column
+    @Size(min = 1, max = 50)
+    private String imdbId;
 
     @Override
     public String toString() {
-        return "Movie{" + "id=" + id + ", version=" + version + ", title=" + title + ", tmdbId='" + tmdbId + '\'' + '}';
+        return "Movie{" + "id=" + id + ", uuid=" + uuid + ", version=" + version + ", title=" + title + ", tmdbId=" +
+                tmdbId + ", releaseYear=" + releaseYear + ", tagline=" + tagline + ", overview=" + overview +
+                ", genres=" + genres + ", poster=" + Arrays.toString(poster) + ", imdbId='" + imdbId + '\'' + '}';
     }
 
     @Override
@@ -81,20 +119,16 @@ public class Movie {
         return getClass().hashCode();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getVersion() {
-        return version;
     }
 
     public Map<String, String> getTitle() {
@@ -111,5 +145,53 @@ public class Movie {
 
     public void setTmdbId(int tmdbId) {
         this.tmdbId = tmdbId;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public Map<String, String> getTagline() {
+        return tagline;
+    }
+
+    public void setTagline(Map<String, String> tagline) {
+        this.tagline = tagline;
+    }
+
+    public Map<String, String> getOverview() {
+        return overview;
+    }
+
+    public void setOverview(Map<String, String> overview) {
+        this.overview = overview;
+    }
+
+    public Map<Integer, String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Map<Integer, String> genres) {
+        this.genres = genres;
+    }
+
+    public Byte[] getPoster() {
+        return poster;
+    }
+
+    public void setPoster(Byte[] poster) {
+        this.poster = poster;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
     }
 }

@@ -20,6 +20,7 @@ import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.Movie;
 import de.dittwald.cinemap.repository.movie.MovieRepository;
+import org.apache.commons.lang3.ArrayUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,10 +60,14 @@ class MovieSceneServiceTest {
     void setUp() {
         List<Movie> movies = new ArrayList<>();
         movies.add(
-                new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with " + "Wolves"),
-                        1051896));
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                1051896));
+                new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                        1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                        Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                        Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId"));
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
+                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId"));
 
         this.moviesScenes = new ArrayList<>();
         this.moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
@@ -146,8 +151,8 @@ class MovieSceneServiceTest {
                 Optional.of(this.moviesScenes.getFirst().getMovie()));
         when(this.movieSceneRepository.save(this.moviesScenes.getFirst())).thenReturn(this.moviesScenes.getFirst());
 
-        Assertions.assertThat(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid, movieSceneUuid))
-                .isEqualTo(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+        Assertions.assertThat(this.movieSceneService.update(this.movieSceneOnlyDto, movieUuid, movieSceneUuid).uuid())
+                .isEqualTo(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()).uuid());
 
         verify(this.movieSceneRepository, times(1)).findByUuid(movieSceneUuid);
         verify(this.movieRepository, times(1)).findByUuid(movieUuid);
@@ -175,8 +180,8 @@ class MovieSceneServiceTest {
 
         Assertions.assertThat(
                         this.movieSceneService.save(this.movieSceneOnlyDto,
-                                this.moviesScenes.getFirst().getMovie().getUuid()))
-                .isEqualTo(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()));
+                                this.moviesScenes.getFirst().getMovie().getUuid()).uuid())
+                .isEqualTo(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.moviesScenes.getFirst()).uuid());
 
         verify(this.movieRepository, times(1)).findByUuid(this.moviesScenes.getFirst().getMovie().getUuid());
         verify(this.movieSceneRepository, times(1)).findByUuid(this.movieSceneOnlyDto.uuid());

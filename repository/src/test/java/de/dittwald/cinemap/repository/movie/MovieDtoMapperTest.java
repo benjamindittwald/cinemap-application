@@ -16,15 +16,13 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -37,18 +35,30 @@ class MovieDtoMapperTest {
     @Autowired
     private MovieDtoMapper movieDtoMapper;
 
+    Byte[] poster =  ArrayUtils.toObject("Test".getBytes());
+
     @BeforeEach
     void setUp() {
+
         movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                1051896));
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                1051896));
+                1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId"));
+
+        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
+                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId"));
 
         movieDtos.add(
                 new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        1051896));
-        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                1051896));
+                        1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                        Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                        Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId"));
+        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
+                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId"));
     }
 
     @Test

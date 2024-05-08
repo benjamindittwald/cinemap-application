@@ -18,6 +18,7 @@ package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.MovieDto;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,10 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -58,7 +56,9 @@ public class MovieSceneRestControllerTest {
     void setUp() {
         MovieDto wolf =
                 new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        1051896);
+                        1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                        Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                        Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId");
 
         movieSceneDtos = new ArrayList<>();
         movieSceneDtos.add(

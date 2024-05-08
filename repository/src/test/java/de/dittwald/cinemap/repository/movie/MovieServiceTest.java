@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.movie;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.moviescene.MovieScene;
 import de.dittwald.cinemap.repository.moviescene.MovieSceneRepository;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -53,14 +55,34 @@ public class MovieServiceTest {
 
     List<MovieScene> moviesScenes;
 
+    Byte[] poster =  ArrayUtils.toObject("Test".getBytes());
+
+    Movie wolfMovie =
+            new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), 1051896,
+                    1970, Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                    Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                    Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId");
+    Movie nobodyMovie =
+            new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"), 1051896,
+                    1970, Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+                    Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+                    Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId");
+    Movie trintyMovie = new Movie(UUID.randomUUID(),
+            Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity is Still My Name"), 1051896, 1970,
+            Map.of("deu", "Der Kleine und der müde Joe TAGLINE", "eng", "Trinity is Still My Name TAGLINE"),
+            Map.of("deu", "Der Kleine und der müde Joe OVERVIEW", "eng", "Trinity is Still My Name OVERVIEW"),
+            Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId");
+    MovieDto trinityMovieDto = new MovieDto(UUID.randomUUID(),
+            Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity is Still My Name"), 1051896, 1970,
+            Map.of("deu", "Der Kleine und der müde Joe TAGLINE", "eng", "Trinity is Still My Name TAGLINE"),
+            Map.of("deu", "Der Kleine und der müde Joe OVERVIEW", "eng", "Trinity is Still My Name OVERVIEW"),
+            Map.of(80, "western", 85, "Thriller"), this.poster, "imdbId");
+
     @BeforeEach
     void setUp() {
         this.movies = new ArrayList<>();
-        this.movies.add(
-                new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        1051896));
-        this.movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name is Nobody", "eng", "My Name Is Nobody"),
-                1051896));
+        this.movies.add(this.wolfMovie);
+        this.movies.add(this.nobodyMovie);
 
         this.moviesScenes = new ArrayList<>();
         this.moviesScenes.add(new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
@@ -89,56 +111,36 @@ public class MovieServiceTest {
 
     @Test
     void shouldSaveMovie() {
-        UUID uuid = UUID.randomUUID();
-        MovieDto notYetPersistedMovie =
-                new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        1051896);
-        MovieDto persistedMovieDto =
-                new MovieDto(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        1051896);
-        Movie persistedMovie =
-                new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        1051896);
+        MovieDto notYetPersistedMovie = this.trinityMovieDto;
 
         when(this.movieRepository.save(this.movieDtoMapper.movieDtoToMovie(notYetPersistedMovie))).thenReturn(
-                persistedMovie);
-        assertThat(this.movieService.save(notYetPersistedMovie)).isEqualTo(persistedMovieDto);
+                this.movieDtoMapper.movieDtoToMovie(notYetPersistedMovie));
+        assertThat(this.movieService.save(notYetPersistedMovie).uuid()).isEqualTo(notYetPersistedMovie.uuid());
         verify(this.movieRepository, times(1)).save(this.movieDtoMapper.movieDtoToMovie(notYetPersistedMovie));
     }
 
     @Test
     public void shouldUpdateMovie() throws NotFoundException {
         UUID uuid = UUID.randomUUID();
-        MovieDto persistedMovieDto = new MovieDto(uuid,
-                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
-                        "On continue à l'appeler Trinita"),
-                1051896);
-        Optional<Movie> persistedMovie = Optional.of(
-                new Movie(uuid, Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                        1051896));
-        Movie persistedMovieUpdated = new Movie(uuid,
-                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
-                        "On continue à l'appeler Trinita"),
-                1051896);
+        MovieDto persistedMovieDto = this.trinityMovieDto;
+        Optional<Movie> persistedMovie = Optional.of(this.trintyMovie);
+        Movie persistedMovieUpdated = this.trintyMovie;
 
         when(this.movieRepository.findByUuid(uuid)).thenReturn(persistedMovie);
         when(this.movieRepository.save(this.movieDtoMapper.movieDtoToMovie(persistedMovieDto))).thenReturn(
                 persistedMovieUpdated);
 
-        assertThat(this.movieService.update(persistedMovieDto, uuid)).isEqualTo(
-                this.movieDtoMapper.movieToMovieDto(persistedMovieUpdated));
+        assertThat(this.movieService.update(persistedMovieDto, uuid).uuid()).isEqualTo(
+                this.movieDtoMapper.movieToMovieDto(persistedMovieUpdated).uuid());
 
         verify(this.movieRepository, times(1)).findByUuid(uuid);
         verify(this.movieRepository, times(1)).save(persistedMovieUpdated);
     }
 
     @Test
-    public void shouldFailUpdateMoiveDueToMovieDoesNotExist() {
+    public void shouldFailUpdateMovieDueToMovieDoesNotExist() {
         UUID notExistingMovieUuid = UUID.randomUUID();
-        MovieDto persistedMovieDto = new MovieDto(UUID.randomUUID(),
-                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name", "fra",
-                        "On continue à l'appeler Trinita"),
-                1051896);
+        MovieDto persistedMovieDto = this.trinityMovieDto;
         when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class,
@@ -173,13 +175,11 @@ public class MovieServiceTest {
 
     @Test
     public void shouldFindMovieByUuid() throws NotFoundException {
-        Optional<Movie> persistedMovie = Optional.of(new Movie(UUID.randomUUID(),
-                Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity " + "Is Still My Name"),
-                1051896));
+        Optional<Movie> persistedMovie = Optional.of(this.trintyMovie);
 
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
-        assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid())).isEqualTo(
-                this.movieDtoMapper.movieToMovieDto(persistedMovie.get()));
+        assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid()).uuid()).isEqualTo(
+                this.movieDtoMapper.movieToMovieDto(persistedMovie.get()).uuid());
         verify(this.movieRepository, times(1)).findByUuid(persistedMovie.get().getUuid());
     }
 

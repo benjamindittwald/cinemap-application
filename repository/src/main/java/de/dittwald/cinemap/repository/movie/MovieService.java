@@ -59,6 +59,7 @@ public class MovieService {
         if (this.movieRepository.existsByUuid(movieDto.uuid())) {
             throw new DataIntegrityViolationException("UUID already in use");
         } else {
+
             return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movieDtoMapper.movieDtoToMovie(movieDto)));
         }
     }

@@ -18,10 +18,12 @@ package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.movie.Movie;
 import de.dittwald.cinemap.repository.movie.MovieDto;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
+import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,7 +39,9 @@ class MovieSceneDtoMapperTest {
     @Test
     public void shouldMapMovieSceneToMovieSceneDto() {
         Movie wolf = new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                1051896);
+                1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId");
         MovieScene movieSceneFromWolf = new MovieScene(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolf);
 
@@ -52,8 +56,10 @@ class MovieSceneDtoMapperTest {
 
     @Test
     public void shouldMapMovieSceneDtoToMovieScene() {
-        MovieDto wolfDto = new MovieDto(null, Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                1051896);
+        MovieDto wolfDto = new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+                1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+                Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId");
         MovieSceneDto movieSceneDtoFromWolf = new MovieSceneDto(UUID.randomUUID(), 13404954L, 52520008L,
                 Map.of("deu", "Der mit dem Wolf tanzt Szene 1", "eng", "Dances with Wolves scene 1"), wolfDto);
 

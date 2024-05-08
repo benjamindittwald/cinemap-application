@@ -16,8 +16,12 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import de.dittwald.cinemap.repository.validation.UuidConstraint;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -30,5 +34,17 @@ public record MovieDto(
 
         @NotNull Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title,
 
-        int tmdbId) {
+        @Min(value = -2147483648) // From TMDB API Reference movie Details
+        @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
+        Integer tmdbId,
+
+        @Min(value = 1700) Integer releaseYear,
+
+        Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> tagline,
+        Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> overview,
+        Map<Integer, @Size(min = 1, max = 50) String> genres,
+
+        @JsonDeserialize(using = ByteArrayDeserializer.class) @JsonSerialize(using = ByteArraySerializer.class) Byte[] poster,
+
+        @Size(min = 1, max = 50) String imdbId) {
 }
