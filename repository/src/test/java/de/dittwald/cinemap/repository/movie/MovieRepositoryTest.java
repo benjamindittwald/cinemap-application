@@ -63,14 +63,14 @@ class MovieRepositoryTest {
         movies.add(new Movie(UUID.randomUUID(), mutableWolfTitle, 1051896, 1970,
                 Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
                 Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()),
+                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                 "imdbId"));
         movies.add(
                 new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"), 1051896,
                         1970, Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
                         Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
                         Map.of(80, "western", 85, "Thriller"),
-                        ArrayUtils.toObject("Test".getBytes()), "imdbId"));
+                        "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
         this.movieRepository.saveAll(movies);
     }
 
@@ -102,7 +102,7 @@ class MovieRepositoryTest {
                 Map.of("deu", "Der Kleine und der müde Joe", "eng", "Trinity is Still My Name"), 1051896, 1970,
                 Map.of("deu", "Der Kleine und der müde Joe TAGLINE", "eng", "Trinity is Still My Name TAGLINE"),
                 Map.of("deu", "Der Kleine und der müde Joe OVERVIEW", "eng", "Trinity is Still My Name OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()),
+                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                 "imdbId");
         this.movieRepository.save(movie);
         List<Movie> movies = this.movieRepository.findAll();

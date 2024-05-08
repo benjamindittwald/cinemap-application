@@ -69,14 +69,15 @@ public class MovieRestControllerTest {
                 Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"), 1051896, 1970,
                 Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
                 Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject(Base64.getDecoder().decode("Imadummyfile")),
-                "imdbId"));
+                Map.of(80, "western", 85, "Thriller"),
+                "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
         this.movieDtos.add(
                 new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
                         1051896, 1970,
                         Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
                         Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
-                        Map.of(80, "western", 85, "Thriller"), ArrayUtils.toObject("Test".getBytes()), "imdbId"));
+                        Map.of(80, "western", 85, "Thriller"),
+                        "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
 
         this.movieSceneDtos = new ArrayList<>();
         this.movieSceneDtos.add(
@@ -162,7 +163,7 @@ public class MovieRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid", is("aa7acd67-4052-421d-a63f-90440c683e6d")))
                 .andExpect(jsonPath("$.title.deu", is("Der mit dem Wolf tanzt")))
-                .andExpect(jsonPath("$.poster", is("Imadummyfile")));
+                .andExpect(jsonPath("$.poster", is("https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg")));
         verify(this.movieService, times(1)).update(any(), any());
     }
 
@@ -224,9 +225,10 @@ public class MovieRestControllerTest {
     public void shouldFailUpdateMovieDueToInvalidUuid() throws Exception {
         String invalidUuid = "aa7acd67-4052-a63f-90440c683e6d";
         this.mockMvc.perform(put("/api/v1/movies/" + invalidUuid).contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_INVALID_UUID)).andExpect(status().isBadRequest());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_INVALID_UUID))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -246,25 +248,28 @@ public class MovieRestControllerTest {
     @Test
     public void shouldFailCreateMovieDueToMissingUuid() throws Exception {
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_MISSING_UUID)).andExpect(status().isBadRequest());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_MISSING_UUID))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldFailCreateMovieDueToInvalidUuid() throws Exception {
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_INVALID_UUID)).andExpect(status().isBadRequest());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_INVALID_UUID))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldFailCreateMovieDueToNonIsoLang() throws Exception {
         this.mockMvc.perform(post("/api/v1/movies").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_NON_ISO_LANG)).andExpect(status().isBadRequest());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(DummyMovieConstantsJson.WOLF_INVALID_MOVIE_DTO_NON_ISO_LANG))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

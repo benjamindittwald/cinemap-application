@@ -27,7 +27,7 @@ public class DummyMovieConstantsJson {
                     "80":"western",
                     "85":"thriller"
                  },
-                 "poster":"Imadummyfile",
+                 "poster":"https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                  "imdbId":"imdbId"
             }
             """;
@@ -56,7 +56,7 @@ public class DummyMovieConstantsJson {
                     "80":"western",
                     "85":"thriller"
                  },
-                 "poster":"Imadummyfile",
+                 "poster":"https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                  "imdbId":"imdbId"
             }
             """;
@@ -86,7 +86,7 @@ public class DummyMovieConstantsJson {
                     "80":"western",
                     "85":"thriller"
                  },
-                 "poster":"Imadummyfile",
+                 "poster":"https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                  "imdbId":"imdbId"
             }
             """;
@@ -116,7 +116,7 @@ public class DummyMovieConstantsJson {
                     "80":"western",
                     "85":"thriller"
                  },
-                 "poster":"Imadummyfile",
+                 "poster":"https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
                  "imdbId":"imdbId"
             }
             """;

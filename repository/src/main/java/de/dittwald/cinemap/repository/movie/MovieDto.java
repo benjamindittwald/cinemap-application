@@ -41,10 +41,11 @@ public record MovieDto(
         @Min(value = 1700) Integer releaseYear,
 
         Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> tagline,
-        Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> overview,
+        Map<@Iso639Constraint String, @Size(min = 1, max = 5000) String> overview,
         Map<Integer, @Size(min = 1, max = 50) String> genres,
 
-        @JsonDeserialize(using = ByteArrayDeserializer.class) @JsonSerialize(using = ByteArraySerializer.class) Byte[] poster,
+        // Todo: UrlValidator!
+        String poster,
 
         @Size(min = 1, max = 50) String imdbId) {
 }

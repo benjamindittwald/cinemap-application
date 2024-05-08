@@ -29,6 +29,7 @@ CREATE TABLE movies
     version      BIGINT,
     tmdb_id      INTEGER,
     release_year INTEGER,
+    poster       VARCHAR(255),
     imdb_id      VARCHAR(50),
     CONSTRAINT pk_movies PRIMARY KEY (id)
 );
