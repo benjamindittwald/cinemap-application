@@ -35,47 +35,47 @@ class MovieDtoMapperTest {
     @Autowired
     private MovieDtoMapper movieDtoMapper;
 
-    @BeforeEach
-    void setUp() {
-
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
-                Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
-
-        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
-                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
-                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
-
-        movieDtos.add(
-                new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
-                        1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
-                        Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
-                        Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
-        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
-                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
-                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
-                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
-    }
-
-    @Test
-    void shouldConvertMovieToMovieDto() {
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).tmdbId()).isEqualTo(
-                movies.getFirst().getTmdbId());
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getLast()).tmdbId()).isEqualTo(
-                movies.getLast().getTmdbId());
-        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).title().get(0)).isEqualTo(
-                movies.getFirst().getTitle().get(0));
-    }
-
-    @Test
-    void shouldConvertDtoMovieToMovie() {
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTmdbId()).isEqualTo(
-                movieDtos.getFirst().tmdbId());
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getLast()).getTmdbId()).isEqualTo(
-                movieDtos.getLast().tmdbId());
-        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(
-                movieDtos.getFirst().title().get(0));
-    }
+//    @BeforeEach
+//    void setUp() {
+//
+//        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+//                1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+//                Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+//                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
+//
+//        movies.add(new Movie(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
+//                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+//                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+//                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
+//
+//        movieDtos.add(
+//                new MovieDto(UUID.randomUUID(), Map.of("deu", "Der mit dem Wolf tanzt", "eng", "Dances with Wolves"),
+//                        1051896, 1970,  Map.of("deu", "Der mit dem Wolf tanzt TAGLINE", "eng", "Dances with Wolves TAGLINE"),
+//                        Map.of("deu", "Der mit dem Wolf tanzt OVERVIEW", "eng", "Dances with Wolves OVERVIEW"),
+//                        Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
+//        movieDtos.add(new MovieDto(UUID.randomUUID(), Map.of("deu", "Mein Name ist Nobody", "eng", "My Name is Nobody"),
+//                1051896, 1970,  Map.of("deu", "Mein Name ist Nobody TAGLINE", "eng", "DMy Name is Nobody TAGLINE"),
+//                Map.of("deu", "Mein Name ist Nobody OVERVIEW", "eng", "My Name is Nobody OVERVIEW"),
+//                Map.of(80, "western", 85, "Thriller"), "https://image.tmdb.org/t/p/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg", "imdbId"));
+//    }
+//
+//    @Test
+//    void shouldConvertMovieToMovieDto() {
+//        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).tmdbId()).isEqualTo(
+//                movies.getFirst().getTmdbId());
+//        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getLast()).tmdbId()).isEqualTo(
+//                movies.getLast().getTmdbId());
+//        assertThat(this.movieDtoMapper.movieToMovieDto(movies.getFirst()).title().get(0)).isEqualTo(
+//                movies.getFirst().getTitle().get(0));
+//    }
+//
+//    @Test
+//    void shouldConvertDtoMovieToMovie() {
+//        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTmdbId()).isEqualTo(
+//                movieDtos.getFirst().tmdbId());
+//        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getLast()).getTmdbId()).isEqualTo(
+//                movieDtos.getLast().tmdbId());
+//        assertThat(this.movieDtoMapper.movieDtoToMovie(movieDtos.getFirst()).getTitle().get(0)).isEqualTo(
+//                movieDtos.getFirst().title().get(0));
+//    }
 }

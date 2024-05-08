@@ -70,7 +70,7 @@ public class MovieService {
 
         if (movieOptional.isPresent()) {
             Movie movie = movieOptional.get();
-            movie.setTitle(movieDto.title());
+//            movie.setTitle(movieDto.title());
             movie.setTmdbId(movieDto.tmdbId());
             movie.setUuid(uuid);
             return movieDtoMapper.movieToMovieDto(this.movieRepository.save(movie));

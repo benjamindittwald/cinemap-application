@@ -34,44 +34,24 @@ CREATE TABLE movies
     CONSTRAINT pk_movies PRIMARY KEY (id)
 );
 
-CREATE TABLE overview_locale_mapping
-(
-    locale_id       BIGINT       NOT NULL,
-    overview        VARCHAR(255),
-    overview_locale VARCHAR(255) NOT NULL,
-    CONSTRAINT pk_overview_locale_mapping PRIMARY KEY (locale_id, overview_locale)
-);
-
-CREATE TABLE tagline_locale_mapping
-(
-    locale_id      BIGINT       NOT NULL,
-    tagline        VARCHAR(255),
-    tagline_locale VARCHAR(255) NOT NULL,
-    CONSTRAINT pk_tagline_locale_mapping PRIMARY KEY (locale_id, tagline_locale)
-);
-
-CREATE TABLE title_locale_mapping
-(
-    locale_id    BIGINT       NOT NULL,
-    title        VARCHAR(255) NOT NULL,
-    title_locale VARCHAR(255) NOT NULL,
-    CONSTRAINT pk_title_locale_mapping PRIMARY KEY (locale_id, title_locale)
-);
-
 ALTER TABLE movies
     ADD CONSTRAINT uc_movies_uuid UNIQUE (uuid);
 
 ALTER TABLE genres_number_mapping
     ADD CONSTRAINT fk_genres_number_mapping_on_movie FOREIGN KEY (number_id) REFERENCES movies (id);
 
-ALTER TABLE overview_locale_mapping
-    ADD CONSTRAINT fk_overview_locale_mapping_on_movie FOREIGN KEY (locale_id) REFERENCES movies (id);
+CREATE TABLE localized_movie
+(
+    title    VARCHAR(255),
+    overview OID,
+    tagline  VARCHAR(255),
+    id       BIGINT       NOT NULL,
+    locale   VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_localizedmovie PRIMARY KEY (id, locale)
+);
 
-ALTER TABLE tagline_locale_mapping
-    ADD CONSTRAINT fk_tagline_locale_mapping_on_movie FOREIGN KEY (locale_id) REFERENCES movies (id);
-
-ALTER TABLE title_locale_mapping
-    ADD CONSTRAINT fk_title_locale_mapping_on_movie FOREIGN KEY (locale_id) REFERENCES movies (id);
+ALTER TABLE localized_movie
+    ADD CONSTRAINT FK_LOCALIZEDMOVIE_ON_ID FOREIGN KEY (id) REFERENCES movies (id);
 
 CREATE TABLE description_locale_mapping
 (
