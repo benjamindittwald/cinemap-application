@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.validation;
+package de.dittwald.cinemap.repositoryui.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -22,11 +22,11 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = UrlValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Constraint(validatedBy = UuidValidator.class)
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UrlConstraint {
-    String message() default "Invalid URL given";
+public @interface UuidConstraint {
+    String message() default "Invalid UUID given";
 
     Class<?>[] groups() default {};
 

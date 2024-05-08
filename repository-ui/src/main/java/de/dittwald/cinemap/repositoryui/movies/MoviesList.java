@@ -16,22 +16,14 @@ import java.util.List;
 public class MoviesList {
 
     private final RepositoryClient repositoryClient;
-    private final TmdbClient tmdbClient;
 
-    public MoviesList(RepositoryClient repositoryClient, TmdbClient tmdbClient) {
+    public MoviesList(RepositoryClient repositoryClient) {
         this.repositoryClient = repositoryClient;
-        this.tmdbClient = tmdbClient;
     }
 
     @GetMapping("/")
     public String index(Model model) throws JsonProcessingException {
-
-        List<Movie> movies = new ArrayList<>();
-        repositoryClient.getAllMovies().forEach(m -> {
-            m.setDtmdb(tmdbClient.getMovieTmdb(m.getTmdbId()));
-            movies.add(m);
-        });
-
+        List<Movie> movies = new ArrayList<>(repositoryClient.getAllMovies());
         model.addAttribute("movies", movies);
 
         return "index";

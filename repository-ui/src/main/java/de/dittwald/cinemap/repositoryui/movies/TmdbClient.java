@@ -3,6 +3,7 @@ package de.dittwald.cinemap.repositoryui.movies;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.dittwald.cinemap.repositoryui.properties.ConfigConstants;
 import de.dittwald.cinemap.repositoryui.properties.Properties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -35,7 +36,7 @@ public class TmdbClient {
         this.properties = properties;
     }
 
-    public MovieTmdb getMovieTmdb(int id) {
+    public Movie getMovieTmdb(int id) {
 
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.timeout)
@@ -46,11 +47,11 @@ public class TmdbClient {
 
         WebClient client = WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(this.properties.getTmdbApiBaseUrl())
+                .baseUrl(ConfigConstants.TMDB_API_BASE_URL)
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        MovieTmdb movieTmdb;
+//        MovieTmdb movieTmdb;
         URL posterPath = null;
         String overview = null;
         String tagline = null;
@@ -68,9 +69,9 @@ public class TmdbClient {
 
             try {
                 posterPath = ((node.has("poster_path") && node.get("poster_path") == null) ?
-                        new URI(this.properties.getTmdbImageBaseUrl() +
+                        new URI(ConfigConstants.TMDB_IMAGE_BASE_URL +
                                 "/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg").toURL() :
-                        new URI(this.properties.getTmdbImageBaseUrl() + "/w300/" + node.get("poster_path").asText() +
+                        new URI(ConfigConstants.TMDB_IMAGE_BASE_URL + "/w300/" + node.get("poster_path").asText() +
                                 ".jpg").toURL());
             } catch (MalformedURLException | URISyntaxException e) {
                 log.debug("Error parsing poster_path for movie {}", id, e);
@@ -89,9 +90,9 @@ public class TmdbClient {
             }
 
 
-            movieTmdb = new MovieTmdb(posterPath, overview, tagline, imdbMovieUrl, realeaseYear);
+//            movieTmdb = new MovieTmdb(posterPath, overview, tagline, imdbMovieUrl, realeaseYear);
 
-            return movieTmdb;
+            return null;
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

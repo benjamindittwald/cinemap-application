@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.validation;
+package de.dittwald.cinemap.repositoryui.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.net.URI;
+import java.util.UUID;
 
-public class UrlValidator implements ConstraintValidator<UrlConstraint, String> {
+public class UuidValidator implements ConstraintValidator<UuidConstraint, String> {
     @Override
-    public void initialize(UrlConstraint constraintAnnotation) {
+    public void initialize(UuidConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String uuidString, ConstraintValidatorContext constraintValidatorContext) {
+        boolean valid = true;
+
         try {
-            new URI(url).toURL();
-            return true;
-        } catch (Exception e) {
-            return false;
+            UUID uuid = UUID.fromString(uuidString);
+        } catch (IllegalArgumentException e) {
+            valid = false;
         }
+        return valid;
     }
 }

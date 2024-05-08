@@ -13,12 +13,6 @@ public class Properties {
     @Value("${de.cinemap.repositoryui.tmdb.api.readtoken}")
     private String tmdbApiReadToken;
 
-    @Value("${de.cinemap.repositoryui.tmdb.api.baseurl}")
-    private String tmdbApiBaseUrl;
-
-    @Value("${de.cinemap.repositoryui.tmdb.image.baseurl}")
-    private String tmdbImageBaseUrl;
-
     @Value("${de.cinemap.repository.server.port}")
     private String repositoryPort;
 

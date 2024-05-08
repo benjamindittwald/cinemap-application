@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Cinemap Repository UI</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-</head>
+<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - Movies List')}"></div>
 <body>
 
 <div th:replace="~{navbar :: navbar}"></div>
@@ -19,11 +10,12 @@
     <div class="row mt-5">
         <h1>All stored movies</h1>
     </div>
+
     <div class="row align-items-start text-center">
         <div th:each="movie : ${movies}" class="col-md gy-4">
             <div class="card shadow bg-body-tertiary rounded"
                  style="width: 18rem;">
-                <img th:src="${movie.dtmdb.posterUrl()}"
+                <img th:src="${movie.poster}"
                      class="img-fluid rounded-top"
                      alt="Movie poster">
                 <div class="card-body">
@@ -32,10 +24,10 @@
                     </h5>
                     <p class="card-text"><small
                             class="text-body-secondary"><span
-                            th:text="${movie.dtmdb.releaseYear}"> Release Year </span></small>
+                            th:text="${movie.releaseYear}"> Release Year </span></small>
                     </p>
                     <p class="card-text multi-line-truncate"><span
-                            th:text="${movie.dtmdb.tagline}"> Overview </span>
+                            th:text="${movie.tagline.get('eng')}"> Overview </span>
                     </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
@@ -45,7 +37,7 @@
                     </div>
                     <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                        target="_blank" rel="noopener noreferrer"
-                       th:href="${movie.dtmdb.imdbUrl()}">IMDb</a>
+                       th:href="${movie.imdbId}">IMDb</a>
                 </div>
             </div>
         </div>
