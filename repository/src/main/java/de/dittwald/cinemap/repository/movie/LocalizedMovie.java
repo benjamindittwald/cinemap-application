@@ -31,8 +31,8 @@ public class LocalizedMovie implements Serializable {
     @Size(min = 1, max = 255)
     private String title;
 
-    @Size(min = 1, max = 5000)
     @Lob
+    @Size(min = 1, max = 5000)
     private String overview;
 
     @Size(min = 1, max = 255)

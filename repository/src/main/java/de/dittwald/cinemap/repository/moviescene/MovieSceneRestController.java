@@ -41,43 +41,43 @@ public class MovieSceneRestController {
         this.movieSceneService = movieSceneService;
     }
 
-    @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get a movie scene",
-            description = "Gets a movie and its corresponding movie by its UUID. Responds with status code 404 if " +
-                    "the movie scene was not found.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie scene"),
-            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
-            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
-    public MovieSceneDto findByUuid(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
-        return this.movieSceneService.findByUuid(UUID.fromString(uuid));
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all movie scenes", description = "Responds a list with all movies scenes")
-    @ApiResponse(responseCode = "200", description = "Found movie scenes")
-    public List<MovieSceneDto> findAll() {
-        return this.movieSceneService.findAll();
-    }
-
-    @DeleteMapping(value = "{uuid}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete movie scene",
-            description =
-                    "Deletes a movie scene with the given uuid.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie scene was deleted"),
-            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
-            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
-    public void scene(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
-        this.movieSceneService.deleteByUuid(UUID.fromString(uuid));
-    }
-
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete all movie scenes",
-            description =
-                    "Deletes all movie scenes.")
-    @ApiResponses(value = @ApiResponse(responseCode = "204", description = "All movie scene were deleted"))
-    public void deleteAll() {
-        this.movieSceneService.deleteAll();
-    }
+//    @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Operation(summary = "Get a movie scene",
+//            description = "Gets a movie and its corresponding movie by its UUID. Responds with status code 404 if " +
+//                    "the movie scene was not found.")
+//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie scene"),
+//            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
+//            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
+//    public MovieSceneDto findByUuid(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
+//        return this.movieSceneService.findByUuid(UUID.fromString(uuid));
+//    }
+//
+//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Operation(summary = "Get all movie scenes", description = "Responds a list with all movies scenes")
+//    @ApiResponse(responseCode = "200", description = "Found movie scenes")
+//    public List<MovieSceneDto> findAll() {
+//        return this.movieSceneService.findAll();
+//    }
+//
+//    @DeleteMapping(value = "{uuid}")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @Operation(summary = "Delete movie scene",
+//            description =
+//                    "Deletes a movie scene with the given uuid.")
+//    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie scene was deleted"),
+//            @ApiResponse(responseCode = "404", description = "Movie scene not found"),
+//            @ApiResponse(responseCode = "400", description = "Given UUID is not a valid UUID")})
+//    public void scene(@PathVariable("uuid") @Valid @UuidConstraint String uuid) throws NotFoundException {
+//        this.movieSceneService.deleteByUuid(UUID.fromString(uuid));
+//    }
+//
+//    @DeleteMapping
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @Operation(summary = "Delete all movie scenes",
+//            description =
+//                    "Deletes all movie scenes.")
+//    @ApiResponses(value = @ApiResponse(responseCode = "204", description = "All movie scene were deleted"))
+//    public void deleteAll() {
+//        this.movieSceneService.deleteAll();
+//    }
 }

@@ -18,6 +18,7 @@ public class LocalizedId implements Serializable {
 
     private Long id;
 
+    // Todo: Switch to ISO-639-1
     @Iso639Constraint
     private String locale;
 

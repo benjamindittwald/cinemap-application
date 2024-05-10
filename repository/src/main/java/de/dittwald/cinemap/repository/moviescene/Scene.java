@@ -17,7 +17,6 @@
 package de.dittwald.cinemap.repository.moviescene;
 
 import de.dittwald.cinemap.repository.movie.Movie;
-import de.dittwald.cinemap.repository.validation.Iso639Constraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -27,20 +26,21 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "movie_scenes")
-@NamedQuery(name = "MovieScene.findAllScenesOfMovie",
-        query = "select ms from MovieScene ms where ms.movie.uuid = :movieUuid")
-public class MovieScene {
+@Table(name = "scenes")
+//@NamedQuery(name = "MovieScene.findAllScenesOfMovie",
+//        query = "select ms from Scene ms where ms.movie.uuid = :movieUuid")
+public class Scene {
 
-    public MovieScene() {
+    public Scene() {
     }
 
-    public MovieScene(UUID uuid, Long lon, Long lat, Map<@Iso639Constraint String, String> description, Movie movie) {
+    public Scene(UUID uuid, double lon, double lat, Movie movie,
+                 Map<String, LocalizedScene> localizedMoviesScenes) {
         this.uuid = uuid;
         this.lon = lon;
         this.lat = lat;
-        this.description = description;
         this.movie = movie;
+        this.localizedMoviesScenes = localizedMoviesScenes;
     }
 
     @Id
@@ -52,31 +52,28 @@ public class MovieScene {
     private UUID uuid;
 
     @NotNull
-    private Long lon;
+    private double lon;
 
     @NotNull
-    private Long lat;
+    private double lat;
 
     @Version
     private Long version;
-
-    @ElementCollection
-    @CollectionTable(name = "description_locale_mapping",
-            joinColumns = {@JoinColumn(name = "locale_id", referencedColumnName = "id")})
-    @MapKeyColumn(name = "description_locale")
-    @Column(name = "description")
-    @NotNull
-    private Map<@Iso639Constraint String, String> description = new HashMap<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
+    @OneToMany(mappedBy = "scene",
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            orphanRemoval = true)
+    @MapKey(name = "localizedId.locale")
+    private Map<String, LocalizedScene> localizedMoviesScenes = new HashMap<>();
 
     @Override
     public String toString() {
-        return "MovieScene{" + "id=" + id + ", version=" + version + ", lon=" + lon + ", lat=" + lat + ", description" +
-                "=" + description + ", movie=" + movie + '}';
+        return "MovieScene{" + "id=" + id + ", uuid=" + uuid + ", lon=" + lon + ", lat=" + lat + ", version=" +
+                version + ", movie=" + movie + ", localizedMoviesScenes=" + localizedMoviesScenes + '}';
     }
 
     @Override
@@ -85,7 +82,7 @@ public class MovieScene {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        MovieScene that = (MovieScene) o;
+        Scene that = (Scene) o;
         return Objects.equals(id, that.id);
     }
 
@@ -106,28 +103,20 @@ public class MovieScene {
         this.uuid = uuid;
     }
 
-    public Long getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(Long lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
-    public Long getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(Long lat) {
+    public void setLat(double lat) {
         this.lat = lat;
-    }
-
-    public Map<String, String> getDescription() {
-        return description;
-    }
-
-    public void setDescription(Map<String, String> description) {
-        this.description = description;
     }
 
     public Movie getMovie() {
@@ -136,5 +125,13 @@ public class MovieScene {
 
     public void setMovie(Movie movie) {
         this.movie = movie;
+    }
+
+    public Map<String, LocalizedScene> getLocalizedMoviesScenes() {
+        return localizedMoviesScenes;
+    }
+
+    public void setLocalizedMoviesScenes(Map<String, LocalizedScene> localizedMoviesScenes) {
+        this.localizedMoviesScenes = localizedMoviesScenes;
     }
 }

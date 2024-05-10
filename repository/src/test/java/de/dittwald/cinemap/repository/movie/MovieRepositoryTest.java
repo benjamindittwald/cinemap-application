@@ -43,7 +43,7 @@ class MovieRepositoryTest {
     @Container
     @ServiceConnection
     static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16.2-alpine").withInitScript("schema.sql");
+            new PostgreSQLContainer<>("postgres:16.2alpine").withInitScript("schema.sql");
 
     @Autowired
     private MovieRepository movieRepository;

@@ -76,7 +76,9 @@ public class Movie {
     @Size(min = 1, max = 50)
     private String imdbId;
 
-    @OneToMany(mappedBy = "movie", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie",
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            orphanRemoval = true)
     @MapKey(name = "localizedId.locale")
     private Map<String, LocalizedMovie> localizedMovies;
 

@@ -19,20 +19,19 @@ package de.dittwald.cinemap.repository.moviescene;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface MovieSceneRepository extends ListCrudRepository<MovieScene, Long> {
+public interface SceneRepository extends ListCrudRepository<Scene, Long> {
 
-    Optional<MovieScene> findByUuid(UUID uuid);
+    Optional<Scene> findByUuid(UUID uuid);
 
     void deleteByUuid(UUID uuid);
 
     boolean existsByUuid(UUID uuid);
 
-    Optional<List<MovieScene>> findAllScenesOfMovie(UUID movieUuid);
+//    Optional<List<MovieScene>> findAllScenesOfMovie(UUID movieUuid);
 
     // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
 //    @Modifying
