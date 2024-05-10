@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
 import de.dittwald.cinemap.repository.movie.Movie;
 import jakarta.persistence.*;

@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.MovieDto;
-import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,14 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(MovieSceneRestController.class)
+@WebMvcTest(SceneRestController.class)
 @AutoConfigureMockMvc
 public class MovieSceneRestControllerTest {
 
@@ -46,9 +38,9 @@ public class MovieSceneRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private MovieSceneService movieSceneService;
+    private SceneService sceneService;
 
-    private List<MovieSceneDto> movieSceneDtos;
+    private List<SceneDto> sceneDtos;
 
     private String movieSceneDtoJson;
 

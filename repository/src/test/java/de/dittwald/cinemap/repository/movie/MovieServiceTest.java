@@ -16,8 +16,8 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.moviescene.Scene;
-import de.dittwald.cinemap.repository.moviescene.SceneRepository;
+import de.dittwald.cinemap.repository.scene.Scene;
+import de.dittwald.cinemap.repository.scene.SceneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

@@ -1,4 +1,4 @@
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;

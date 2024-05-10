@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieSceneOnlyDto(@NotNull UUID uuid,
+public record SceneOnlyDto(@NotNull UUID uuid,
 
-                                @NotNull Long lon,
+                           @NotNull Long lon,
 
-                                @NotNull Long lat,
+                           @NotNull Long lat,
 
-                                Map<@Iso639Constraint String, @Size(min = 1, max = 2000) String> description) {
+                           Map<@Iso6391Constraint String, @Size(min = 1, max = 2000) String> description) {
 }

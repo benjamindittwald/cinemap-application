@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
 import de.dittwald.cinemap.repository.movie.LocalizedId;
 import de.dittwald.cinemap.repository.movie.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.Movie;
 import de.dittwald.cinemap.repository.movie.MovieRepository;
+import de.dittwald.cinemap.repository.scene.LocalizedScene;
+import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
+import de.dittwald.cinemap.repository.scene.Scene;
+import de.dittwald.cinemap.repository.scene.SceneRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,11 +70,10 @@ class SceneRepositoryTest {
 
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws URISyntaxException, MalformedURLException {
         Movie movie = new Movie();
         movie.setUuid(this.setUpMovieUUID);
         movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setPoster("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg");
         movie.setReleaseYear(1970);
         movie.setTmdbId(505);
         movie.setImdbId("imdbID");
@@ -99,7 +105,8 @@ class SceneRepositoryTest {
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("eng"));
         lmsEn.setDescription("Dances with Wolves - Scene Description");
-        lmsEn.setMovieScene(scene);
+        lmsEn.setPosterUrl(new URI("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg").toURL());
+        lmsEn.setScene(scene);
         scene.getLocalizedMoviesScenes().put("eng", lmsEn);
 
         this.sceneRepository.save(scene);
@@ -134,7 +141,7 @@ class SceneRepositoryTest {
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("deu"));
         lmsEn.setDescription("Der mit dem Wolf tanzt - Scene Description");
-        lmsEn.setMovieScene(scene);
+        lmsEn.setScene(scene);
         assertThat(this.localizedSceneRepository.count()).isEqualTo(1);
         scene.getLocalizedMoviesScenes().put("deu", lmsEn);
         assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
@@ -149,11 +156,10 @@ class SceneRepositoryTest {
     }
 
     @Test
-    public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() {
+    public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() throws URISyntaxException, MalformedURLException {
         Movie movie = new Movie();
         movie.setUuid(UUID.randomUUID());
         movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setPoster("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg");
         movie.setReleaseYear(1970);
         movie.setTmdbId(505);
         movie.setImdbId("imdbID");
@@ -177,7 +183,8 @@ class SceneRepositoryTest {
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("eng"));
         lmsEn.setDescription("Dances with Wolves - Scene Description");
-        lmsEn.setMovieScene(scene);
+        lmsEn.setPosterUrl(new URI("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg").toURL());
+        lmsEn.setScene(scene);
         scene.getLocalizedMoviesScenes().put("eng", lmsEn);
 
         assertThrows(DataIntegrityViolationException.class, () -> {

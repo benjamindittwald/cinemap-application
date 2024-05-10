@@ -31,7 +31,6 @@ CREATE TABLE movies
     version      BIGINT,
     tmdb_id      INTEGER,
     release_year INTEGER,
-    poster       VARCHAR(255),
     imdb_id      VARCHAR(50),
     CONSTRAINT pk_movies PRIMARY KEY (id)
 );
@@ -57,7 +56,7 @@ CREATE TABLE localized_movie
 ALTER TABLE localized_movie
     ADD CONSTRAINT FK_LOCALIZEDMOVIE_ON_ID FOREIGN KEY (id) REFERENCES movies (id);
 
--- MOVIE SCENE
+-- SCENE
 
 CREATE TABLE scenes
 (
@@ -76,11 +75,12 @@ ALTER TABLE scenes
 ALTER TABLE scenes
     ADD CONSTRAINT FK_SCENES_ON_MOVIE FOREIGN KEY (movie_id) REFERENCES movies (id);
 
--- LOCALIZED MOVIE SCENE
+-- LOCALIZED SCENE
 
 CREATE TABLE localized_scene
 (
     description OID,
+    poster_url  VARCHAR(255),
     id          BIGINT       NOT NULL,
     locale      VARCHAR(255) NOT NULL,
     CONSTRAINT pk_localizedscene PRIMARY KEY (id, locale)

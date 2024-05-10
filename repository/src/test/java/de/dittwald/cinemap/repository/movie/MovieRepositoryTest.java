@@ -28,6 +28,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.net.URI;
 import java.util.*;
 
 import static java.util.Arrays.stream;
@@ -43,7 +44,7 @@ class MovieRepositoryTest {
     @Container
     @ServiceConnection
     static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16.2alpine").withInitScript("schema.sql");
+            new PostgreSQLContainer<>("postgres:16.3-alpine").withInitScript("schema.sql");
 
     @Autowired
     private MovieRepository movieRepository;
@@ -60,7 +61,6 @@ class MovieRepositoryTest {
         Movie movie = new Movie();
         movie.setUuid(this.setUpMovieUUID);
         movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setPoster("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg");
         movie.setReleaseYear(1970);
         movie.setTmdbId(505);
         movie.setImdbId("imdbID");
@@ -114,7 +114,6 @@ class MovieRepositoryTest {
         Movie movie = new Movie();
         movie.setUuid(UUID.randomUUID());
         movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setPoster("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg");
         movie.setReleaseYear(1970);
         movie.setTmdbId(505);
         movie.setImdbId("imdbID");

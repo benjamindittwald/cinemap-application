@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
 import de.dittwald.cinemap.repository.movie.MovieRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MovieSceneService {
+public class SceneService {
 
     private final SceneRepository sceneRepository;
-    private final MovieSceneDtoMapper movieSceneDtoMapper;
+    private final SceneDtoMapper sceneDtoMapper;
     private final MovieRepository movieRepository;
 
-    public MovieSceneService(SceneRepository SceneRepository, MovieSceneDtoMapper movieSceneDtoMapper,
-                             MovieRepository movieRepository) {
+    public SceneService(SceneRepository SceneRepository, SceneDtoMapper sceneDtoMapper,
+                        MovieRepository movieRepository) {
         this.sceneRepository = SceneRepository;
-        this.movieSceneDtoMapper = movieSceneDtoMapper;
+        this.sceneDtoMapper = sceneDtoMapper;
         this.movieRepository = movieRepository;
     }
 

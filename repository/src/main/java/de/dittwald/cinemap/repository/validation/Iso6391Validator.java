@@ -24,34 +24,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Set;
 
-public class Iso639Validator implements ConstraintValidator<Iso639Constraint, String> {
+public class Iso6391Validator implements ConstraintValidator<Iso6391Constraint, String> {
     @Override
-    public void initialize(Iso639Constraint constraintAnnotation) {
+    public void initialize(Iso6391Constraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(String langCode, ConstraintValidatorContext constraintValidatorContext) {
-        boolean valid = false;
-        try (BufferedReader reader = new BufferedReader(
-                new FileReader("src/main/resources/iso-639-3_Name_Index.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split("\\t");
-
-                if (StringUtils.equals(fields[0], langCode)) {
-                    valid = true;
-                    break;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            // Todo: Add ExceptionHandler to send 500
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return valid;
+        Set<String> isoLanguages = Set.of(Locale.getISOLanguages());
+        return isoLanguages.contains(langCode);
     }
 }

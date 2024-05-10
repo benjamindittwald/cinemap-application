@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
-import de.dittwald.cinemap.repository.movie.Movie;
-import de.dittwald.cinemap.repository.movie.MovieRepository;
-import org.apache.commons.lang3.ArrayUtils;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@WebMvcTest({MovieSceneService.class, MovieSceneDtoMapper.class})
+@WebMvcTest({SceneService.class, SceneDtoMapper.class})
 @AutoConfigureMockMvc
 class MovieSceneServiceTest {
 

@@ -30,14 +30,13 @@ public class Movie {
     }
 
     public Movie(UUID uuid, Long version, Integer tmdbId, Integer releaseYear,
-                 Map<Integer, @Size(min = 1, max = 50) String> genres, String poster, String imdbId,
+                 Map<Integer, @Size(min = 1, max = 50) String> genres, String imdbId,
                  Map<String, LocalizedMovie> localizedMovies) {
         this.uuid = uuid;
         this.version = version;
         this.tmdbId = tmdbId;
         this.releaseYear = releaseYear;
         this.genres = genres;
-        this.poster = poster;
         this.imdbId = imdbId;
         this.localizedMovies = localizedMovies;
     }
@@ -68,9 +67,6 @@ public class Movie {
     @MapKeyColumn(name = "genres_id")
     @Column(name = "genres")
     private Map<Integer, @Size(min = 1, max = 50) String> genres = new HashMap<>();
-
-    @Column
-    private String poster;
 
     @Column
     @Size(min = 1, max = 50)
@@ -131,14 +127,6 @@ public class Movie {
 
     public void setGenres(Map<Integer, String> genres) {
         this.genres = genres;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
     }
 
     public String getImdbId() {

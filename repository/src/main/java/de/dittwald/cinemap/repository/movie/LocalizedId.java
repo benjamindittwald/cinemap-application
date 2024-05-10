@@ -1,6 +1,6 @@
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.validation.Iso639Constraint;
+import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
@@ -19,7 +19,7 @@ public class LocalizedId implements Serializable {
     private Long id;
 
     // Todo: Switch to ISO-639-1
-    @Iso639Constraint
+    @Iso6391Constraint
     private String locale;
 
     public Long getId() {

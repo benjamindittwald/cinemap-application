@@ -1,8 +1,10 @@
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
 import de.dittwald.cinemap.repository.movie.LocalizedId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+
+import java.net.URL;
 
 @Entity
 public class LocalizedScene {
@@ -11,10 +13,11 @@ public class LocalizedScene {
         this.localizedId = new LocalizedId();
     }
 
-    public LocalizedScene(LocalizedId localizedId, Scene scene, String description) {
+    public LocalizedScene(LocalizedId localizedId, Scene scene, String description, URL posterUrl) {
         this.localizedId = localizedId;
         this.scene = scene;
         this.description = description;
+        this.posterUrl = posterUrl;
     }
 
     @EmbeddedId
@@ -29,6 +32,9 @@ public class LocalizedScene {
     @Size(min = 1, max = 5000)
     private String description;
 
+    @Column
+    private URL posterUrl;
+
     public LocalizedId getLocalizedId() {
         return localizedId;
     }
@@ -37,19 +43,27 @@ public class LocalizedScene {
         this.localizedId = localizedId;
     }
 
-    public Scene getMovieScene() {
-        return scene;
-    }
-
-    public void setMovieScene(Scene scene) {
-        this.scene = scene;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public URL getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(URL posterUrl) {
+        this.posterUrl = posterUrl;
     }
 }

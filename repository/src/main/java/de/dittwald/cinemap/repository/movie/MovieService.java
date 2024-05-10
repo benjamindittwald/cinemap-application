@@ -16,7 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.moviescene.SceneRepository;
+import de.dittwald.cinemap.repository.scene.SceneRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -16,19 +16,13 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneDto;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneOnlyDto;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneService;
-import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.dittwald.cinemap.repository.scene.SceneDto;
+import de.dittwald.cinemap.repository.scene.SceneOnlyDto;
+import de.dittwald.cinemap.repository.scene.SceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
@@ -36,10 +30,7 @@ import java.util.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MovieRestController.class)
 @AutoConfigureMockMvc
@@ -52,15 +43,15 @@ public class MovieRestControllerTest {
     private MovieService movieService;
 
     @MockBean
-    private MovieSceneService movieSceneService;
+    private SceneService sceneService;
 
     private List<MovieDto> movieDtos;
 
-    private List<MovieSceneDto> movieSceneDtos;
+    private List<SceneDto> sceneDtos;
 
     private String movieSceneOnlyDtoJson;
 
-    private MovieSceneOnlyDto movieSceneOnlyDto;
+    private SceneOnlyDto sceneOnlyDto;
 
 //    @BeforeEach
 //    void setUp() {

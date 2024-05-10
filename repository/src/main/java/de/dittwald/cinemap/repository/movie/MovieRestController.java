@@ -16,23 +16,9 @@
 
 package de.dittwald.cinemap.repository.movie;
 
-import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneDto;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneOnlyDto;
-import de.dittwald.cinemap.repository.moviescene.MovieSceneService;
-import de.dittwald.cinemap.repository.validation.UuidConstraint;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import de.dittwald.cinemap.repository.scene.SceneService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/movies")
@@ -40,11 +26,11 @@ import java.util.UUID;
 public class MovieRestController {
 
     private final MovieService movieService;
-    private final MovieSceneService movieSceneService;
+    private final SceneService sceneService;
 
-    public MovieRestController(MovieService movieService, MovieSceneService movieSceneService) {
+    public MovieRestController(MovieService movieService, SceneService sceneService) {
         this.movieService = movieService;
-        this.movieSceneService = movieSceneService;
+        this.sceneService = sceneService;
     }
 
 //    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

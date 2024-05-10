@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import org.mapstruct.Mapper;
+import de.dittwald.cinemap.repository.movie.MovieDto;
+import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Mapper(componentModel = "spring")
-public interface MovieSceneDtoMapper {
-    MovieSceneDto movieSceneToMovieSceneDto(Scene scene);
-    Scene movieSceneDtoToMovieScene(MovieSceneDto movieSceneDto);
+import java.util.Map;
+import java.util.UUID;
 
-    Scene movieSceneOnlyDtoToMovieScene(MovieSceneOnlyDto movieSceneOnlyDto);
+public record SceneDto(
+
+        @NotNull UUID uuid,
+
+        @NotNull Long lon,
+
+        @NotNull Long lat,
+
+        Map<@Iso6391Constraint String, @Size(min = 1, max = 2000) String> description,
+
+        MovieDto movie) {
 }

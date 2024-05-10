@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.movie.Movie;
-import de.dittwald.cinemap.repository.movie.MovieDto;
-import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import java.util.HexFormat;
-import java.util.Map;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@WebMvcTest(MovieSceneDtoMapper.class)
+@WebMvcTest(SceneDtoMapper.class)
 class MovieSceneDtoMapperTest {
 
     @Autowired
-    private MovieSceneDtoMapper movieSceneDtoMapper;
+    private SceneDtoMapper sceneDtoMapper;
 
 //    @Test
 //    public void shouldMapMovieSceneToMovieSceneDto() {

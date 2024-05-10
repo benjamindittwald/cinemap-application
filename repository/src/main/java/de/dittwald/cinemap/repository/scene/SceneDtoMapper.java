@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.validation;
+package de.dittwald.cinemap.repository.scene;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import org.mapstruct.Mapper;
 
-import java.lang.annotation.*;
+@Mapper(componentModel = "spring")
+public interface SceneDtoMapper {
+    SceneDto movieSceneToMovieSceneDto(Scene scene);
+    Scene movieSceneDtoToMovieScene(SceneDto sceneDto);
 
-@Documented
-@Constraint(validatedBy = Iso639Validator.class)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Iso639Constraint {
-    String message() default "Invalid ISO 638 language code given";
-
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
+    Scene movieSceneOnlyDtoToMovieScene(SceneOnlyDto sceneOnlyDto);
 }

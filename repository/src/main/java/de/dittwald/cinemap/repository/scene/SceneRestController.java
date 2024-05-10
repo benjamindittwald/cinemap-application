@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.moviescene;
+package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.validation.UuidConstraint;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/scenes")
 @Tag(name = "Scene API")
-public class MovieSceneRestController {
+public class SceneRestController {
 
-    private final MovieSceneService movieSceneService;
+    private final SceneService sceneService;
 
-    public MovieSceneRestController(MovieSceneService movieSceneService) {
-        this.movieSceneService = movieSceneService;
+    public SceneRestController(SceneService sceneService) {
+        this.sceneService = sceneService;
     }
 
 //    @GetMapping(value = "{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
