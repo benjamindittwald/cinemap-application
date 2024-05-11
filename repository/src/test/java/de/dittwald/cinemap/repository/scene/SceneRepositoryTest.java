@@ -16,10 +16,7 @@
 
 package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.movie.LocalizedId;
-import de.dittwald.cinemap.repository.movie.LocalizedMovie;
-import de.dittwald.cinemap.repository.movie.Movie;
-import de.dittwald.cinemap.repository.movie.MovieRepository;
+import de.dittwald.cinemap.repository.movie.*;
 import de.dittwald.cinemap.repository.scene.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
 import de.dittwald.cinemap.repository.scene.Scene;
@@ -65,51 +62,13 @@ class SceneRepositoryTest {
     @Autowired
     private LocalizedSceneRepository localizedSceneRepository;
 
-    private final UUID setUpMovieUUID = UUID.fromString("132bf117-8bd7-4c95-8821-1f772e23dc26");
-    private final UUID getSetUpSceneUUID = UUID.fromString("132bf117-8bd7-4c95-8821-1f772e23dc20");
-
+    private DummyMovies dummyMovies;
 
     @BeforeEach
     void setUp() throws URISyntaxException, MalformedURLException {
-        Movie movie = new Movie();
-        movie.setUuid(this.setUpMovieUUID);
-        movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setReleaseYear(1970);
-        movie.setTmdbId(505);
-        movie.setImdbId("imdbID");
-
-        LocalizedMovie lmEn = new LocalizedMovie();
-        lmEn.setLocalizedId(new LocalizedId("eng"));
-        lmEn.setOverview("Dances with Wolves - Overview");
-        lmEn.setTagline("Dances with Wolves - Tagline");
-        lmEn.setTitle("Dances with Wolves - Title");
-        lmEn.setMovie(movie);
-        movie.getLocalizedMovies().put("eng", lmEn);
-
-        LocalizedMovie lmDe = new LocalizedMovie();
-        lmDe.setLocalizedId(new LocalizedId("deu"));
-        lmDe.setOverview("Der mit dem Wolf tanzt - Overview");
-        lmDe.setTagline("Der mit dem Wolf tanzt - Tagline");
-        lmDe.setTitle("Der mit dem Wolf tanzt - Title");
-        lmDe.setMovie(movie);
-        movie.getLocalizedMovies().put("deu", lmDe);
-
-        this.movieRepository.save(movie);
-
-        Scene scene = new Scene();
-        scene.setUuid(this.getSetUpSceneUUID);
-        scene.setLat(52.51263);
-        scene.setLon(13.35943);
-        scene.setMovie(movie);
-
-        LocalizedScene lmsEn = new LocalizedScene();
-        lmsEn.setLocalizedId(new LocalizedId("eng"));
-        lmsEn.setDescription("Dances with Wolves - Scene Description");
-        lmsEn.setPosterUrl(new URI("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg").toURL());
-        lmsEn.setScene(scene);
-        scene.getLocalizedMoviesScenes().put("eng", lmsEn);
-
-        this.sceneRepository.save(scene);
+        dummyMovies = new DummyMovies();
+        this.movieRepository.save(this.dummyMovies.getWolf());
+        this.sceneRepository.save(this.dummyMovies.getScene());
     }
 
     @Test
@@ -136,7 +95,7 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldUpdateMovieScene() {
-        Scene scene = this.sceneRepository.findByUuid(this.getSetUpSceneUUID).get();
+        Scene scene = this.sceneRepository.findByUuid(this.dummyMovies.getScene().getUuid()).get();
 
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("deu"));
@@ -157,33 +116,18 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() throws URISyntaxException, MalformedURLException {
-        Movie movie = new Movie();
-        movie.setUuid(UUID.randomUUID());
-        movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setReleaseYear(1970);
-        movie.setTmdbId(505);
-        movie.setImdbId("imdbID");
 
-        LocalizedMovie lmEn = new LocalizedMovie();
-        lmEn.setLocalizedId(new LocalizedId("eng"));
-        lmEn.setOverview("Dances with Wolves - Overview");
-        lmEn.setTagline("Dances with Wolves - Tagline");
-        lmEn.setTitle("Dances with Wolves - Title");
-        lmEn.setMovie(movie);
-        movie.getLocalizedMovies().put("eng", lmEn);
-
-        this.movieRepository.save(movie);
+        this.movieRepository.save(this.dummyMovies.getNobody());
 
         Scene scene = new Scene();
-        scene.setUuid(this.getSetUpSceneUUID);
+        scene.setUuid(this.dummyMovies.getScene().getUuid());
         scene.setLat(52.51263);
         scene.setLon(13.35943);
-        scene.setMovie(movie);
+        scene.setMovie(this.dummyMovies.getWolf());
 
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("eng"));
         lmsEn.setDescription("Dances with Wolves - Scene Description");
-        lmsEn.setPosterUrl(new URI("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg").toURL());
         lmsEn.setScene(scene);
         scene.getLocalizedMoviesScenes().put("eng", lmsEn);
 
@@ -194,13 +138,13 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldFindMovieSceneByUuid() {
-        assertThat(this.sceneRepository.findByUuid(this.getSetUpSceneUUID).get()).isNotNull();
+        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getScene().getUuid()).get()).isNotNull();
     }
 
     @Test
     public void shouldDeleteMovieSceneByUuid() {
         assertThat(this.sceneRepository.count()).isEqualTo(1);
-        this.sceneRepository.deleteByUuid(this.getSetUpSceneUUID);
+        this.sceneRepository.deleteByUuid(this.dummyMovies.getScene().getUuid());
         assertThat(this.sceneRepository.count()).isEqualTo(0);
     }
 
@@ -214,12 +158,4 @@ class SceneRepositoryTest {
     public void shouldNotExist() {
         assertThat(this.sceneRepository.existsByUuid(UUID.randomUUID())).isEqualTo(false);
     }
-
-
-    // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
-    //    @Test
-    //    public void shouldDeleteAllMovieScenesFromMovie() {
-    //        this.movieSceneRepository.deleteAllScenesFromMovie(this.movieRepository.findAll().getLast().getUuid());
-    //        assertThat(this.movieSceneRepository.findAll()).hasSize(0);
-    //    }
 }

@@ -13,11 +13,10 @@ public class LocalizedScene {
         this.localizedId = new LocalizedId();
     }
 
-    public LocalizedScene(LocalizedId localizedId, Scene scene, String description, URL posterUrl) {
+    public LocalizedScene(LocalizedId localizedId, Scene scene, String description) {
         this.localizedId = localizedId;
         this.scene = scene;
         this.description = description;
-        this.posterUrl = posterUrl;
     }
 
     @EmbeddedId
@@ -31,9 +30,6 @@ public class LocalizedScene {
     @Lob
     @Size(min = 1, max = 5000)
     private String description;
-
-    @Column
-    private URL posterUrl;
 
     public LocalizedId getLocalizedId() {
         return localizedId;
@@ -57,13 +53,5 @@ public class LocalizedScene {
 
     public void setScene(Scene scene) {
         this.scene = scene;
-    }
-
-    public URL getPosterUrl() {
-        return posterUrl;
-    }
-
-    public void setPosterUrl(URL posterUrl) {
-        this.posterUrl = posterUrl;
     }
 }

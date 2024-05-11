@@ -28,7 +28,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static java.util.Arrays.stream;
@@ -52,36 +54,12 @@ class MovieRepositoryTest {
     @Autowired
     private LocalizedMovieRepository localizedMovieRepository;
 
-    List<Movie> movies;
-
-    private UUID setUpMovieUUID = UUID.fromString("132bf117-8bd7-4c95-8821-1f772e23dc26");
+    private DummyMovies dummyMovies;
 
     @BeforeEach
-    public void setUp() {
-        Movie movie = new Movie();
-        movie.setUuid(this.setUpMovieUUID);
-        movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setReleaseYear(1970);
-        movie.setTmdbId(505);
-        movie.setImdbId("imdbID");
-
-        LocalizedMovie lmEn = new LocalizedMovie();
-        lmEn.setLocalizedId(new LocalizedId("eng"));
-        lmEn.setOverview("Dances with Wolves - Overview");
-        lmEn.setTagline("Dances with Wolves - Tagline");
-        lmEn.setTitle("Dances with Wolves - Title");
-        lmEn.setMovie(movie);
-        movie.getLocalizedMovies().put("eng", lmEn);
-
-        LocalizedMovie lmDe = new LocalizedMovie();
-        lmDe.setLocalizedId(new LocalizedId("deu"));
-        lmDe.setOverview("Der mit dem Wolf tanzt - Overview");
-        lmDe.setTagline("Der mit dem Wolf tanzt - Tagline");
-        lmDe.setTitle("Der mit dem Wolf tanzt - Title");
-        lmDe.setMovie(movie);
-        movie.getLocalizedMovies().put("deu", lmDe);
-
-        this.movieRepository.save(movie);
+    public void setUp() throws URISyntaxException, MalformedURLException {
+        this.dummyMovies = new DummyMovies();
+        this.movieRepository.save(this.dummyMovies.getWolf());
     }
 
     @Test
@@ -102,7 +80,8 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldFindMovieByUuid() {
-        assertThat(this.movieRepository.findByUuid(this.setUpMovieUUID).get().getUuid()).isEqualTo(this.setUpMovieUUID);
+        assertThat(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid()).get().getUuid()).isEqualTo(
+                this.dummyMovies.getWolf().getUuid());
     }
 
     @Test
@@ -111,30 +90,7 @@ class MovieRepositoryTest {
         assertThat(this.movieRepository.count()).isEqualTo(1);
         assertThat(this.localizedMovieRepository.count()).isEqualTo(2);
 
-        Movie movie = new Movie();
-        movie.setUuid(UUID.randomUUID());
-        movie.setGenres(Map.of(80, "western", 85, "Thriller"));
-        movie.setReleaseYear(1970);
-        movie.setTmdbId(505);
-        movie.setImdbId("imdbID");
-
-        LocalizedMovie lmEn = new LocalizedMovie();
-        lmEn.setLocalizedId(new LocalizedId("eng"));
-        lmEn.setOverview("My Name is Nobody - Overview");
-        lmEn.setTagline("My Name is Nobody - Tagline");
-        lmEn.setTitle("My Name is Nobody - Title");
-        lmEn.setMovie(movie);
-        movie.getLocalizedMovies().put("eng", lmEn);
-
-        LocalizedMovie lmDe = new LocalizedMovie();
-        lmDe.setLocalizedId(new LocalizedId("deu"));
-        lmDe.setOverview("Mein Name ist Nobody - Overview");
-        lmDe.setTagline("Mein Name ist Nobody - Tagline");
-        lmDe.setTitle("Mein Name ist Nobody - Title");
-        lmDe.setMovie(movie);
-        movie.getLocalizedMovies().put("deu", lmDe);
-
-        this.movieRepository.save(movie);
+        this.movieRepository.save(this.dummyMovies.getNobody());
 
         assertThat(this.movieRepository.count()).isEqualTo(2);
         assertThat(this.localizedMovieRepository.count()).isEqualTo(4);
@@ -152,49 +108,49 @@ class MovieRepositoryTest {
     @Test
     public void shouldDeleteMovie() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.delete(this.movieRepository.findByUuid(this.setUpMovieUUID).get());
+        this.movieRepository.delete(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid()).get());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
     // Fixme: java.lang.UnsupportedOperationException
-//    @Test
-//    public void shouldUpdateMovie() {
-//        Movie movie = this.movieRepository.findByUuid(this.setUpMovieUUID).get();
-//
-//        LocalizedMovie lmEn = new LocalizedMovie();
-//        lmEn.setLocalizedId(new LocalizedId("fra"));
-//        lmEn.setOverview("Danse avec les loups - Overview");
-//        lmEn.setTagline("Danse avec les loups - Tagline");
-//        lmEn.setTitle("Danse avec les loups - Title");
-//        lmEn.setMovie(movie);
-//        movie.getLocalizedMovies().put("fra", lmEn);
-//
-//        this.movieRepository.save(movie);
-//
-//        assertThat(this.movieRepository.findByUuid(this.setUpMovieUUID)
-//                .get()
-//                .getLocalizedMovies()
-//                .get("fra")
-//                .getTitle()).isEqualTo("Danse avec les loups - Title");
-//    }
+    //    @Test
+    //    public void shouldUpdateMovie() {
+    //        Movie movie = this.movieRepository.findByUuid(this.setUpMovieUUID).get();
+    //
+    //        LocalizedMovie lmEn = new LocalizedMovie();
+    //        lmEn.setLocalizedId(new LocalizedId("fra"));
+    //        lmEn.setOverview("Danse avec les loups - Overview");
+    //        lmEn.setTagline("Danse avec les loups - Tagline");
+    //        lmEn.setTitle("Danse avec les loups - Title");
+    //        lmEn.setMovie(movie);
+    //        movie.getLocalizedMovies().put("fra", lmEn);
+    //
+    //        this.movieRepository.save(movie);
+    //
+    //        assertThat(this.movieRepository.findByUuid(this.setUpMovieUUID)
+    //                .get()
+    //                .getLocalizedMovies()
+    //                .get("fra")
+    //                .getTitle()).isEqualTo("Danse avec les loups - Title");
+    //    }
 
     @Test
     public void shouldDeleteByUuid() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.deleteByUuid(this.setUpMovieUUID);
+        this.movieRepository.deleteByUuid(this.dummyMovies.getWolf().getUuid());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
     @Test
     public void shouldFailDeleteByUuidDueToNotFound() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.deleteByUuid(UUID.fromString("132bf117-8bd7-4c95-8821-1f772e23dc26"));
+        this.movieRepository.deleteByUuid(this.dummyMovies.getWolf().getUuid());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
     @Test
     public void shouldExist() {
-        assertThat(this.movieRepository.existsByUuid(this.setUpMovieUUID)).isEqualTo(true);
+        assertThat(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).isEqualTo(true);
     }
 
     @Test

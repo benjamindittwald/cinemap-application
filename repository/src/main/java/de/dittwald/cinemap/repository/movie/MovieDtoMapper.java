@@ -17,9 +17,11 @@
 package de.dittwald.cinemap.repository.movie;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface MovieDtoMapper {
+
     MovieDto movieToMovieDto(Movie movie);
 
     Movie movieDtoToMovie(MovieDto movieDto);

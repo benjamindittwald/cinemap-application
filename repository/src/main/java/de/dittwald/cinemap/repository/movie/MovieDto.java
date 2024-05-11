@@ -26,24 +26,12 @@ import jakarta.validation.constraints.Size;
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieDto(
-
-        @NotNull @UuidConstraint UUID uuid,
-
-        @NotNull Map<@Iso6391Constraint String, @Size(min = 1, max = 500) String> title,
-
-        @Min(value = -2147483648) // From TMDB API Reference movie Details
-        @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-        Integer tmdbId,
-
-        @Min(value = 1700) Integer releaseYear,
-
-        Map<@Iso6391Constraint String, @Size(min = 1, max = 500) String> tagline,
-        Map<@Iso6391Constraint String, @Size(min = 1, max = 5000) String> overview,
-        Map<Integer, @Size(min = 1, max = 50) String> genres,
-
-        // Todo: UrlValidator!
-        String posterUrl,
-
-        @Size(min = 1, max = 50) String imdbId) {
+public record MovieDto(@NotNull @UuidConstraint UUID uuid,
+                       @Min(value = -2147483648) // From TMDB API Reference movie Details
+                       @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
+                       Integer tmdbId,
+                       // Release Year Validator 1700 - present
+                       Integer releaseYear, Map<Integer, @Size(min = 1, max = 50) String> genres,
+                       @Size(min = 1, max = 50) String imdbId,
+                       Map<@Iso6391Constraint String, LocalizedMovie> localizedMovies) {
 }

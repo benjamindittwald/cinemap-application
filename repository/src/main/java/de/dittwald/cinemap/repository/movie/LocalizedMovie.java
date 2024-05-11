@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
+import java.net.URL;
 
 @Entity
 public class LocalizedMovie implements Serializable {
@@ -12,12 +13,14 @@ public class LocalizedMovie implements Serializable {
         this.localizedId = new LocalizedId();
     }
 
-    public LocalizedMovie(LocalizedId localizedId, Movie movie, String title, String overview, String tagline) {
+    public LocalizedMovie(LocalizedId localizedId, Movie movie, String title, String overview, String tagline,
+                          URL posterUrl) {
         this.localizedId = localizedId;
         this.movie = movie;
         this.title = title;
         this.overview = overview;
         this.tagline = tagline;
+        this.posterUrl = posterUrl;
     }
 
     @EmbeddedId
@@ -37,6 +40,8 @@ public class LocalizedMovie implements Serializable {
 
     @Size(min = 1, max = 255)
     private String tagline;
+
+    private URL posterUrl;
 
     public LocalizedId getLocalizedId() {
         return localizedId;
@@ -76,5 +81,13 @@ public class LocalizedMovie implements Serializable {
 
     public void setTagline(String tagline) {
         this.tagline = tagline;
+    }
+
+    public URL getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(URL posterUrl) {
+        this.posterUrl = posterUrl;
     }
 }

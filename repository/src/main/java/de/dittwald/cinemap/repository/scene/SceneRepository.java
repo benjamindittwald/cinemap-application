@@ -30,11 +30,4 @@ public interface SceneRepository extends ListCrudRepository<Scene, Long> {
     void deleteByUuid(UUID uuid);
 
     boolean existsByUuid(UUID uuid);
-
-//    Optional<List<MovieScene>> findAllScenesOfMovie(UUID movieUuid);
-
-    // Fixme: [ERROR: missing FROM-clause entry for table "m1_0" Position: 106]
-//    @Modifying
-//    @Query("delete from MovieScene ms where ms.movie.uuid = :movieUuid")
-//    void deleteAllScenesFromMovie(@Param("movieUuid") UUID movieUuid);
 }

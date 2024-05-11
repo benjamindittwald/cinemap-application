@@ -45,11 +45,12 @@ ALTER TABLE genres_number_mapping
 
 CREATE TABLE localized_movie
 (
-    title    VARCHAR(255),
-    overview OID,
-    tagline  VARCHAR(255),
-    id       BIGINT       NOT NULL,
-    locale   VARCHAR(255) NOT NULL,
+    title      VARCHAR(255),
+    overview   OID,
+    tagline    VARCHAR(255),
+    poster_url VARCHAR(255),
+    id         BIGINT       NOT NULL,
+    locale     VARCHAR(255) NOT NULL,
     CONSTRAINT pk_localizedmovie PRIMARY KEY (id, locale)
 );
 
@@ -80,7 +81,6 @@ ALTER TABLE scenes
 CREATE TABLE localized_scene
 (
     description OID,
-    poster_url  VARCHAR(255),
     id          BIGINT       NOT NULL,
     locale      VARCHAR(255) NOT NULL,
     CONSTRAINT pk_localizedscene PRIMARY KEY (id, locale)
