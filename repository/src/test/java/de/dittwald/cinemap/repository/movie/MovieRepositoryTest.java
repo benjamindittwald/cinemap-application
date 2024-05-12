@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,8 +74,8 @@ class MovieRepositoryTest {
 
         Movie movie = this.movieRepository.findAll().get(0);
 
-        assertEquals(movie.getLocalizedMovies().get("eng").getTitle(), "Dances with Wolves - Title");
-        assertEquals(movie.getLocalizedMovies().get("deu").getTitle(), "Der mit dem Wolf tanzt - Title");
+        assertEquals(movie.getLocalizedMovies().get("en").getTitle(), "Dances with Wolves - Title");
+        assertEquals(movie.getLocalizedMovies().get("de").getTitle(), "Der mit dem Wolf tanzt - Title");
     }
 
     @Test
@@ -115,7 +115,7 @@ class MovieRepositoryTest {
     // Fixme: java.lang.UnsupportedOperationException
     //    @Test
     //    public void shouldUpdateMovie() {
-    //        Movie movie = this.movieRepository.findByUuid(this.setUpMovieUUID).get();
+    //        Movie movie = this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid()).get();
     //
     //        LocalizedMovie lmEn = new LocalizedMovie();
     //        lmEn.setLocalizedId(new LocalizedId("fra"));
@@ -127,7 +127,7 @@ class MovieRepositoryTest {
     //
     //        this.movieRepository.save(movie);
     //
-    //        assertThat(this.movieRepository.findByUuid(this.setUpMovieUUID)
+    //        assertThat(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid())
     //                .get()
     //                .getLocalizedMovies()
     //                .get("fra")

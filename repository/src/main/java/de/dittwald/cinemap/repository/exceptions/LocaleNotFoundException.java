@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.validation;
+package de.dittwald.cinemap.repository.exceptions;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
-
-import java.lang.annotation.*;
-
-@Documented
-@Constraint(validatedBy = UuidValidator.class)
-@Target({ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface UuidConstraint {
-    String message() default "Invalid UUID given";
-
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
+public class LocaleNotFoundException extends Exception {
+    public LocaleNotFoundException(String message) {
+        super(message);
+    }
 }

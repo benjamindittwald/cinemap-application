@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,11 +18,16 @@ package de.dittwald.cinemap.repository.movie;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 @Entity
 @Table(name = "movies")
+@Getter
+@Setter
 public class Movie {
 
     public Movie() {
@@ -30,7 +35,7 @@ public class Movie {
     }
 
     public Movie(UUID uuid, Long version, Integer tmdbId, Integer releaseYear,
-                 Map<Integer, @Size(min = 1, max = 50) String> genres, String imdbId,
+                 Map<Integer,String> genres, String imdbId,
                  Map<String, LocalizedMovie> localizedMovies) {
         this.uuid = uuid;
         this.version = version;
@@ -43,6 +48,7 @@ public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @NotNull
@@ -50,6 +56,8 @@ public class Movie {
     private UUID uuid;
 
     @Version
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private Long version;
 
 
@@ -91,57 +99,5 @@ public class Movie {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public Integer getTmdbId() {
-        return tmdbId;
-    }
-
-    public void setTmdbId(Integer tmdbId) {
-        this.tmdbId = tmdbId;
-    }
-
-    public Integer getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(Integer releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public Map<Integer, String> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(Map<Integer, String> genres) {
-        this.genres = genres;
-    }
-
-    public String getImdbId() {
-        return imdbId;
-    }
-
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
-    }
-
-    public Map<String, LocalizedMovie> getLocalizedMovies() {
-        return localizedMovies;
-    }
-
-    public void setLocalizedMovies(Map<String, LocalizedMovie> localizedMovies) {
-        this.localizedMovies = localizedMovies;
     }
 }

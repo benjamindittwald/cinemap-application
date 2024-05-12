@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,13 +23,11 @@ import org.springframework.stereotype.Service;
 public class SceneService {
 
     private final SceneRepository sceneRepository;
-    private final SceneDtoMapper sceneDtoMapper;
     private final MovieRepository movieRepository;
 
-    public SceneService(SceneRepository SceneRepository, SceneDtoMapper sceneDtoMapper,
+    public SceneService(SceneRepository SceneRepository,
                         MovieRepository movieRepository) {
         this.sceneRepository = SceneRepository;
-        this.sceneDtoMapper = sceneDtoMapper;
         this.movieRepository = movieRepository;
     }
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,9 +81,9 @@ class SceneRepositoryTest {
     public void shouldFindOneScenes() {
         List<Scene> movieScenes = this.sceneRepository.findAll();
         assertThat(movieScenes.size()).isEqualTo(1);
-        assertThat(movieScenes.getFirst().getMovie().getLocalizedMovies().get("eng").getTitle()).isEqualTo(
+        assertThat(movieScenes.getFirst().getMovie().getLocalizedMovies().get("en").getTitle()).isEqualTo(
                 "Dances with Wolves - Title");
-        assertThat(movieScenes.getFirst().getMovie().getLocalizedMovies().get("deu").getTitle()).isEqualTo(
+        assertThat(movieScenes.getFirst().getMovie().getLocalizedMovies().get("de").getTitle()).isEqualTo(
                 "Der mit dem Wolf tanzt - Title");
     }
 
@@ -98,11 +98,11 @@ class SceneRepositoryTest {
         Scene scene = this.sceneRepository.findByUuid(this.dummyMovies.getScene().getUuid()).get();
 
         LocalizedScene lmsEn = new LocalizedScene();
-        lmsEn.setLocalizedId(new LocalizedId("deu"));
+        lmsEn.setLocalizedId(new LocalizedId("de"));
         lmsEn.setDescription("Der mit dem Wolf tanzt - Scene Description");
         lmsEn.setScene(scene);
         assertThat(this.localizedSceneRepository.count()).isEqualTo(1);
-        scene.getLocalizedMoviesScenes().put("deu", lmsEn);
+        scene.getLocalizedMoviesScenes().put("de", lmsEn);
         assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
         this.sceneRepository.save(scene);
     }
@@ -126,10 +126,10 @@ class SceneRepositoryTest {
         scene.setMovie(this.dummyMovies.getWolf());
 
         LocalizedScene lmsEn = new LocalizedScene();
-        lmsEn.setLocalizedId(new LocalizedId("eng"));
+        lmsEn.setLocalizedId(new LocalizedId("en"));
         lmsEn.setDescription("Dances with Wolves - Scene Description");
         lmsEn.setScene(scene);
-        scene.getLocalizedMoviesScenes().put("eng", lmsEn);
+        scene.getLocalizedMoviesScenes().put("en", lmsEn);
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             this.sceneRepository.save(scene);

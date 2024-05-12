@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,21 +17,33 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
-import de.dittwald.cinemap.repository.validation.UuidConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieDto(@NotNull @UuidConstraint UUID uuid,
-                       @Min(value = -2147483648) // From TMDB API Reference movie Details
-                       @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-                       Integer tmdbId,
-                       // Release Year Validator 1700 - present
-                       Integer releaseYear, Map<Integer, @Size(min = 1, max = 50) String> genres,
-                       @Size(min = 1, max = 50) String imdbId,
-                       Map<@Iso6391Constraint String, LocalizedMovie> localizedMovies) {
+public record MovieDto(
+        @NotNull UUID uuid,
+        @Min(value = -2147483648) // From TMDB API Reference movie Details
+        @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
+        Integer tmdbId,
+        @Min(value = 1700)
+        Integer releaseYear,
+        Map<Integer, @Size(min = 1, max = 50) String> genres,
+        @Size(min = 1, max = 50)
+        String imdbId,
+        @Size(min = 2, max = 2)
+        @Iso6391Constraint
+        String locale,
+        @Size(min = 1, max = 255)
+        String title,
+        @Size(min = 1, max = 5000)
+        String overview,
+        @Size(min = 1, max = 255)
+        String tagline,
+        URL posterUrl) {
 }
