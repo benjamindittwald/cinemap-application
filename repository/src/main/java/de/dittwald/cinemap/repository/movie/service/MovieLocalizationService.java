@@ -17,7 +17,7 @@
 package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationEntryDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationEntryDto;
 import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
@@ -55,7 +55,7 @@ public class MovieLocalizationService {
             movie.setLocalizedMovies(new HashMap<>());
         }
 
-        for (MovieLocalisationEntryDto dto : movieLocalizationDto.localizations()) {
+        for (MovieLocalizationEntryDto dto : movieLocalizationDto.localizations()) {
             movie.getLocalizedMovies()
                     .put(dto.locale(),
                             new LocalizedMovie(new LocalizedId(dto.locale()), movie, dto.title(), dto.overview(),
@@ -72,11 +72,11 @@ public class MovieLocalizationService {
             throw new NotFoundException("No localized movies found");
         }
 
-        List<MovieLocalisationEntryDto> localizedMoviesDto = new ArrayList<>();
+        List<MovieLocalizationEntryDto> localizedMoviesDto = new ArrayList<>();
 
         for (LocalizedMovie localizedMovie : localizedMovies.get()) {
             localizedMoviesDto.add(
-                    new MovieLocalisationEntryDto(localizedMovie.getLocalizedId().getLocale(), localizedMovie.getTitle(),
+                    new MovieLocalizationEntryDto(localizedMovie.getLocalizedId().getLocale(), localizedMovie.getTitle(),
                             localizedMovie.getOverview(), localizedMovie.getTagline(), localizedMovie.getPosterUrl()));
         }
 

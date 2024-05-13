@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
 
 import java.net.URL;
 
-public record MovieLocalisationEntryDto(
+public record MovieLocalizationEntryDto(
         @Iso6391Constraint
         String locale,
         @Size(min = 1, max = 255)

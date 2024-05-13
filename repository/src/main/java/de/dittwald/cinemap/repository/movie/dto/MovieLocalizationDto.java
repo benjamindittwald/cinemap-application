@@ -21,5 +21,5 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public record MovieLocalizationDto(@NotNull UUID movieUuid, @NotNull List<MovieLocalisationEntryDto> localizations) {
+public record MovieLocalizationDto(@NotNull UUID movieUuid, @NotNull List<MovieLocalizationEntryDto> localizations) {
 }

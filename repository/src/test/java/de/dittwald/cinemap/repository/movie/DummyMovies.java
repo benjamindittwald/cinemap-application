@@ -17,7 +17,7 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationEntryDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationEntryDto;
 import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
@@ -142,10 +142,10 @@ public class DummyMovies {
 
         // Wolf MovieLocalizationsDto
         this.wolfLocalizationDto = new MovieLocalizationDto(this.wolf.getUuid(),
-                List.of(new MovieLocalisationEntryDto(this.wolfFlatEnDto.locale(), this.wolfFlatEnDto.title(),
+                List.of(new MovieLocalizationEntryDto(this.wolfFlatEnDto.locale(), this.wolfFlatEnDto.title(),
                                 this.wolfFlatEnDto.overview(), this.wolfFlatEnDto.tagline(),
                                 this.wolfFlatEnDto.posterUrl()),
-                        new MovieLocalisationEntryDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
+                        new MovieLocalizationEntryDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
                                 this.wolfFlatDeDto.overview(), this.wolfFlatDeDto.tagline(),
                                 this.wolfFlatDeDto.posterUrl())));
     }
