@@ -18,7 +18,7 @@ package de.dittwald.cinemap.repository.movie.controller;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.service.MovieLocalizationService;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationsDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -49,7 +49,7 @@ public class MovieLocalizationRestController {
             description = "Responds with all available localizations for the given movie")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found localizations"),
             @ApiResponse(responseCode = "404", description = "No localizations found")})
-    public MovieLocalizationsDto getMovieLocalizations(@PathVariable("uuid") UUID uuid) throws NotFoundException {
+    public MovieLocalizationDto getMovieLocalizations(@PathVariable("uuid") UUID uuid) throws NotFoundException {
         return this.movieLocalizationService.getMovieLocalizations(uuid);
     }
 
@@ -62,10 +62,10 @@ public class MovieLocalizationRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie localizations were updated"),
             @ApiResponse(responseCode = "404", description = "Movie not found."),
             @ApiResponse(responseCode = "400", description = "Invalid movie localizations or UUID given.")})
-    public void updateMovie(@Valid @RequestBody MovieLocalizationsDto movieLocalizationsDto,
+    public void updateMovie(@Valid @RequestBody MovieLocalizationDto movieLocalizationDto,
                             @PathVariable("uuid") UUID uuid, @RequestParam(defaultValue = "false") String override)
             throws NotFoundException {
-        this.movieLocalizationService.update(movieLocalizationsDto, uuid, Boolean.parseBoolean(override));
+        this.movieLocalizationService.update(movieLocalizationDto, uuid, Boolean.parseBoolean(override));
     }
 
 }

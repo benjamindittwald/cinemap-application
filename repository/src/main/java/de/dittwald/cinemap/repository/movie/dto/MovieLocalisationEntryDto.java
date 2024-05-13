@@ -16,10 +16,20 @@
 
 package de.dittwald.cinemap.repository.movie.dto;
 
-import jakarta.validation.constraints.NotNull;
+import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
+import jakarta.validation.constraints.Size;
 
-import java.util.List;
-import java.util.UUID;
+import java.net.URL;
 
-public record MovieLocalizationsDto(@NotNull UUID movieUuid, @NotNull List<MovieLocalisationDto> localizations) {
+public record MovieLocalisationEntryDto(
+        @Iso6391Constraint
+        String locale,
+        @Size(min = 1, max = 255)
+        String title,
+        @Size(min = 1, max = 5000)
+        String overview,
+        @Size(min = 1, max = 255)
+        String tagline,
+        URL posterUrl
+) {
 }

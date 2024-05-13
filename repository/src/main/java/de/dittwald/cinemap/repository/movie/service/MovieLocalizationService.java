@@ -17,8 +17,8 @@
 package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationDto;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationsDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationEntryDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
@@ -40,7 +40,7 @@ public class MovieLocalizationService {
         this.localizedMovieRepository = localizedMovieRepository;
     }
 
-    public void update(MovieLocalizationsDto movieLocalizationsDto, UUID movieUuid, boolean override)
+    public void update(MovieLocalizationDto movieLocalizationDto, UUID movieUuid, boolean override)
             throws NotFoundException {
         Optional<Movie> movieOptional = this.movieRepository.findByUuid(movieUuid);
         Movie movie = null;
@@ -55,7 +55,7 @@ public class MovieLocalizationService {
             movie.setLocalizedMovies(new HashMap<>());
         }
 
-        for (MovieLocalisationDto dto : movieLocalizationsDto.localizations()) {
+        for (MovieLocalisationEntryDto dto : movieLocalizationDto.localizations()) {
             movie.getLocalizedMovies()
                     .put(dto.locale(),
                             new LocalizedMovie(new LocalizedId(dto.locale()), movie, dto.title(), dto.overview(),
@@ -65,21 +65,21 @@ public class MovieLocalizationService {
         this.movieRepository.save(movie);
     }
 
-    public MovieLocalizationsDto getMovieLocalizations(UUID movieUuid) throws NotFoundException {
+    public MovieLocalizationDto getMovieLocalizations(UUID movieUuid) throws NotFoundException {
         Optional<List<LocalizedMovie>> localizedMovies = this.localizedMovieRepository.findAllByMovieUuid(movieUuid);
 
         if (localizedMovies.isEmpty()) {
             throw new NotFoundException("No localized movies found");
         }
 
-        List<MovieLocalisationDto> localizedMoviesDto = new ArrayList<>();
+        List<MovieLocalisationEntryDto> localizedMoviesDto = new ArrayList<>();
 
         for (LocalizedMovie localizedMovie : localizedMovies.get()) {
             localizedMoviesDto.add(
-                    new MovieLocalisationDto(localizedMovie.getLocalizedId().getLocale(), localizedMovie.getTitle(),
+                    new MovieLocalisationEntryDto(localizedMovie.getLocalizedId().getLocale(), localizedMovie.getTitle(),
                             localizedMovie.getOverview(), localizedMovie.getTagline(), localizedMovie.getPosterUrl()));
         }
 
-        return new MovieLocalizationsDto(movieUuid, localizedMoviesDto);
+        return new MovieLocalizationDto(movieUuid, localizedMoviesDto);
     }
 }

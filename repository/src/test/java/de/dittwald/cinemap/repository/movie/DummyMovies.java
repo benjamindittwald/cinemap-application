@@ -17,8 +17,8 @@
 package de.dittwald.cinemap.repository.movie;
 
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationDto;
-import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationsDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationEntryDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
@@ -141,11 +141,11 @@ public class DummyMovies {
         this.nobodyLocalizedMovieEn = this.nobody.getLocalizedMovies().get("de");
 
         // Wolf MovieLocalizationsDto
-        this.wolfLocalizationsDto = new MovieLocalizationsDto(this.wolf.getUuid(),
-                List.of(new MovieLocalisationDto(this.wolfFlatEnDto.locale(), this.wolfFlatEnDto.title(),
+        this.wolfLocalizationDto = new MovieLocalizationDto(this.wolf.getUuid(),
+                List.of(new MovieLocalisationEntryDto(this.wolfFlatEnDto.locale(), this.wolfFlatEnDto.title(),
                                 this.wolfFlatEnDto.overview(), this.wolfFlatEnDto.tagline(),
                                 this.wolfFlatEnDto.posterUrl()),
-                        new MovieLocalisationDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
+                        new MovieLocalisationEntryDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
                                 this.wolfFlatDeDto.overview(), this.wolfFlatDeDto.tagline(),
                                 this.wolfFlatDeDto.posterUrl())));
     }
@@ -154,7 +154,7 @@ public class DummyMovies {
     private MovieFlatDto wolfFlatEnDto;
     private LocalizedMovie wolfLocalizedMovieEn;
     private LocalizedMovie wolfLocalizedMovieDe;
-    private MovieLocalizationsDto wolfLocalizationsDto;
+    private MovieLocalizationDto wolfLocalizationDto;
     private MovieFlatDto wolfFlatDeDto;
     private Movie nobody;
     private MovieFlatDto nobodyFlatEnDto;
