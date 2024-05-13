@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.dto;
 
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.stereotype.Repository;
+import jakarta.validation.constraints.NotNull;
 
-@Repository
-public interface LocalizedMovieRepository extends ListCrudRepository<LocalizedMovie, String> {
+import java.util.List;
+import java.util.UUID;
+
+public record MovieLocalizationsDto(@NotNull UUID movieUuid, @NotNull List<MovieLocalisationDto> localizations) {
 }

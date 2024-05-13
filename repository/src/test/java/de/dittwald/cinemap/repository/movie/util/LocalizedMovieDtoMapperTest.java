@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.util;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
+import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +28,7 @@ import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MovieDtoMapperTest {
+class MovieFlatDtoMapperTest {
 
     private DummyMovies dummyMovies;
 
@@ -36,27 +39,27 @@ class MovieDtoMapperTest {
 
     @Test
     void shouldMapEntityToDto() throws LocaleNotFoundException {
-        MovieDto movieDto = LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getWolf(),
+        MovieFlatDto movieFlatDto = LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getWolf(),
                 this.dummyMovies.getWolf().getLocalizedMovies().get("en").getLocalizedId().getLocale());
-        assertEquals(movieDto.uuid(), this.dummyMovies.getWolf().getUuid());
-        assertEquals(this.dummyMovies.getWolfEnDto(), movieDto);
+        assertEquals(movieFlatDto.uuid(), this.dummyMovies.getWolf().getUuid());
+        assertEquals(this.dummyMovies.getWolfFlatEnDto(), movieFlatDto);
     }
 
     @Test
     void shouldMapDtoToEntity() {
-        Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyMovies.getWolfEnDto());
+        Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyMovies.getWolfFlatEnDto());
         assertEquals(this.dummyMovies.getWolf(), movie);
     }
 
-    @Test
-    void shouldMapCompleteMovieDtoToEntity() {
-        Movie entity = LocalizedMovieDtoMapper.completeMovieDtoToEntity(this.dummyMovies.getWolfCompleteDto());
-        assertEquals(this.dummyMovies.getWolf(), entity);
-    }
-
-    @Test
-    void shouldMapEntityToCompleteMovieDto() {
-        CompleteMovieDto dto = LocalizedMovieDtoMapper.entityToCompleteDto(this.dummyMovies.getWolf());
-        assertEquals(this.dummyMovies.getWolfCompleteDto(), dto);
-    }
+//    @Test
+//    void shouldMapCompleteMovieDtoToEntity() {
+//        Movie entity = LocalizedMovieDtoMapper.completeMovieDtoToEntity(this.dummyMovies.getWolfCompleteDto());
+//        assertEquals(this.dummyMovies.getWolf(), entity);
+//    }
+//
+//    @Test
+//    void shouldMapEntityToCompleteMovieDto() {
+//        CompleteMovieDto dto = LocalizedMovieDtoMapper.entityToCompleteDto(this.dummyMovies.getWolf());
+//        assertEquals(this.dummyMovies.getWolfCompleteDto(), dto);
+//    }
 }

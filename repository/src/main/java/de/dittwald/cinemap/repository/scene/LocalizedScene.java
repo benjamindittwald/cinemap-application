@@ -16,11 +16,9 @@
 
 package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.movie.LocalizedId;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-
-import java.net.URL;
 
 @Entity
 public class LocalizedScene {

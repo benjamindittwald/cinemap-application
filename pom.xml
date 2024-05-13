@@ -47,6 +47,11 @@
     </properties>
 
     <dependencies>
+        <!-- Needed here because of redoc in repository -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -58,7 +63,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.0</version>
+<!--            <version>3.0</version>-->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

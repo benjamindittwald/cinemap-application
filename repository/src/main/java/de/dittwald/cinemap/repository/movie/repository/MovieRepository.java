@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.movie.repository;
 
-import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
-import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
-public record SceneDto(
+@Repository
+public interface MovieRepository extends ListCrudRepository<Movie, Long> {
 
-        @NotNull UUID uuid,
+    Optional<Movie> findByUuid(UUID uuid);
 
-        @NotNull Long lon,
+    void deleteByUuid(UUID uuid);
 
-        @NotNull Long lat,
-
-        Map<@Iso6391Constraint String, @Size(min = 1, max = 2000) String> description,
-
-        MovieFlatDto movie) {
+    boolean existsByUuid(UUID uuid);
 }

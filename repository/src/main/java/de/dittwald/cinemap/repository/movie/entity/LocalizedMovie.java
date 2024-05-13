@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -27,6 +27,8 @@ import java.net.URL;
 @Setter
 @Getter
 @Entity
+@NamedQuery(name = "LocalizedMovie.findAllByMovieUuid",
+        query = "select lm from LocalizedMovie lm where lm.movie.uuid = :movieUuid")
 public class LocalizedMovie implements Serializable {
 
     public LocalizedMovie() {

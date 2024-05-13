@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
+import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +61,8 @@ public class MovieServiceTest {
     void shouldFindTwoMovies() {
         when(this.movieRepository.findAll()).thenReturn(
                 List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
-        List<MovieDto> movieDtos = this.movieService.findAll("en");
-        assertThat(movieDtos.size()).isEqualTo(2);
+        List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
+        assertThat(movieFlatDtos.size()).isEqualTo(2);
         verify(this.movieRepository, times(1)).findAll();
     }
 
@@ -65,9 +70,9 @@ public class MovieServiceTest {
     void shouldFindTwoMoviesWhereFirstTitleIsNobodyEn() {
         when(this.movieRepository.findAll()).thenReturn(
                 List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
-        List<MovieDto> movieDtos = this.movieService.findAll("en");
-        assertThat(movieDtos.getFirst().title()).isEqualTo("My Name is Nobody - Title");
-        assertThat(movieDtos.getLast().title()).isEqualTo("Dances with Wolves - Title");
+        List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
+        assertThat(movieFlatDtos.getFirst().title()).isEqualTo("My Name is Nobody - Title");
+        assertThat(movieFlatDtos.getLast().title()).isEqualTo("Dances with Wolves - Title");
 
         verify(this.movieRepository, times(1)).findAll();
     }
@@ -75,36 +80,60 @@ public class MovieServiceTest {
     @Test
     void shouldSaveMovie() throws LocaleNotFoundException, MalformedURLException, URISyntaxException {
         when(this.movieRepository.save(this.dummyMovies.getWolf())).thenReturn(this.dummyMovies.getWolf());
-        this.movieService.save(this.dummyMovies.getWolfEnDto());
+        this.movieService.save(this.dummyMovies.getWolfFlatEnDto());
         verify(this.movieRepository, times(1)).save(this.dummyMovies.getWolf());
     }
 
-        @Test
-        public void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
-            MovieDto movieDto = this.dummyMovies.getWolfEnDto();
-            Optional<Movie> movieOptional = Optional.of(this.dummyMovies.getWolf());
-            Movie movie = this.dummyMovies.getWolf();
+    @Test
+    public void shouldFailSaveMovieDueToUuidAlreadyExists() {
+        when(this.movieRepository.existsByUuid(this.dummyMovies.getNobody().getUuid())).thenReturn(true);
+        Exception exception = assertThrows(DataIntegrityViolationException.class,
+                () -> this.movieService.save(LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getNobody(), "en")));
+        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getNobody().getUuid());
+    }
 
-            when(this.movieRepository.findByUuid(movieDto.uuid())).thenReturn(movieOptional);
-            when(this.movieRepository.save(LocalizedMovieDtoMapper.dtoToEntity(movieDto))).thenReturn(movie);
+//    @Test
+//    void shouldSaveCompleteMovie() {
+//        when(this.movieRepository.save(this.dummyMovies.getWolf())).thenReturn(this.dummyMovies.getWolf());
+//        this.movieService.save(this.dummyMovies.getWolfCompleteDto());
+//        verify(this.movieRepository, times(1)).save(this.dummyMovies.getWolf());
+//    }
+//
+//    @Test
+//    public void shouldFailSaveCompleteMovieDueToUuidAlreadyExists() {
+//        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(true);
+//        Exception exception = assertThrows(DataIntegrityViolationException.class,
+//                () -> this.movieService.save(this.dummyMovies.getWolfCompleteDto()));
+//        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
+//        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
+//    }
 
-            this.movieService.update(movieDto, movieDto.uuid());
+    @Test
+    public void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
+        MovieFlatDto movieFlatDto = this.dummyMovies.getWolfFlatEnDto();
+        Optional<Movie> movieOptional = Optional.of(this.dummyMovies.getWolf());
+        Movie movie = this.dummyMovies.getWolf();
 
-            verify(this.movieRepository, times(1)).findByUuid(movieDto.uuid());
-            verify(this.movieRepository, times(1)).save(movie);
-        }
+        when(this.movieRepository.findByUuid(movieFlatDto.uuid())).thenReturn(movieOptional);
+        when(this.movieRepository.save(LocalizedMovieDtoMapper.dtoToEntity(movieFlatDto))).thenReturn(movie);
 
-        @Test
-        public void shouldFailUpdateMovieDueToMovieDoesNotExist() {
-            UUID notExistingMovieUuid = UUID.randomUUID();
-            when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
+        this.movieService.update(movieFlatDto, movieFlatDto.uuid());
 
-            Exception exception =
-                    assertThrows(NotFoundException.class, () -> this.movieService.update(this.dummyMovies.getWolfEnDto(),
-                    notExistingMovieUuid));
-            assertThat(exception.getMessage()).isEqualTo("Movie not found");
-            verify(this.movieRepository, times(1)).findByUuid(notExistingMovieUuid);
-        }
+        verify(this.movieRepository, times(1)).findByUuid(movieFlatDto.uuid());
+        verify(this.movieRepository, times(1)).save(movie);
+    }
+
+    @Test
+    public void shouldFailUpdateMovieDueToMovieDoesNotExist() {
+        UUID notExistingMovieUuid = UUID.randomUUID();
+        when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class,
+                () -> this.movieService.update(this.dummyMovies.getWolfFlatEnDto(), notExistingMovieUuid));
+        assertThat(exception.getMessage()).isEqualTo("Movie not found");
+        verify(this.movieRepository, times(1)).findByUuid(notExistingMovieUuid);
+    }
 
     @Test
     public void shouldDeleteMovie() throws NotFoundException {
@@ -129,7 +158,8 @@ public class MovieServiceTest {
     public void shouldFindMovieByUuid() throws NotFoundException {
         Optional<Movie> persistedMovie = Optional.of(this.dummyMovies.getWolf());
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
-        assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid(), "en").uuid()).isEqualTo(this.dummyMovies.getWolfEnDto().uuid());
+        assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid(), "en").uuid()).isEqualTo(
+                this.dummyMovies.getWolfFlatEnDto().uuid());
         verify(this.movieRepository, times(1)).findByUuid(persistedMovie.get().getUuid());
     }
 
@@ -141,15 +171,6 @@ public class MovieServiceTest {
                 assertThrows(NotFoundException.class, () -> this.movieService.findByUuid(notExistingMovieUuid, "en"));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
         verify(this.movieRepository, times(1)).findByUuid(notExistingMovieUuid);
-    }
-
-    @Test
-    public void shouldFailSaveMovieDueToUuidAlreadyExists() {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getNobody().getUuid())).thenReturn(true);
-        Exception exception = assertThrows(DataIntegrityViolationException.class,
-                () -> this.movieService.save(LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getNobody(), "en")));
-        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getNobody().getUuid());
     }
 
     @Test

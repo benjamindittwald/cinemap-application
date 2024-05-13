@@ -17,10 +17,8 @@
 package de.dittwald.cinemap.repository.scene;
 
 import de.dittwald.cinemap.repository.movie.*;
-import de.dittwald.cinemap.repository.scene.LocalizedScene;
-import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
-import de.dittwald.cinemap.repository.scene.Scene;
-import de.dittwald.cinemap.repository.scene.SceneRepository;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
+import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 

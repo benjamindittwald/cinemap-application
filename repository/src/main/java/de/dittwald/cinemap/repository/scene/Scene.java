@@ -16,7 +16,7 @@
 
 package de.dittwald.cinemap.repository.scene;
 
-import de.dittwald.cinemap.repository.movie.Movie;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 

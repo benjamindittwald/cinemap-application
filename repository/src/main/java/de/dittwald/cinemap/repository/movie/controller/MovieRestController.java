@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.controller;
 
-import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.movie.service.MovieService;
+import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.scene.SceneService;
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +54,7 @@ public class MovieRestController {
             description = "Responds a list with all movies localized in the given language")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found movies"),
             @ApiResponse(responseCode = "400", description = "Invalid ISO 639-1 lang given")})
-    public List<MovieDto> findAll(@RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale) {
+    public List<MovieFlatDto> findAll(@RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale) {
         return this.movieService.findAll(locale);
     }
 
@@ -63,8 +64,8 @@ public class MovieRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the movie"),
             @ApiResponse(responseCode = "404", description = "Movie not found"),
             @ApiResponse(responseCode = "400", description = "Invalid UUID or ISO 639-1 lang given")})
-    public MovieDto findByUuid(@PathVariable("uuid") String uuid,
-                               @RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale)
+    public MovieFlatDto findByUuid(@PathVariable("uuid") String uuid,
+                                   @RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale)
             throws NotFoundException {
         return this.movieService.findByUuid(UUID.fromString(uuid), locale);
     }
@@ -77,9 +78,9 @@ public class MovieRestController {
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie was updated"),
             @ApiResponse(responseCode = "404", description = "Movie not found."),
             @ApiResponse(responseCode = "400", description = "Invalid movie or UUID given.")})
-    public void updateMovie(@Valid @RequestBody MovieDto movieDto, @PathVariable("uuid") String uuid)
+    public void updateMovie(@Valid @RequestBody MovieFlatDto movieFlatDto, @PathVariable("uuid") String uuid)
             throws NotFoundException {
-        this.movieService.update(movieDto, UUID.fromString(uuid));
+        this.movieService.update(movieFlatDto, UUID.fromString(uuid));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,8 +88,8 @@ public class MovieRestController {
     @Operation(summary = "Create a new movie", description = "Creates a new movie with the given movie in the body.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Movie was created"),
             @ApiResponse(responseCode = "400", description = "Invalid movie given")})
-    public void createMovie(@Valid @RequestBody MovieDto movieDto) {
-        this.movieService.save(movieDto);
+    public void createMovie(@Valid @RequestBody MovieFlatDto movieFlatDto) {
+        this.movieService.save(movieFlatDto);
     }
 
     @DeleteMapping(value = "{uuid}")
@@ -122,13 +123,13 @@ public class MovieRestController {
     //        return this.movieSceneService.save(movieSceneOnlyDto, UUID.fromString(movieUuid));
     //    }
     //
-    //    @DeleteMapping
-    //    @ResponseStatus(HttpStatus.NO_CONTENT)
-    //    @Operation(summary = "Delete all movies", description = "Deletes all movies and their corresponding scenes.")
-    //    @ApiResponses(value = @ApiResponse(responseCode = "204", description = "All movies and scenes were deleted"))
-    //    public void deleteAllMovies() {
-    //        this.movieService.deleteAll();
-    //    }
+        @DeleteMapping
+        @ResponseStatus(HttpStatus.NO_CONTENT)
+        @Operation(summary = "Delete all movies", description = "Deletes all movies and their corresponding scenes.")
+        @ApiResponses(value = @ApiResponse(responseCode = "204", description = "All movies and scenes were deleted"))
+        public void deleteAllMovies() {
+            this.movieService.deleteAll();
+        }
     //
     //    @PutMapping(value = "{movieUuid}/scenes/{sceneUuid}",
     //            consumes = MediaType.APPLICATION_JSON_VALUE,

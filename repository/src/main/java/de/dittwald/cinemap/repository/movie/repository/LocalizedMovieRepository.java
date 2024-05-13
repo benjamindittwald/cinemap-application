@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.repository;
 
+import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface MovieRepository extends ListCrudRepository<Movie, Long> {
+public interface LocalizedMovieRepository extends ListCrudRepository<LocalizedMovie, String> {
 
-    Optional<Movie> findByUuid(UUID uuid);
-
-    void deleteByUuid(UUID uuid);
-
-    boolean existsByUuid(UUID uuid);
+    Optional<List<LocalizedMovie>> findAllByMovieUuid(UUID movieUuid);
 }

@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.util;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
+import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
 
 public class LocalizedMovieDtoMapper {
 
-    public static MovieDto entityToDto(Movie entity, String locale) throws LocaleNotFoundException {
+    public static MovieFlatDto entityToDto(Movie entity, String locale) throws LocaleNotFoundException {
 
         if (entity.getLocalizedMovies().get(locale) == null) {
             throw new LocaleNotFoundException("Locale %s not found for movie %s".formatted(locale, entity));
         }
 
-        return new MovieDto(entity.getUuid(), entity.getTmdbId(), entity.getReleaseYear(), entity.getGenres(),
+        return new MovieFlatDto(entity.getUuid(), entity.getTmdbId(), entity.getReleaseYear(), entity.getGenres(),
                 entity.getImdbId(), entity.getLocalizedMovies().get(locale).getLocalizedId().getLocale(),
                 entity.getLocalizedMovies().get(locale).getTitle(),
                 entity.getLocalizedMovies().get(locale).getOverview(),
@@ -34,7 +38,7 @@ public class LocalizedMovieDtoMapper {
                 entity.getLocalizedMovies().get(locale).getPosterUrl());
     }
 
-    public static Movie dtoToEntity(MovieDto dto) {
+    public static Movie dtoToEntity(MovieFlatDto dto) {
         Movie movie = new Movie();
         movie.setUuid(dto.uuid());
         movie.setGenres(dto.genres());
@@ -55,13 +59,13 @@ public class LocalizedMovieDtoMapper {
         return movie;
     }
 
-    public static CompleteMovieDto entityToCompleteDto(Movie entity) {
-        return new CompleteMovieDto(entity.getUuid(), entity.getTmdbId(), entity.getReleaseYear(), entity.getGenres(),
-                entity.getImdbId(), entity.getLocalizedMovies());
-    }
-
-    public static Movie completeMovieDtoToEntity(CompleteMovieDto dto) {
-        return new Movie(dto.uuid(), dto.tmdbId(), dto.releaseYear(), dto.genres(), dto.imdbId(),
-                dto.localizedMovies());
-    }
+//    public static CompleteMovieDto entityToCompleteDto(Movie entity) {
+//        return new CompleteMovieDto(entity.getUuid(), entity.getTmdbId(), entity.getReleaseYear(), entity.getGenres(),
+//                entity.getImdbId(), entity.getLocalizedMovies());
+//    }
+//
+//    public static Movie completeMovieDtoToEntity(CompleteMovieDto dto) {
+//        return new Movie(dto.uuid(), dto.tmdbId(), dto.releaseYear(), dto.genres(), dto.imdbId(),
+//                dto.localizedMovies());
+//    }
 }

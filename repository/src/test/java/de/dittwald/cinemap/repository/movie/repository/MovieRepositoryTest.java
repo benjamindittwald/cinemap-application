@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.repository;
 
+import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
@@ -50,9 +51,6 @@ class MovieRepositoryTest {
 
     @Autowired
     private MovieRepository movieRepository;
-
-    @Autowired
-    private LocalizedMovieRepository localizedMovieRepository;
 
     private DummyMovies dummyMovies;
 
@@ -86,23 +84,9 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldPersistMovie() {
-
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(2);
-
         this.movieRepository.save(this.dummyMovies.getNobody());
-
         assertThat(this.movieRepository.count()).isEqualTo(2);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(4);
-    }
-
-    @Test
-    public void shouldDeleteAllLocalizedMoviesWhenDeleteSetUpMovie() {
-        assertThat(this.movieRepository.count()).isEqualTo(1);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(2);
-        this.movieRepository.deleteAll();
-        assertThat(this.movieRepository.count()).isEqualTo(0);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(0);
     }
 
     @Test

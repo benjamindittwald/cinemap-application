@@ -16,6 +16,12 @@
 
 package de.dittwald.cinemap.repository.movie;
 
+import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalisationDto;
+import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationsDto;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
+import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.scene.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.Scene;
 import lombok.Getter;
@@ -24,6 +30,7 @@ import lombok.Setter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -99,44 +106,61 @@ public class DummyMovies {
         this.scene.getLocalizedMoviesScenes().put("en", lmsEn);
 
         // Localized wolfDto
-        this.wolfEnDto = new MovieDto(wolf.getUuid(), wolf.getTmdbId(), wolf.getReleaseYear(), wolf.getGenres(),
+        this.wolfFlatEnDto = new MovieFlatDto(wolf.getUuid(), wolf.getTmdbId(), wolf.getReleaseYear(), wolf.getGenres(),
                 wolf.getImdbId(), "en", wolf.getLocalizedMovies().get("en").getTitle(),
                 wolf.getLocalizedMovies().get("en").getOverview(), wolf.getLocalizedMovies().get("en").getTagline(),
                 wolf.getLocalizedMovies().get("en").getPosterUrl());
 
-        this.wolfDeDto = new MovieDto(wolf.getUuid(), wolf.getTmdbId(), wolf.getReleaseYear(), wolf.getGenres(),
+        this.wolfFlatDeDto = new MovieFlatDto(wolf.getUuid(), wolf.getTmdbId(), wolf.getReleaseYear(), wolf.getGenres(),
                 wolf.getImdbId(), "de", wolf.getLocalizedMovies().get("de").getTitle(),
                 wolf.getLocalizedMovies().get("de").getOverview(), wolf.getLocalizedMovies().get("de").getTagline(),
                 wolf.getLocalizedMovies().get("de").getPosterUrl());
 
+        // Localized wolf
+        this.wolfLocalizedMovieEn = this.wolf.getLocalizedMovies().get("en");
+        this.wolfLocalizedMovieDe = this.wolf.getLocalizedMovies().get("de");
+
+
         // Localized nobodyDto
-        this.nobodyEnDto =
-                new MovieDto(nobody.getUuid(), nobody.getTmdbId(), nobody.getReleaseYear(), nobody.getGenres(),
+        this.nobodyFlatEnDto =
+                new MovieFlatDto(nobody.getUuid(), nobody.getTmdbId(), nobody.getReleaseYear(), nobody.getGenres(),
                         nobody.getImdbId(), "en", nobody.getLocalizedMovies().get("en").getTitle(),
                         nobody.getLocalizedMovies().get("en").getOverview(),
                         nobody.getLocalizedMovies().get("en").getTagline(),
                         nobody.getLocalizedMovies().get("en").getPosterUrl());
 
-        this.nobodyDeDto =
-                new MovieDto(nobody.getUuid(), nobody.getTmdbId(), nobody.getReleaseYear(), nobody.getGenres(),
+        this.nobodyFlatDeDto =
+                new MovieFlatDto(nobody.getUuid(), nobody.getTmdbId(), nobody.getReleaseYear(), nobody.getGenres(),
                         nobody.getImdbId(), "de", nobody.getLocalizedMovies().get("de").getTitle(),
                         nobody.getLocalizedMovies().get("de").getOverview(),
                         nobody.getLocalizedMovies().get("de").getTagline(),
                         nobody.getLocalizedMovies().get("de").getPosterUrl());
 
-        // Wolf Complete Dto
-        this.wolfCompleteDto =
-                new CompleteMovieDto(this.wolf.getUuid(), this.wolf.getTmdbId(), this.wolf.getReleaseYear(),
-                        this.wolf.getGenres(), this.wolf.getImdbId(), this.wolf.getLocalizedMovies());
+        // Localized nobody
+        this.nobodyLocalizedMovieEn = this.nobody.getLocalizedMovies().get("en");
+        this.nobodyLocalizedMovieEn = this.nobody.getLocalizedMovies().get("de");
+
+        // Wolf MovieLocalizationsDto
+        this.wolfLocalizationsDto = new MovieLocalizationsDto(this.wolf.getUuid(),
+                List.of(new MovieLocalisationDto(this.wolfFlatEnDto.locale(), this.wolfFlatEnDto.title(),
+                                this.wolfFlatEnDto.overview(), this.wolfFlatEnDto.tagline(),
+                                this.wolfFlatEnDto.posterUrl()),
+                        new MovieLocalisationDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
+                                this.wolfFlatDeDto.overview(), this.wolfFlatDeDto.tagline(),
+                                this.wolfFlatDeDto.posterUrl())));
     }
 
     private Movie wolf;
-    private MovieDto wolfEnDto;
-    private CompleteMovieDto wolfCompleteDto;
-    private MovieDto wolfDeDto;
+    private MovieFlatDto wolfFlatEnDto;
+    private LocalizedMovie wolfLocalizedMovieEn;
+    private LocalizedMovie wolfLocalizedMovieDe;
+    private MovieLocalizationsDto wolfLocalizationsDto;
+    private MovieFlatDto wolfFlatDeDto;
     private Movie nobody;
-    private MovieDto nobodyEnDto;
-    private MovieDto nobodyDeDto;
+    private MovieFlatDto nobodyFlatEnDto;
+    private MovieFlatDto nobodyFlatDeDto;
+    private LocalizedMovie nobodyLocalizedMovieEn;
+    private LocalizedMovie nobodyLocalizedMovieDe;
     private Scene scene;
 
     public String getValidWolfEnDtoJson = """
@@ -230,6 +254,52 @@ public class DummyMovies {
                  "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
                  "imdbId":"imdbId",
                  "locale":"en"
+            }
+            """;
+
+    public String getValidWolfMovieLocalizationsJson = """
+            {
+                "movieUuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                "localizations":
+                    [
+                        {
+                            "locale":"en",
+                            "title":"Dances with Wolves - Title",
+                            "overview":"Dances with Wolves - Overview",
+                            "tagline":"Dances with Wolves - Tagline",
+                            "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg"
+                        },
+                        {
+                            "locale":"de",
+                            "title":"Der mit dem Wolf tanzt - Title",
+                            "overview":"Der mit dem Wolf tanzt - Overview",
+                            "tagline":"Der mit dem Wolf tanzt - Tagline",
+                            "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg"
+                        }
+                    ]
+            }
+            """;
+
+    public String getInvalidRequestBodyWolfMovieLocalizationsJson = """
+            {
+                "movieUuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                "localizations":
+                    [
+                        {
+                            "locale":"eng",
+                            "title":"Dances with Wolves - Title",
+                            "overview":"Dances with Wolves - Overview",
+                            "tagline":"Dances with Wolves - Tagline",
+                            "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg"
+                        },
+                        {
+                            "locale":"de",
+                            "title":"Der mit dem Wolf tanzt - Title",
+                            "overview":"Der mit dem Wolf tanzt - Overview",
+                            "tagline":"Der mit dem Wolf tanzt - Tagline",
+                            "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg"
+                        }
+                    ]
             }
             """;
 

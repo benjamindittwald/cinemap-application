@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.movie.dto;
 
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.net.URL;
-import java.util.Map;
-import java.util.UUID;
 
-public record MovieDto(
-        @NotNull UUID uuid,
-        @Min(value = -2147483648) // From TMDB API Reference movie Details
-        @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-        Integer tmdbId,
-        @Min(value = 1700)
-        Integer releaseYear,
-        Map<Integer, @Size(min = 1, max = 50) String> genres,
-        @Size(min = 1, max = 50)
-        String imdbId,
+public record MovieLocalisationDto(
         @Iso6391Constraint
         String locale,
         @Size(min = 1, max = 255)
@@ -44,5 +30,6 @@ public record MovieDto(
         String overview,
         @Size(min = 1, max = 255)
         String tagline,
-        URL posterUrl) {
+        URL posterUrl
+) {
 }
