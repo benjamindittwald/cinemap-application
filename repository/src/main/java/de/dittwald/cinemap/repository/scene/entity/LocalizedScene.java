@@ -19,8 +19,12 @@ package de.dittwald.cinemap.repository.scene.entity;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class LocalizedScene {
 
     public LocalizedScene() {
@@ -44,28 +48,4 @@ public class LocalizedScene {
     @Lob
     @Size(min = 1, max = 5000)
     private String description;
-
-    public LocalizedId getLocalizedId() {
-        return localizedId;
-    }
-
-    public void setLocalizedId(LocalizedId localizedId) {
-        this.localizedId = localizedId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
 }

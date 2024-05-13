@@ -19,6 +19,9 @@ package de.dittwald.cinemap.repository.scene.entity;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +32,8 @@ import java.util.UUID;
 @Table(name = "scenes")
 //@NamedQuery(name = "MovieScene.findAllScenesOfMovie",
 //        query = "select ms from Scene ms where ms.movie.uuid = :movieUuid")
+@Getter
+@Setter
 public class Scene {
 
     public Scene() {
@@ -45,6 +50,8 @@ public class Scene {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+
     private Long id;
 
     @NotNull
@@ -58,6 +65,8 @@ public class Scene {
     private double lat;
 
     @Version
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private Long version;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -89,49 +98,5 @@ public class Scene {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
-    public Map<String, LocalizedScene> getLocalizedMoviesScenes() {
-        return localizedMoviesScenes;
-    }
-
-    public void setLocalizedMoviesScenes(Map<String, LocalizedScene> localizedMoviesScenes) {
-        this.localizedMoviesScenes = localizedMoviesScenes;
     }
 }
