@@ -57,51 +57,51 @@ class MovieLocalizationRestControllerTest {
     @Test
     void shouldFindAllMovieLocalizations() throws Exception {
         when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid())).thenReturn(
-                this.dummyMovies.getWolfLocalizationsDto());
+                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenReturn(
+                this.dummyMovies.getWolfLocalizationDto());
 
         this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
                 .andExpect(status().isOk())
                 .andExpect(
-                        jsonPath("$.movieUuid", is(this.dummyMovies.getWolfLocalizationsDto().movieUuid().toString())))
+                        jsonPath("$.movieUuid", is(this.dummyMovies.getWolfLocalizationDto().movieUuid().toString())))
                 .andExpect(jsonPath("$.localizations[0].locale", is("en")))
                 .andExpect(jsonPath("$.localizations[0].title", is("Dances with Wolves - Title")))
                 .andExpect(jsonPath("$.localizations[1].locale", is("de")))
                 .andExpect(jsonPath("$.localizations[1].title", is("Der mit dem Wolf tanzt - Title")));
 
         verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid());
+                this.dummyMovies.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
     void shouldFailFindAllMovieLocalizationsDueToNoLocalizationsFound() throws Exception {
         when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid())).thenThrow(NotFoundException.class);
+                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenThrow(NotFoundException.class);
 
         this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
                 .andExpect(status().isNotFound());
 
         verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid());
+                this.dummyMovies.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
     void shouldFailFindAllMovieLocalizationsDueToInvalidRequestBody() throws Exception {
         when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid())).thenThrow(NotFoundException.class);
+                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenThrow(NotFoundException.class);
 
         this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
                 .andExpect(status().isNotFound());
 
         verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid());
+                this.dummyMovies.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
     void shouldUpdateMovieNoOverride() throws Exception {
         doNothing().when(this.movieLocalizationService)
-                .update(this.dummyMovies.getWolfLocalizationsDto(),
-                        this.dummyMovies.getWolfLocalizationsDto().movieUuid(), false);
+                .update(this.dummyMovies.getWolfLocalizationDto(),
+                        this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
 
         this.mockMvc.perform(
                         put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations").contentType(
@@ -111,15 +111,15 @@ class MovieLocalizationRestControllerTest {
                                 .content(this.dummyMovies.getValidWolfMovieLocalizationsJson))
                 .andExpect(status().isNoContent());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationsDto(),
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid(), false);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
+                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
     }
 
     @Test
     void shouldUpdateMovieWithOverride() throws Exception {
         doNothing().when(this.movieLocalizationService)
-                .update(this.dummyMovies.getWolfLocalizationsDto(),
-                        this.dummyMovies.getWolfLocalizationsDto().movieUuid(), true);
+                .update(this.dummyMovies.getWolfLocalizationDto(),
+                        this.dummyMovies.getWolfLocalizationDto().movieUuid(), true);
 
         this.mockMvc.perform(put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() +
                 "/localizations?override=true").contentType(MediaType.APPLICATION_JSON)
@@ -127,15 +127,15 @@ class MovieLocalizationRestControllerTest {
                 .characterEncoding("UTF-8")
                 .content(this.dummyMovies.getValidWolfMovieLocalizationsJson)).andExpect(status().isNoContent());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationsDto(),
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid(), true);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
+                this.dummyMovies.getWolfLocalizationDto().movieUuid(), true);
     }
 
     @Test
     void shouldFailUpdateMovieNoOverrideDueToMovieNotFound() throws Exception {
 
-        doThrow(NotFoundException.class).when(this.movieLocalizationService).update(this.dummyMovies.getWolfLocalizationsDto(),
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid(), false);
+        doThrow(NotFoundException.class).when(this.movieLocalizationService).update(this.dummyMovies.getWolfLocalizationDto(),
+                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
 
         this.mockMvc.perform(
                         put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations").contentType(
@@ -145,7 +145,7 @@ class MovieLocalizationRestControllerTest {
                                 .content(this.dummyMovies.getValidWolfMovieLocalizationsJson))
                 .andExpect(status().isNotFound());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationsDto(),
-                this.dummyMovies.getWolfLocalizationsDto().movieUuid(), false);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
+                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
     }
 }
