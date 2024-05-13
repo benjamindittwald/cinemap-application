@@ -35,22 +35,28 @@ class MovieDtoMapperTest {
     }
 
     @Test
-    void entityToDto() throws LocaleNotFoundException {
+    void shouldMapEntityToDto() throws LocaleNotFoundException {
         MovieDto movieDto = LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getWolf(),
                 this.dummyMovies.getWolf().getLocalizedMovies().get("en").getLocalizedId().getLocale());
         assertEquals(movieDto.uuid(), this.dummyMovies.getWolf().getUuid());
-        assertEquals(movieDto.locale(),
-                this.dummyMovies.getWolf().getLocalizedMovies().get("en").getLocalizedId().getLocale());
-        assertEquals(movieDto.overview(),
-                this.dummyMovies.getWolf().getLocalizedMovies().get("en").getOverview());
+        assertEquals(this.dummyMovies.getWolfEnDto(), movieDto);
     }
 
     @Test
-    void dtoToEntity() throws MalformedURLException, URISyntaxException {
+    void shouldMapDtoToEntity() {
         Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyMovies.getWolfEnDto());
-        assertEquals(movie.getUuid(), this.dummyMovies.getWolfEnDto().uuid());
-        assertEquals(movie.getLocalizedMovies().get("en").getTitle(), this.dummyMovies.getWolfEnDto().title());
-        assertEquals(movie.getLocalizedMovies().get("en").getLocalizedId().getLocale(),
-                this.dummyMovies.getWolfEnDto().locale());
+        assertEquals(this.dummyMovies.getWolf(), movie);
+    }
+
+    @Test
+    void shouldMapCompleteMovieDtoToEntity() {
+        Movie entity = LocalizedMovieDtoMapper.completeMovieDtoToEntity(this.dummyMovies.getWolfCompleteDto());
+        assertEquals(this.dummyMovies.getWolf(), entity);
+    }
+
+    @Test
+    void shouldMapEntityToCompleteMovieDto() {
+        CompleteMovieDto dto = LocalizedMovieDtoMapper.entityToCompleteDto(this.dummyMovies.getWolf());
+        assertEquals(this.dummyMovies.getWolfCompleteDto(), dto);
     }
 }

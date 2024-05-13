@@ -123,10 +123,16 @@ public class DummyMovies {
                         nobody.getLocalizedMovies().get("de").getOverview(),
                         nobody.getLocalizedMovies().get("de").getTagline(),
                         nobody.getLocalizedMovies().get("de").getPosterUrl());
+
+        // Wolf Complete Dto
+        this.wolfCompleteDto =
+                new CompleteMovieDto(this.wolf.getUuid(), this.wolf.getTmdbId(), this.wolf.getReleaseYear(),
+                        this.wolf.getGenres(), this.wolf.getImdbId(), this.wolf.getLocalizedMovies());
     }
 
     private Movie wolf;
     private MovieDto wolfEnDto;
+    private CompleteMovieDto wolfCompleteDto;
     private MovieDto wolfDeDto;
     private Movie nobody;
     private MovieDto nobodyEnDto;

@@ -54,4 +54,14 @@ public class LocalizedMovieDtoMapper {
         movie.getLocalizedMovies().put(localizedId.getLocale(), localizedMovie);
         return movie;
     }
+
+    public static CompleteMovieDto entityToCompleteDto(Movie entity) {
+        return new CompleteMovieDto(entity.getUuid(), entity.getTmdbId(), entity.getReleaseYear(), entity.getGenres(),
+                entity.getImdbId(), entity.getLocalizedMovies());
+    }
+
+    public static Movie completeMovieDtoToEntity(CompleteMovieDto dto) {
+        return new Movie(dto.uuid(), dto.tmdbId(), dto.releaseYear(), dto.genres(), dto.imdbId(),
+                dto.localizedMovies());
+    }
 }

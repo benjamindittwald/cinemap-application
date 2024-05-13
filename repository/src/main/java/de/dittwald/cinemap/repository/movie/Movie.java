@@ -34,11 +34,10 @@ public class Movie {
         this.localizedMovies = new HashMap<>();
     }
 
-    public Movie(UUID uuid, Long version, Integer tmdbId, Integer releaseYear,
+    public Movie(UUID uuid, Integer tmdbId, Integer releaseYear,
                  Map<Integer,String> genres, String imdbId,
                  Map<String, LocalizedMovie> localizedMovies) {
         this.uuid = uuid;
-        this.version = version;
         this.tmdbId = tmdbId;
         this.releaseYear = releaseYear;
         this.genres = genres;
