@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.dto;
 
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import jakarta.validation.constraints.NotNull;

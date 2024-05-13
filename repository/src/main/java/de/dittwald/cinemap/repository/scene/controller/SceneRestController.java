@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.controller;
 
+import de.dittwald.cinemap.repository.scene.service.SceneService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 

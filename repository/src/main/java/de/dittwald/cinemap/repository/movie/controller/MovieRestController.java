@@ -19,7 +19,7 @@ package de.dittwald.cinemap.repository.movie.controller;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.service.MovieService;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
-import de.dittwald.cinemap.repository.scene.SceneService;
+import de.dittwald.cinemap.repository.scene.service.SceneService;
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

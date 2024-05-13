@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.repository;
 
 import de.dittwald.cinemap.repository.movie.*;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
+import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
+import de.dittwald.cinemap.repository.scene.entity.Scene;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

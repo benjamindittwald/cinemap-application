@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.service;
 
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import org.springframework.stereotype.Service;
 
 @Service

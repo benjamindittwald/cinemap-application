@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.repository;
 
+import de.dittwald.cinemap.repository.scene.entity.Scene;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 

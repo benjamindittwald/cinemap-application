@@ -16,6 +16,7 @@
 
 package de.dittwald.cinemap.repository.scene;
 
+import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 

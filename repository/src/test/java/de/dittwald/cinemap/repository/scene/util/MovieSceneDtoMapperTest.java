@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+package de.dittwald.cinemap.repository.scene.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

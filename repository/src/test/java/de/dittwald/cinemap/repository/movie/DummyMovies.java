@@ -22,8 +22,8 @@ import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationsDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
-import de.dittwald.cinemap.repository.scene.LocalizedScene;
-import de.dittwald.cinemap.repository.scene.Scene;
+import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
+import de.dittwald.cinemap.repository.scene.entity.Scene;
 import lombok.Getter;
 import lombok.Setter;
 

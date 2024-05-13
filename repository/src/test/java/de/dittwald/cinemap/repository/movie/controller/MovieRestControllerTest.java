@@ -20,7 +20,7 @@ package de.dittwald.cinemap.repository.movie.controller;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.DummyMovies;
 import de.dittwald.cinemap.repository.movie.service.MovieService;
-import de.dittwald.cinemap.repository.scene.SceneService;
+import de.dittwald.cinemap.repository.scene.service.SceneService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

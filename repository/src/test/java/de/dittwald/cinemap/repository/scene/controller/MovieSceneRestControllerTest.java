@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene;
+package de.dittwald.cinemap.repository.scene.controller;
 
+import de.dittwald.cinemap.repository.scene.dto.SceneDto;
+import de.dittwald.cinemap.repository.scene.service.SceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
