@@ -29,9 +29,9 @@ public record SceneFlatDto(
 
         @NotNull UUID uuid,
 
-        @NotNull Long lon,
+        @NotNull Double lon,
 
-        @NotNull Long lat,
+        @NotNull Double lat,
 
         @NotNull @Iso6391Constraint String locale,
 

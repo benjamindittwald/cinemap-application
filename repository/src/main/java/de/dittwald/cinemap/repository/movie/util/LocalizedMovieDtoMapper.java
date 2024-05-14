@@ -40,23 +40,23 @@ public class LocalizedMovieDtoMapper {
     }
 
     public static Movie dtoToEntity(MovieFlatDto dto) {
-        Movie movie = new Movie();
-        movie.setUuid(dto.uuid());
-        movie.setGenres(dto.genres());
-        movie.setTmdbId(dto.tmdbId());
-        movie.setReleaseYear(dto.releaseYear());
-        movie.setImdbId(dto.imdbId());
+        Movie entity = new Movie();
+        entity.setUuid(dto.uuid());
+        entity.setGenres(dto.genres());
+        entity.setTmdbId(dto.tmdbId());
+        entity.setReleaseYear(dto.releaseYear());
+        entity.setImdbId(dto.imdbId());
 
-        LocalizedMovie localizedMovie = new LocalizedMovie();
+        LocalizedMovie localizedEntity = new LocalizedMovie();
         LocalizedId localizedId = new LocalizedId(dto.locale());
-        localizedMovie.setLocalizedId(localizedId);
-        localizedMovie.setTitle(dto.title());
-        localizedMovie.setOverview(dto.overview());
-        localizedMovie.setTagline(dto.tagline());
-        localizedMovie.setPosterUrl(dto.posterUrl());
-        localizedMovie.setMovie(movie);
+        localizedEntity.setLocalizedId(localizedId);
+        localizedEntity.setTitle(dto.title());
+        localizedEntity.setOverview(dto.overview());
+        localizedEntity.setTagline(dto.tagline());
+        localizedEntity.setPosterUrl(dto.posterUrl());
+        localizedEntity.setMovie(entity);
 
-        movie.getLocalizedMovies().put(localizedId.getLocale(), localizedMovie);
-        return movie;
+        entity.getLocalizedMovies().put(localizedId.getLocale(), localizedEntity);
+        return entity;
     }
 }

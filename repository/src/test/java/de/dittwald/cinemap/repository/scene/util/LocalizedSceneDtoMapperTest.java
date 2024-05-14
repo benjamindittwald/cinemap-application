@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie.util;
+package de.dittwald.cinemap.repository.scene.util;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.movie.DummyMovies;
-import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
-import de.dittwald.cinemap.repository.movie.entity.Movie;
+import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
+import de.dittwald.cinemap.repository.scene.entity.Scene;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MovieFlatDtoMapperTest {
+class LocalizedSceneDtoMapperTest {
 
     private DummyMovies dummyMovies;
 
@@ -38,14 +38,14 @@ class MovieFlatDtoMapperTest {
     }
 
     @Test
-    void shouldMapEntityToDto() throws LocaleNotFoundException {
-        MovieFlatDto movieFlatDto = LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getWolf(),"en");
-        assertEquals(this.dummyMovies.getWolfFlatEnDto(), movieFlatDto);
+    void entityToDto() throws LocaleNotFoundException {
+        SceneFlatDto sceneFlatDto = LocalizedSceneDtoMapper.entityToDto(this.dummyMovies.getWolfSceneOne(), "en");
+        assertEquals(this.dummyMovies.getWolfSceneOne().getUuid(), sceneFlatDto.uuid());
     }
 
     @Test
-    void shouldMapDtoToEntity() {
-        Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyMovies.getWolfFlatEnDto());
-        assertEquals(this.dummyMovies.getWolf(), movie);
+    void dtoToEntity() {
+        Scene scene = LocalizedSceneDtoMapper.dtoToEntity(this.dummyMovies.getWolfSceneOneFlatEnDto());
+        assertEquals(this.dummyMovies.getWolfSceneOne(), scene);
     }
 }

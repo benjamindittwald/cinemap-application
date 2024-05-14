@@ -22,6 +22,7 @@ import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
+import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationEntryDto;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
@@ -87,13 +88,6 @@ public class DummyMovies {
         this.wolfLsOneDe.setLocalizedId(new LocalizedId("de"));
         this.wolfLsOneDe.setScene(wolfSceneOne);
         this.wolfSceneOne.getLocalizedScenes().put("de", wolfLsOneDe);
-
-        // Wolf Scene Localization DTO
-        this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(), this.wolf.getUuid(),
-                List.of(new SceneLocalizationEntryDto(wolfLsOneEn.getLocalizedId().getLocale(),
-                                wolfLsOneEn.getDescription()),
-                        new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
-                                wolfLsOneDe.getDescription())));
 
         // Wolf scene two
         this.wolfSceneTwo = new Scene();
@@ -183,6 +177,19 @@ public class DummyMovies {
                         new MovieLocalizationEntryDto(this.wolfFlatDeDto.locale(), this.wolfFlatDeDto.title(),
                                 this.wolfFlatDeDto.overview(), this.wolfFlatDeDto.tagline(),
                                 this.wolfFlatDeDto.posterUrl())));
+
+
+        // Wold scene flat DTO
+        this.wolfSceneOneFlatEnDto = new SceneFlatDto(this.getWolfSceneOne().getUuid(), this.wolfSceneOne.getLon(),
+                this.wolfSceneOne.getLat(), "en", this.wolfSceneOne.getLocalizedScenes().get("en").getDescription(),
+                this.wolfFlatEnDto);
+
+        // Wolf Scene Localization DTO
+        this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(), this.wolf.getUuid(),
+                List.of(new SceneLocalizationEntryDto(wolfLsOneEn.getLocalizedId().getLocale(),
+                                wolfLsOneEn.getDescription()),
+                        new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
+                                wolfLsOneDe.getDescription())));
     }
 
     private Movie wolf;
@@ -199,6 +206,7 @@ public class DummyMovies {
     private LocalizedScene wolfLsOneDe;
     private LocalizedScene wolfLsTwoEn;
     private LocalizedScene wolfLsTwoDe;
+    private SceneFlatDto wolfSceneOneFlatEnDto;
 
     private Movie nobody;
     private MovieFlatDto nobodyFlatEnDto;

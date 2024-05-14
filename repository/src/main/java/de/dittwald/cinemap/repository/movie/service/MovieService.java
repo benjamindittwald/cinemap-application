@@ -38,6 +38,7 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
+    // Fixme: Replace runtime exception with somethin meaningful
     public List<MovieFlatDto> findAll(String locale) {
         List<MovieFlatDto> movieFlatDtos = new ArrayList<>();
 
@@ -56,11 +57,11 @@ public class MovieService {
         return movieFlatDtos;
     }
 
+    // Fixme: Replace runtime exception with somethin meaningful
     public MovieFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException {
 
-        MovieFlatDto movieFlatDto = null;
-
         Movie movie = this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found"));
+        MovieFlatDto movieFlatDto = null;
 
         try {
             movieFlatDto = LocalizedMovieDtoMapper.entityToDto(movie, locale);
@@ -83,14 +84,6 @@ public class MovieService {
         }
     }
 
-//    public void save(CompleteMovieDto completeMovieDto) throws DataIntegrityViolationException {
-//        if (this.movieRepository.existsByUuid(completeMovieDto.uuid())) {
-//            throw new DataIntegrityViolationException("UUID already in use");
-//        } else {
-//            this.movieRepository.save(LocalizedMovieDtoMapper.completeMovieDtoToEntity(completeMovieDto));
-//        }
-//    }
-
     public void update(MovieFlatDto movieFlatDto, UUID uuid) throws NotFoundException {
 
         Optional<Movie> movieOptional = this.movieRepository.findByUuid(uuid);
@@ -111,21 +104,6 @@ public class MovieService {
             throw new NotFoundException("Movie not found");
         }
     }
-
-//    public void update(CompleteMovieDto completeMovieDto, UUID uuid) throws NotFoundException {
-//        Optional<Movie> movieOptional = this.movieRepository.findByUuid(uuid);
-//        if (movieOptional.isPresent()) {
-//            Movie movie = movieOptional.get();
-//            movie.setUuid(uuid);
-//            movie.setGenres(completeMovieDto.genres());
-//            movie.setReleaseYear(completeMovieDto.releaseYear());
-//            movie.setTmdbId(completeMovieDto.tmdbId());
-//            movie.setImdbId(completeMovieDto.imdbId());
-//            movie.setLocalizedMovies(completeMovieDto.localizedMovies());
-//        } else {
-//            throw new NotFoundException("Movie not found");
-//        }
-//    }
 
     public void deleteByUuid(UUID uuid) throws NotFoundException {
         if (this.movieRepository.existsByUuid(uuid)) {
