@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-        classes = {MovieRepository.class, LocalizedMovieRepository.class}))
+        classes = {MovieRepository.class, MovieLocalizedRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MovieRepositoryTest {
 

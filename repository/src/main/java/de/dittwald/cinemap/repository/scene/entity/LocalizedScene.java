@@ -22,10 +22,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
-public class LocalizedScene {
+@NamedQuery(name = "LocalizedScene.findAllBySceneUuid",
+        query = "select ls from LocalizedScene ls where ls.scene.uuid = :sceneUuid")
+public class LocalizedScene implements Serializable {
 
     public LocalizedScene() {
         this.localizedId = new LocalizedId();

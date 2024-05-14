@@ -18,13 +18,14 @@ package de.dittwald.cinemap.repository.scene.dto;
 
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 import java.util.UUID;
 
-public record SceneDto(
+public record SceneFlatDto(
 
         @NotNull UUID uuid,
 
@@ -32,7 +33,9 @@ public record SceneDto(
 
         @NotNull Long lat,
 
-        Map<@Iso6391Constraint String, @Size(min = 1, max = 2000) String> description,
+        @NotNull @Iso6391Constraint String locale,
 
-        MovieFlatDto movie) {
+        @Size(min = 1, max = 5000) String description,
+
+        @NotNull MovieFlatDto movie) {
 }

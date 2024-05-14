@@ -20,6 +20,7 @@ import de.dittwald.cinemap.repository.scene.entity.Scene;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,4 +32,6 @@ public interface SceneRepository extends ListCrudRepository<Scene, Long> {
     void deleteByUuid(UUID uuid);
 
     boolean existsByUuid(UUID uuid);
+
+    Optional<List<Scene>> findAllScenesOfMovie(UUID movieUuid);
 }

@@ -18,7 +18,7 @@ package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.DummyMovies;
-import de.dittwald.cinemap.repository.movie.repository.LocalizedMovieRepository;
+import de.dittwald.cinemap.repository.movie.repository.MovieLocalizedRepository;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class MovieLocalizationServiceTest {
     private MovieRepository movieRepository;
 
     @MockBean
-    private LocalizedMovieRepository localizedMovieRepository;
+    private MovieLocalizedRepository movieLocalizedRepository;
 
     private DummyMovies dummyMovies;
 
@@ -84,23 +84,24 @@ class MovieLocalizationServiceTest {
 
     @Test
     void shouldFindAllLocalizationsForMovieUuid() throws NotFoundException {
-        when(this.localizedMovieRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
+        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
                 Optional.of(List.of(this.dummyMovies.getWolfLocalizedMovieEn(),
                         this.dummyMovies.getWolfLocalizedMovieDe())));
         assertThat(this.movieLocalizationService.getMovieLocalizations(this.dummyMovies.getWolf().getUuid())).isEqualTo(
                 this.dummyMovies.getWolfLocalizationDto());
 
-        verify(this.localizedMovieRepository, times(1)).findAllByMovieUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyMovies.getWolf().getUuid());
     }
 
     @Test
     void shouldFailFindAllLocalizationsForMovieUuidDueToNotFoundLocalizations() throws NotFoundException {
-        when(this.localizedMovieRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
+        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
                 Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class, () -> {
             this.movieLocalizationService.getMovieLocalizations(this.dummyMovies.getWolf().getUuid());
         });
         assertThat(exception.getMessage()).isEqualTo("No localized movies found");
+        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyMovies.getWolf().getUuid());
     }
 }

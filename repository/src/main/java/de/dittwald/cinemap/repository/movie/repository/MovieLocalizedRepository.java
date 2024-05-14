@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie.dto;
+package de.dittwald.cinemap.repository.movie.repository;
 
-import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public record MovieLocalizationEntryDto(
-        @NotNull
-        @Iso6391Constraint
-        String locale,
-        @Size(min = 1, max = 255)
-        String title,
-        @Size(min = 1, max = 5000)
-        String overview,
-        @Size(min = 1, max = 255)
-        String tagline,
-        URL posterUrl
-) {
+@Repository
+public interface MovieLocalizedRepository extends ListCrudRepository<LocalizedMovie, String> {
+
+    Optional<List<LocalizedMovie>> findAllByMovieUuid(UUID movieUuid);
 }

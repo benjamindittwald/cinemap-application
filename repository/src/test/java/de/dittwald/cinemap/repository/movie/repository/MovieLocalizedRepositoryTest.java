@@ -36,17 +36,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-        classes = {LocalizedMovieRepository.class, MovieRepository.class}))
+        classes = {MovieLocalizedRepository.class, MovieRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class LocalizedMovieRepositoryTest {
+class MovieLocalizedRepositoryTest {
 
     @Container
     @ServiceConnection
     static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16.2-alpine").withInitScript("schema.sql");
+            new PostgreSQLContainer<>("postgres:16.3-alpine").withInitScript("schema.sql");
 
     @Autowired
-    private LocalizedMovieRepository localizedMovieRepository;
+    private MovieLocalizedRepository movieLocalizedRepository;
 
     @Autowired
     private MovieRepository movieRepository;
@@ -68,35 +68,35 @@ class LocalizedMovieRepositoryTest {
 
     @Test
     void shouldFindTwoLocalizedMovies() {
-        assertThat(localizedMovieRepository.findAll()).hasSize(4);
+        assertThat(movieLocalizedRepository.findAll()).hasSize(4);
     }
 
     @Test
     void shouldFindTwoLocalizedMoviesForWolf() {
-        assertThat(localizedMovieRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid()).get()).hasSize(2);
+        assertThat(movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid()).get()).hasSize(2);
     }
 
     @Test
-    public void shouldPersistLocalizedMoviesViaMovieSave() {
+    void shouldPersistLocalizedMoviesViaMovieSave() {
 
         // Remove Nobody before testing
         this.movieRepository.deleteByUuid(this.dummyMovies.getNobody().getUuid());
 
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(2);
+        assertThat(this.movieLocalizedRepository.count()).isEqualTo(2);
 
         this.movieRepository.save(this.dummyMovies.getNobody());
 
         assertThat(this.movieRepository.count()).isEqualTo(2);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(4);
+        assertThat(this.movieLocalizedRepository.count()).isEqualTo(4);
     }
 
     @Test
-    public void shouldDeleteAllLocalizedMoviesWhenDeleteSetUpMovie() {
+    void shouldDeleteAllLocalizedMoviesWhenDeleteSetUpMovie() {
         assertThat(this.movieRepository.count()).isEqualTo(2);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(4);
+        assertThat(this.movieLocalizedRepository.count()).isEqualTo(4);
         this.movieRepository.deleteAll();
         assertThat(this.movieRepository.count()).isEqualTo(0);
-        assertThat(this.localizedMovieRepository.count()).isEqualTo(0);
+        assertThat(this.movieLocalizedRepository.count()).isEqualTo(0);
     }
 }

@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest({SceneService.class})
 @AutoConfigureMockMvc
-class MovieSceneServiceTest {
+class SceneServiceTest {
 
 //    @Autowired
 //    private MovieSceneService movieSceneService;

@@ -30,28 +30,27 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "scenes")
-//@NamedQuery(name = "MovieScene.findAllScenesOfMovie",
-//        query = "select ms from Scene ms where ms.movie.uuid = :movieUuid")
 @Getter
 @Setter
+@NamedQuery(name = "Scene.findAllScenesOfMovie",
+        query = "select s from Scene s where s.movie.uuid = :movieUuid")
 public class Scene {
 
     public Scene() {
     }
 
     public Scene(UUID uuid, double lon, double lat, Movie movie,
-                 Map<String, LocalizedScene> localizedMoviesScenes) {
+                 Map<String, LocalizedScene> localizedScenes) {
         this.uuid = uuid;
         this.lon = lon;
         this.lat = lat;
         this.movie = movie;
-        this.localizedMoviesScenes = localizedMoviesScenes;
+        this.localizedScenes = localizedScenes;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-
     private Long id;
 
     @NotNull
@@ -77,12 +76,12 @@ public class Scene {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             orphanRemoval = true)
     @MapKey(name = "localizedId.locale")
-    private Map<String, LocalizedScene> localizedMoviesScenes = new HashMap<>();
+    private Map<String, LocalizedScene> localizedScenes = new HashMap<>();
 
     @Override
     public String toString() {
         return "MovieScene{" + "uuid=" + id + ", uuid=" + uuid + ", lon=" + lon + ", lat=" + lat + ", version=" +
-                version + ", movie=" + movie + ", localizedMoviesScenes=" + localizedMoviesScenes + '}';
+                version + ", movie=" + movie + ", localizedMoviesScenes=" + localizedScenes + '}';
     }
 
     @Override

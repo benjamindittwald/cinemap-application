@@ -34,6 +34,7 @@ public record MovieFlatDto(
         @Min(value = 1700)
         Integer releaseYear,
         Map<Integer, @Size(min = 1, max = 50) String> genres,
+        @NotNull
         @Size(min = 1, max = 50)
         String imdbId,
         @Iso6391Constraint

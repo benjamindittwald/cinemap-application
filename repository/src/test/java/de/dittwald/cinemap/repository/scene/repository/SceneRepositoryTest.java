@@ -68,7 +68,7 @@ class SceneRepositoryTest {
     void setUp() throws URISyntaxException, MalformedURLException {
         dummyMovies = new DummyMovies();
         this.movieRepository.save(this.dummyMovies.getWolf());
-        this.sceneRepository.save(this.dummyMovies.getScene());
+        this.sceneRepository.save(this.dummyMovies.getWolfSceneOne());
     }
 
     @Test
@@ -94,17 +94,20 @@ class SceneRepositoryTest {
     }
 
     @Test
-    public void shouldUpdateMovieScene() {
-        Scene scene = this.sceneRepository.findByUuid(this.dummyMovies.getScene().getUuid()).get();
+    public void shouldUpdateScene() {
+        Scene scene = this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid()).get();
 
-        LocalizedScene lmsEn = new LocalizedScene();
-        lmsEn.setLocalizedId(new LocalizedId("de"));
-        lmsEn.setDescription("Der mit dem Wolf tanzt - Scene Description");
-        lmsEn.setScene(scene);
-        assertThat(this.localizedSceneRepository.count()).isEqualTo(1);
-        scene.getLocalizedMoviesScenes().put("de", lmsEn);
+        LocalizedScene lmsEn = scene.getLocalizedScenes().get("de");
+        lmsEn.setDescription("Der mit dem Wolf tanzt - Scene One New Description");
         assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
+        scene.getLocalizedScenes().put("de", lmsEn);
         this.sceneRepository.save(scene);
+        assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
+        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid())
+                .get()
+                .getLocalizedScenes()
+                .get("de")
+                .getDescription()).isEqualTo("Der mit dem Wolf tanzt - Scene One New Description");
     }
 
     @Test
@@ -115,21 +118,21 @@ class SceneRepositoryTest {
     }
 
     @Test
-    public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() throws URISyntaxException, MalformedURLException {
+    public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() {
 
         this.movieRepository.save(this.dummyMovies.getNobody());
 
         Scene scene = new Scene();
-        scene.setUuid(this.dummyMovies.getScene().getUuid());
+        scene.setUuid(this.dummyMovies.getWolfSceneOne().getUuid());
         scene.setLat(52.51263);
         scene.setLon(13.35943);
         scene.setMovie(this.dummyMovies.getWolf());
 
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("en"));
-        lmsEn.setDescription("Dances with Wolves - Scene Description");
+        lmsEn.setDescription("Dances with Wolves - Scene One Description");
         lmsEn.setScene(scene);
-        scene.getLocalizedMoviesScenes().put("en", lmsEn);
+        scene.getLocalizedScenes().put("en", lmsEn);
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             this.sceneRepository.save(scene);
@@ -138,13 +141,13 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldFindMovieSceneByUuid() {
-        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getScene().getUuid()).get()).isNotNull();
+        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid()).get()).isNotNull();
     }
 
     @Test
     public void shouldDeleteMovieSceneByUuid() {
         assertThat(this.sceneRepository.count()).isEqualTo(1);
-        this.sceneRepository.deleteByUuid(this.dummyMovies.getScene().getUuid());
+        this.sceneRepository.deleteByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
         assertThat(this.sceneRepository.count()).isEqualTo(0);
     }
 

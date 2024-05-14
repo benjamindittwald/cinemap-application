@@ -16,7 +16,7 @@
 
 package de.dittwald.cinemap.repository.scene.controller;
 
-import de.dittwald.cinemap.repository.scene.dto.SceneDto;
+import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.service.SceneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,7 +42,7 @@ public class MovieSceneRestControllerTest {
     @MockBean
     private SceneService sceneService;
 
-    private List<SceneDto> sceneDtos;
+    private List<SceneFlatDto> sceneFlatDtos;
 
     private String movieSceneDtoJson;
 

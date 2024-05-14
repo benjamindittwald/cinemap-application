@@ -16,18 +16,11 @@
 
 package de.dittwald.cinemap.repository.scene.dto;
 
-import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
-public record SceneOnlyDto(@NotNull UUID uuid,
-
-                           @NotNull Long lon,
-
-                           @NotNull Long lat,
-
-                           Map<@Iso6391Constraint String, @Size(min = 1, max = 2000) String> description) {
+public record SceneLocalizationDto(@NotNull UUID sceneUuid, @NotNull UUID movieUuid,
+                                   @NotNull List<SceneLocalizationEntryDto> localizations) {
 }

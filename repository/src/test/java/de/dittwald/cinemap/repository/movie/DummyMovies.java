@@ -22,6 +22,8 @@ import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
+import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationDto;
+import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationEntryDto;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
 import lombok.Getter;
@@ -31,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,6 +69,51 @@ public class DummyMovies {
         wolfLmDe.setMovie(this.wolf);
         this.wolf.getLocalizedMovies().put("de", wolfLmDe);
 
+        // Wolf scene one
+        this.wolfSceneOne = new Scene();
+        this.wolfSceneOne.setUuid(UUID.randomUUID());
+        this.wolfSceneOne.setLat(52.51263);
+        this.wolfSceneOne.setLon(13.35943);
+        this.wolfSceneOne.setMovie(this.getWolf());
+
+        this.wolfLsOneEn = new LocalizedScene();
+        this.wolfLsOneEn.setDescription("Dances with Wolves - Scene One Description");
+        this.wolfLsOneEn.setLocalizedId(new LocalizedId("en"));
+        this.wolfLsOneEn.setScene(wolfSceneOne);
+        this.wolfSceneOne.getLocalizedScenes().put("en", wolfLsOneEn);
+
+        this.wolfLsOneDe = new LocalizedScene();
+        this.wolfLsOneDe.setDescription("Der mit dem Wolf tanzt - Scene One Description");
+        this.wolfLsOneDe.setLocalizedId(new LocalizedId("de"));
+        this.wolfLsOneDe.setScene(wolfSceneOne);
+        this.wolfSceneOne.getLocalizedScenes().put("de", wolfLsOneDe);
+
+        // Wolf Scene Localization DTO
+        this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(), this.wolf.getUuid(),
+                List.of(new SceneLocalizationEntryDto(wolfLsOneEn.getLocalizedId().getLocale(),
+                                wolfLsOneEn.getDescription()),
+                        new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
+                                wolfLsOneDe.getDescription())));
+
+        // Wolf scene two
+        this.wolfSceneTwo = new Scene();
+        this.wolfSceneTwo.setUuid(UUID.randomUUID());
+        this.wolfSceneOne.setLat(52.51263);
+        this.wolfSceneOne.setLon(13.35943);
+        this.wolfSceneOne.setMovie(this.getWolf());
+
+        this.wolfLsTwoEn = new LocalizedScene();
+        this.wolfLsTwoEn.setDescription("Dances with Wolves - Scene Two Description");
+        this.wolfLsTwoEn.setLocalizedId(new LocalizedId("en"));
+        this.wolfLsTwoEn.setScene(wolfSceneOne);
+        this.wolfSceneOne.getLocalizedScenes().put("en", wolfLsTwoEn);
+
+        this.wolfLsTwoDe = new LocalizedScene();
+        this.wolfLsTwoDe.setDescription("Der mit dem Wolf tanzt - Scene Two Description");
+        this.wolfLsTwoDe.setLocalizedId(new LocalizedId("de"));
+        this.wolfLsTwoDe.setScene(wolfSceneOne);
+        this.wolfSceneOne.getLocalizedScenes().put("de", wolfLsTwoDe);
+
         // Nobody
         this.nobody = new Movie();
         this.nobody.setUuid(UUID.randomUUID());
@@ -91,19 +139,6 @@ public class DummyMovies {
         nobodyLmDe.setPosterUrl(new URI("https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg").toURL());
         nobodyLmDe.setMovie(this.nobody);
         this.nobody.getLocalizedMovies().put("de", nobodyLmDe);
-
-        // Scene
-        this.scene = new Scene();
-        this.scene.setUuid(UUID.randomUUID());
-        this.scene.setLat(52.51263);
-        this.scene.setLon(13.35943);
-        this.scene.setMovie(this.wolf);
-
-        LocalizedScene lmsEn = new LocalizedScene();
-        lmsEn.setLocalizedId(new LocalizedId("en"));
-        lmsEn.setDescription("Dances with Wolves - Scene Description");
-        lmsEn.setScene(this.scene);
-        this.scene.getLocalizedMoviesScenes().put("en", lmsEn);
 
         // Localized wolfDto
         this.wolfFlatEnDto = new MovieFlatDto(wolf.getUuid(), wolf.getTmdbId(), wolf.getReleaseYear(), wolf.getGenres(),
@@ -156,12 +191,20 @@ public class DummyMovies {
     private LocalizedMovie wolfLocalizedMovieDe;
     private MovieLocalizationDto wolfLocalizationDto;
     private MovieFlatDto wolfFlatDeDto;
+
+    private Scene wolfSceneOne;
+    private Scene wolfSceneTwo;
+    private SceneLocalizationDto wolfSceneOneLocalizationDto;
+    private LocalizedScene wolfLsOneEn;
+    private LocalizedScene wolfLsOneDe;
+    private LocalizedScene wolfLsTwoEn;
+    private LocalizedScene wolfLsTwoDe;
+
     private Movie nobody;
     private MovieFlatDto nobodyFlatEnDto;
     private MovieFlatDto nobodyFlatDeDto;
     private LocalizedMovie nobodyLocalizedMovieEn;
     private LocalizedMovie nobodyLocalizedMovieDe;
-    private Scene scene;
 
     public String getValidWolfEnDtoJson = """
             {

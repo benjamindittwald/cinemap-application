@@ -22,7 +22,7 @@ import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
-import de.dittwald.cinemap.repository.movie.repository.LocalizedMovieRepository;
+import de.dittwald.cinemap.repository.movie.repository.MovieLocalizedRepository;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +32,12 @@ import java.util.*;
 public class MovieLocalizationService {
 
     private final MovieRepository movieRepository;
-    private final LocalizedMovieRepository localizedMovieRepository;
+    private final MovieLocalizedRepository movieLocalizedRepository;
 
     public MovieLocalizationService(MovieRepository movieRepository,
-                                    LocalizedMovieRepository localizedMovieRepository) {
+                                    MovieLocalizedRepository movieLocalizedRepository) {
         this.movieRepository = movieRepository;
-        this.localizedMovieRepository = localizedMovieRepository;
+        this.movieLocalizedRepository = movieLocalizedRepository;
     }
 
     public void update(MovieLocalizationDto movieLocalizationDto, UUID movieUuid, boolean override)
@@ -66,7 +66,7 @@ public class MovieLocalizationService {
     }
 
     public MovieLocalizationDto getMovieLocalizations(UUID movieUuid) throws NotFoundException {
-        Optional<List<LocalizedMovie>> localizedMovies = this.localizedMovieRepository.findAllByMovieUuid(movieUuid);
+        Optional<List<LocalizedMovie>> localizedMovies = this.movieLocalizedRepository.findAllByMovieUuid(movieUuid);
 
         if (localizedMovies.isEmpty()) {
             throw new NotFoundException("No localized movies found");
