@@ -92,21 +92,21 @@ public class DummyMovies {
         // Wolf scene two
         this.wolfSceneTwo = new Scene();
         this.wolfSceneTwo.setUuid(UUID.randomUUID());
-        this.wolfSceneOne.setLat(52.51263);
-        this.wolfSceneOne.setLon(13.35943);
-        this.wolfSceneOne.setMovie(this.getWolf());
+        this.wolfSceneTwo.setLat(52.51263);
+        this.wolfSceneTwo.setLon(13.35943);
+        this.wolfSceneTwo.setMovie(this.getWolf());
 
         this.wolfLsTwoEn = new LocalizedScene();
         this.wolfLsTwoEn.setDescription("Dances with Wolves - Scene Two Description");
         this.wolfLsTwoEn.setLocalizedId(new LocalizedId("en"));
-        this.wolfLsTwoEn.setScene(wolfSceneOne);
-        this.wolfSceneOne.getLocalizedScenes().put("en", wolfLsTwoEn);
+        this.wolfLsTwoEn.setScene(wolfSceneTwo);
+        this.wolfSceneTwo.getLocalizedScenes().put("en", wolfLsTwoEn);
 
         this.wolfLsTwoDe = new LocalizedScene();
         this.wolfLsTwoDe.setDescription("Der mit dem Wolf tanzt - Scene Two Description");
         this.wolfLsTwoDe.setLocalizedId(new LocalizedId("de"));
-        this.wolfLsTwoDe.setScene(wolfSceneOne);
-        this.wolfSceneOne.getLocalizedScenes().put("de", wolfLsTwoDe);
+        this.wolfLsTwoDe.setScene(wolfSceneTwo);
+        this.wolfSceneTwo.getLocalizedScenes().put("de", wolfLsTwoDe);
 
         // Nobody
         this.nobody = new Movie();

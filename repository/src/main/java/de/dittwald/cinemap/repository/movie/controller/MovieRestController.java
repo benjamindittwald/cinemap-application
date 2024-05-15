@@ -16,6 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie.controller;
 
+import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.service.MovieService;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
@@ -36,7 +37,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/movies")
-@Tag(name = "Movie API")
+@Tag(name = "Movie")
 @Validated
 public class MovieRestController {
 
@@ -54,7 +55,8 @@ public class MovieRestController {
             description = "Responds a list with all movies localized in the given language")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found movies"),
             @ApiResponse(responseCode = "400", description = "Invalid ISO 639-1 lang given")})
-    public List<MovieFlatDto> findAll(@RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale) {
+    public List<MovieFlatDto> findAll(@RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale)
+            throws LocaleNotFoundException {
         return this.movieService.findAll(locale);
     }
 
@@ -66,7 +68,7 @@ public class MovieRestController {
             @ApiResponse(responseCode = "400", description = "Invalid UUID or ISO 639-1 lang given")})
     public MovieFlatDto findByUuid(@PathVariable("uuid") String uuid,
                                    @RequestParam(name = "lang", defaultValue = "en") @Iso6391Constraint String locale)
-            throws NotFoundException {
+            throws NotFoundException, LocaleNotFoundException {
         return this.movieService.findByUuid(UUID.fromString(uuid), locale);
     }
 

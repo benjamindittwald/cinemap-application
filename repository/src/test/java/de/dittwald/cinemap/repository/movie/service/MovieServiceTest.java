@@ -36,7 +36,6 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -58,7 +57,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    void shouldFindTwoMovies() {
+    void shouldFindTwoMovies() throws LocaleNotFoundException {
         when(this.movieRepository.findAll()).thenReturn(
                 List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
         List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
@@ -67,7 +66,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    void shouldFindTwoMoviesWhereFirstTitleIsNobodyEn() {
+    void shouldFindTwoMoviesWhereFirstTitleIsNobodyEn() throws LocaleNotFoundException {
         when(this.movieRepository.findAll()).thenReturn(
                 List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
         List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
@@ -92,22 +91,6 @@ public class MovieServiceTest {
         assertThat(exception.getMessage()).isEqualTo("UUID already in use");
         verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getNobody().getUuid());
     }
-
-//    @Test
-//    void shouldSaveCompleteMovie() {
-//        when(this.movieRepository.save(this.dummyMovies.getWolf())).thenReturn(this.dummyMovies.getWolf());
-//        this.movieService.save(this.dummyMovies.getWolfCompleteDto());
-//        verify(this.movieRepository, times(1)).save(this.dummyMovies.getWolf());
-//    }
-//
-//    @Test
-//    public void shouldFailSaveCompleteMovieDueToUuidAlreadyExists() {
-//        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(true);
-//        Exception exception = assertThrows(DataIntegrityViolationException.class,
-//                () -> this.movieService.save(this.dummyMovies.getWolfCompleteDto()));
-//        assertThat(exception.getMessage()).isEqualTo("UUID already in use");
-//        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
-//    }
 
     @Test
     public void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
@@ -155,7 +138,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFindMovieByUuid() throws NotFoundException {
+    public void shouldFindMovieByUuid() throws NotFoundException, LocaleNotFoundException {
         Optional<Movie> persistedMovie = Optional.of(this.dummyMovies.getWolf());
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
         assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid(), "en").uuid()).isEqualTo(

@@ -26,8 +26,8 @@ import de.dittwald.cinemap.repository.scene.entity.Scene;
 public class LocalizedSceneDtoMapper {
 
     public static SceneFlatDto entityToDto(Scene entity, String locale) throws LocaleNotFoundException {
-        if (entity.getLocalizedScenes().get(locale) == null) {
-            throw new LocaleNotFoundException("Locale %s not found for scene %s".formatted(locale, entity));
+        if (!entity.getLocalizedScenes().containsKey(locale)) {
+            throw new LocaleNotFoundException("Locale \"%s\" not found for scene %s".formatted(locale, entity));
         }
 
         return new SceneFlatDto(entity.getUuid(), entity.getLon(), entity.getLat(), locale,

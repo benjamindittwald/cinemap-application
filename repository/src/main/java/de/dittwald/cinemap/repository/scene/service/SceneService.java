@@ -18,129 +18,112 @@ package de.dittwald.cinemap.repository.scene.service;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
+import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
 import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import de.dittwald.cinemap.repository.scene.util.LocalizedSceneDtoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class SceneService {
 
     private final SceneRepository sceneRepository;
     private final MovieRepository movieRepository;
 
-    public SceneService(SceneRepository SceneRepository, MovieRepository movieRepository) {
-        this.sceneRepository = SceneRepository;
+    public SceneService(SceneRepository sceneRepository, MovieRepository movieRepository) {
+        this.sceneRepository = sceneRepository;
         this.movieRepository = movieRepository;
     }
 
 
-    // Todo: Test this!
-    // Fixme: Replace runtime exception with somethin meaningful
-    public SceneFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException {
-
+    public SceneFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException, LocaleNotFoundException {
         Scene scene = this.sceneRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Scene not found"));
-        SceneFlatDto sceneFlatDto = null;
-
-        try {
-            sceneFlatDto = LocalizedSceneDtoMapper.entityToDto(scene, locale);
-        } catch (LocaleNotFoundException e) {
-            try {
-                sceneFlatDto = LocalizedSceneDtoMapper.entityToDto(scene, "en");
-            } catch (LocaleNotFoundException ex) {
-                throw new RuntimeException(e);
-            }
-        }
-        return sceneFlatDto;
+        return LocalizedSceneDtoMapper.entityToDto(scene, LocaleFallbackHandler.getSceneLocale(scene, locale));
     }
 
-    //
-    //    public MovieSceneDto update(MovieSceneOnlyDto movieSceneOnlyDto, UUID movieUuid, UUID movieSceneUuid)
-    //            throws NotFoundException {
-    //        Optional<MovieScene> movieSceneOptional = movieSceneRepository.findByUuid(movieSceneUuid);
-    //
-    //        if (movieSceneOptional.isPresent()) {
-    //
-    //            MovieScene movieScene = movieSceneOptional.get();
-    //            movieScene.setUuid(movieSceneUuid);
-    //            movieScene.setDescription(movieSceneOnlyDto.description());
-    //            movieScene.setLat(movieSceneOnlyDto.lat());
-    //            movieScene.setLon(movieSceneOnlyDto.lon());
-    //
-    //            Optional<Movie> movieOptional = movieRepository.findByUuid(movieUuid);
-    //            if (movieOptional.isPresent()) {
-    //                if (movieUuid != movieScene.getMovie().getUuid()) {
-    //                    movieScene.setMovie(movieOptional.get());
-    //                }
-    //            } else {
-    //                throw new NotFoundException("Movie not found");
-    //            }
-    //            return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.movieSceneRepository.save(movieScene));
-    //        } else {
-    //            throw new NotFoundException("Movie scene not found");
-    //        }
-    //    }
-    //
-    //    public void deleteByUuid(UUID uuid) throws NotFoundException {
-    //        if (this.movieSceneRepository.existsByUuid(uuid)) {
-    //            this.movieSceneRepository.deleteByUuid(uuid);
-    //        } else {
-    //            throw new NotFoundException("Movie scene not found");
-    //        }
-    //    }
-    //
-    //    public MovieSceneDto save(MovieSceneOnlyDto movieSceneOnlyDto, UUID movieUuid)
-    //            throws NotFoundException, UuidInUseException {
-    //        Movie movie;
-    //        Optional<Movie> movieOptional = movieRepository.findByUuid(movieUuid);
-    //        Optional<MovieScene> movieSceneOptional;
-    //
-    //        if (movieOptional.isPresent()) {
-    //            movieSceneOptional = movieSceneRepository.findByUuid(movieSceneOnlyDto.uuid());
-    //            if (movieSceneOptional.isEmpty()) {
-    //                movie = movieOptional.get();
-    //                MovieScene movieScene = this.movieSceneDtoMapper.movieSceneOnlyDtoToMovieScene(movieSceneOnlyDto);
-    //                movieScene.setMovie(movie);
-    //                return this.movieSceneDtoMapper.movieSceneToMovieSceneDto(this.movieSceneRepository.save
-    //                (movieScene));
-    //            } else {
-    //                throw new UuidInUseException("UUID already in use");
-    //            }
-    //        } else {
-    //            throw new NotFoundException("Movie not found");
-    //        }
-    //    }
-    //
-    //    public List<MovieSceneDto> findAll() {
-    //        List<MovieSceneDto> movieSceneDtos = new ArrayList<>();
-    //        this.movieSceneRepository.findAll().forEach(movie -> {
-    //            movieSceneDtos.add(this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movie));
-    //        });
-    //
-    //        return movieSceneDtos;
-    //    }
-    //
-    //    public void deleteAll() {
-    //        this.movieSceneRepository.deleteAll();
-    //    }
-    //
-    //    public List<MovieSceneDto> findAllScenesOfMovie(UUID movieUuid) throws NotFoundException {
-    //        List<MovieSceneDto> movieSceneListDto = new ArrayList<>();
-    //        if (this.movieRepository.existsByUuid(movieUuid)) {
-    //            Optional<List<MovieScene>> movieScenesOptional = this.movieSceneRepository.findAllScenesOfMovie
-    //            (movieUuid);
-    //            movieScenesOptional.ifPresent(movieScenes -> movieScenes.forEach(movieScene -> movieSceneListDto.add(
-    //                    this.movieSceneDtoMapper.movieSceneToMovieSceneDto(movieScene))));
-    //        } else {
-    //            throw new NotFoundException("Movie not found");
-    //        }
-    //
-    //        return movieSceneListDto;
-    //    }
+    public void update(SceneFlatDto sceneFlatDto, UUID movieUuid, UUID sceneUuid) throws NotFoundException {
+
+        Movie movie =
+                this.movieRepository.findByUuid(movieUuid).orElseThrow(() -> new NotFoundException("Movie not found"));
+
+        Scene scene =
+                this.sceneRepository.findByUuid(sceneUuid).orElseThrow(() -> new NotFoundException("Scene not found"));
+        scene.setUuid(sceneUuid);
+        scene.setLat(sceneFlatDto.lat());
+        scene.setLon(sceneFlatDto.lon());
+
+        LocalizedScene localizedScene = new LocalizedScene();
+        localizedScene.setDescription(sceneFlatDto.description());
+        localizedScene.setLocalizedId(new LocalizedId(sceneFlatDto.locale()));
+
+        scene.getLocalizedScenes().put(sceneFlatDto.locale(), localizedScene);
+        scene.setMovie(movie);
+    }
+
+    // Todo: Cross check given movie with movie in given dto
+    public void save(SceneFlatDto sceneFlatDto, UUID movieUuid) throws NotFoundException, UuidInUseException {
+
+        if (!this.movieRepository.existsByUuid(movieUuid)) {
+            throw new NotFoundException("Movie not found");
+        }
+
+        if (!this.sceneRepository.existsByUuid(sceneFlatDto.uuid())) {
+            Scene Scene = LocalizedSceneDtoMapper.dtoToEntity(sceneFlatDto);
+            this.sceneRepository.save(Scene);
+        } else {
+            throw new UuidInUseException("UUID already in use");
+        }
+    }
+
+    public List<SceneFlatDto> findAll(String locale) throws LocaleNotFoundException {
+        List<SceneFlatDto> movieSceneDtos = new ArrayList<>();
+        for (Scene scene : this.sceneRepository.findAll()) {
+            movieSceneDtos.add(LocalizedSceneDtoMapper.entityToDto(scene, locale));
+        }
+        return movieSceneDtos;
+    }
+
+    public void deleteByUuid(UUID uuid) throws NotFoundException {
+        if (this.sceneRepository.existsByUuid(uuid)) {
+            this.sceneRepository.deleteByUuid(uuid);
+        } else {
+            throw new NotFoundException("Scene not found");
+        }
+    }
+
+    public void deleteAll() {
+        log.warn("Deleting all scenes");
+        this.sceneRepository.deleteAll();
+    }
+
+    public List<SceneFlatDto> findAllScenesOfMovie(UUID movieUuid, String locale)
+            throws NotFoundException, LocaleNotFoundException {
+        List<SceneFlatDto> sceneListDto = new ArrayList<>();
+
+        if (!this.movieRepository.existsByUuid(movieUuid)) {
+            throw new NotFoundException("Movie not found");
+        }
+
+        Optional<List<Scene>> scenesOptional = this.sceneRepository.findAllScenesOfMovie(movieUuid);
+        if (scenesOptional.isPresent()) {
+            for (Scene scene : scenesOptional.get()) {
+                sceneListDto.add(LocalizedSceneDtoMapper.entityToDto(scene, locale));
+            }
+        }
+
+        return sceneListDto;
+    }
 }

@@ -18,7 +18,6 @@ package de.dittwald.cinemap.repository.scene.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
-import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationEntryDto;

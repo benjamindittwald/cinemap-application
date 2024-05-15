@@ -23,13 +23,16 @@ import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
 import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class MovieService {
 
     private final MovieRepository movieRepository;
@@ -38,42 +41,19 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    // Fixme: Replace runtime exception with somethin meaningful
-    public List<MovieFlatDto> findAll(String locale) {
+    public List<MovieFlatDto> findAll(String locale) throws LocaleNotFoundException {
         List<MovieFlatDto> movieFlatDtos = new ArrayList<>();
 
         for (Movie movie : this.movieRepository.findAll()) {
-            try {
-                movieFlatDtos.add(LocalizedMovieDtoMapper.entityToDto(movie, locale));
-            } catch (LocaleNotFoundException ex) {
-                try {
-                    movieFlatDtos.add(LocalizedMovieDtoMapper.entityToDto(movie, "en"));
-                } catch (LocaleNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            movieFlatDtos.add(
+                    LocalizedMovieDtoMapper.entityToDto(movie, LocaleFallbackHandler.getMovieLocale(movie, locale)));
         }
-
         return movieFlatDtos;
     }
 
-    // Fixme: Replace runtime exception with somethin meaningful
-    public MovieFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException {
-
+    public MovieFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException, LocaleNotFoundException {
         Movie movie = this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found"));
-        MovieFlatDto movieFlatDto = null;
-
-        try {
-            movieFlatDto = LocalizedMovieDtoMapper.entityToDto(movie, locale);
-        } catch (LocaleNotFoundException e) {
-            try {
-                movieFlatDto = LocalizedMovieDtoMapper.entityToDto(movie, "en");
-            } catch (LocaleNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        return movieFlatDto;
+        return LocalizedMovieDtoMapper.entityToDto(movie, LocaleFallbackHandler.getMovieLocale(movie, locale));
     }
 
     public void save(MovieFlatDto movieFlatDto) throws DataIntegrityViolationException {
@@ -86,23 +66,18 @@ public class MovieService {
 
     public void update(MovieFlatDto movieFlatDto, UUID uuid) throws NotFoundException {
 
-        Optional<Movie> movieOptional = this.movieRepository.findByUuid(uuid);
+        Movie movie = this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found"));
 
-        if (movieOptional.isPresent()) {
-            Movie movie = movieOptional.get();
-            movie.setUuid(uuid);
-            movie.setGenres(movieFlatDto.genres());
-            movie.setReleaseYear(movieFlatDto.releaseYear());
-            movie.setTmdbId(movieFlatDto.tmdbId());
-            movie.setImdbId(movieFlatDto.imdbId());
-            movie.getLocalizedMovies()
-                    .put(movieFlatDto.locale(),
-                            new LocalizedMovie(new LocalizedId(movieFlatDto.locale()), movie, movieFlatDto.title(),
-                                    movieFlatDto.overview(), movieFlatDto.tagline(), movieFlatDto.posterUrl()));
-            this.movieRepository.save(movie);
-        } else {
-            throw new NotFoundException("Movie not found");
-        }
+        movie.setUuid(uuid);
+        movie.setGenres(movieFlatDto.genres());
+        movie.setReleaseYear(movieFlatDto.releaseYear());
+        movie.setTmdbId(movieFlatDto.tmdbId());
+        movie.setImdbId(movieFlatDto.imdbId());
+        movie.getLocalizedMovies()
+                .put(movieFlatDto.locale(),
+                        new LocalizedMovie(new LocalizedId(movieFlatDto.locale()), movie, movieFlatDto.title(),
+                                movieFlatDto.overview(), movieFlatDto.tagline(), movieFlatDto.posterUrl()));
+        this.movieRepository.save(movie);
     }
 
     public void deleteByUuid(UUID uuid) throws NotFoundException {
@@ -114,6 +89,7 @@ public class MovieService {
     }
 
     public void deleteAll() {
+        log.info("Deleting all movies");
         this.movieRepository.deleteAll();
     }
 }

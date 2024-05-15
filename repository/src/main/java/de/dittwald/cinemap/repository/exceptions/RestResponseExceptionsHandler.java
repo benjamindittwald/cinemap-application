@@ -62,10 +62,10 @@ public class RestResponseExceptionsHandler extends ResponseEntityExceptionHandle
     }
 
     @ExceptionHandler(value = {LocaleNotFoundException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ResponseEntity<Object> handleLocaleNotFoundException(LocaleNotFoundException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(value = {MalformedURLException.class})

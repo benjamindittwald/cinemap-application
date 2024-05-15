@@ -33,7 +33,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/movies")
-@Tag(name = "Localization API")
+@Tag(name = "Movie Localizations")
 @Validated
 public class MovieLocalizationRestController {
 
