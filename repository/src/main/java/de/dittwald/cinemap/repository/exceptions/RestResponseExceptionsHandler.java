@@ -41,10 +41,10 @@ public class RestResponseExceptionsHandler extends ResponseEntityExceptionHandle
     }
 
     @ExceptionHandler(value = {UuidInUseException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<Object> handleUuidInUseException(UuidInUseException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})

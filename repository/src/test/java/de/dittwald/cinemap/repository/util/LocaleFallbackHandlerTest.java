@@ -17,10 +17,8 @@
 package de.dittwald.cinemap.repository.util;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
-import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,64 +30,64 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LocaleFallbackHandlerTest {
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldGetExpectedMovieLocale() throws LocaleNotFoundException {
-        assertEquals("de", LocaleFallbackHandler.getMovieLocale(this.dummyMovies.getWolf(), "de"));
+        assertEquals("de", LocaleFallbackHandler.getMovieLocale(this.dummyData.getWolf(), "de"));
     }
 
     @Test
     void shouldGetDefaultMovieLocale() throws LocaleNotFoundException {
-        assertEquals("en", LocaleFallbackHandler.getMovieLocale(this.dummyMovies.getWolf(), "nl"));
+        assertEquals("en", LocaleFallbackHandler.getMovieLocale(this.dummyData.getWolf(), "nl"));
     }
 
     @Test
     void shouldGetFirstMovieLocale() throws LocaleNotFoundException {
-        Movie movie = dummyMovies.getWolf();
+        Movie movie = dummyData.getWolf();
         movie.getLocalizedMovies().remove("en");
         assertEquals("de", LocaleFallbackHandler.getMovieLocale(movie, "nl"));
     }
 
     @Test
     void shouldFailGetLocaleDueToEmptyMovieLocales() {
-        Movie movie = dummyMovies.getWolf();
+        Movie movie = dummyData.getWolf();
         movie.getLocalizedMovies().clear();
 
         Exception exception = assertThrows(LocaleNotFoundException.class,
-                () -> LocaleFallbackHandler.getMovieLocale(this.dummyMovies.getWolf(), "de"));
+                () -> LocaleFallbackHandler.getMovieLocale(this.dummyData.getWolf(), "de"));
         assertThat(exception.getMessage()).isEqualTo("No locales found");
     }
 
     @Test
     void shouldGetExpectedSceneLocale() throws LocaleNotFoundException {
-        assertEquals("de", LocaleFallbackHandler.getSceneLocale(this.dummyMovies.getWolfSceneOne(), "de"));
+        assertEquals("de", LocaleFallbackHandler.getSceneLocale(this.dummyData.getWolfSceneOne(), "de"));
     }
 
     @Test
     void shouldGetDefaultSceneLocale() throws LocaleNotFoundException {
-        assertEquals("en", LocaleFallbackHandler.getSceneLocale(this.dummyMovies.getWolfSceneOne(), "nl"));
+        assertEquals("en", LocaleFallbackHandler.getSceneLocale(this.dummyData.getWolfSceneOne(), "nl"));
     }
 
     @Test
     void shouldGetFirstSceneLocale() throws LocaleNotFoundException {
-        Scene scene = dummyMovies.getWolfSceneOne();
+        Scene scene = dummyData.getWolfSceneOne();
         scene.getLocalizedScenes().remove("en");
         assertEquals("de", LocaleFallbackHandler.getSceneLocale(scene, "nl"));
     }
 
     @Test
     void shouldFailGetLocaleDueToEmptySceneLocales() {
-        Scene scene = dummyMovies.getWolfSceneOne();
+        Scene scene = dummyData.getWolfSceneOne();
         scene.getLocalizedScenes().clear();
 
         Exception exception = assertThrows(LocaleNotFoundException.class,
-                () -> LocaleFallbackHandler.getSceneLocale(this.dummyMovies.getWolfSceneOne(), "de"));
+                () -> LocaleFallbackHandler.getSceneLocale(this.dummyData.getWolfSceneOne(), "de"));
         assertThat(exception.getMessage()).isEqualTo("No locales found");
     }
 }

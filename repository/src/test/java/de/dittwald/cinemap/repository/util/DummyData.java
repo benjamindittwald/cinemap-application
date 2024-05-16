@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie;
+package de.dittwald.cinemap.repository.util;
 
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationEntryDto;
@@ -34,15 +34,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class DummyMovies {
+public class DummyData {
 
-    public DummyMovies() throws URISyntaxException, MalformedURLException {
+    public DummyData() throws URISyntaxException, MalformedURLException {
 
         // Wolf
         this.wolf = new Movie();
@@ -72,7 +71,7 @@ public class DummyMovies {
 
         // Wolf scene one
         this.wolfSceneOne = new Scene();
-        this.wolfSceneOne.setUuid(UUID.randomUUID());
+        this.wolfSceneOne.setUuid(UUID.fromString("a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8"));
         this.wolfSceneOne.setLat(52.51263);
         this.wolfSceneOne.setLon(13.35943);
         this.wolfSceneOne.setMovie(this.getWolf());
@@ -185,7 +184,7 @@ public class DummyMovies {
                 this.wolfFlatEnDto);
 
         // Wolf Scene Localization DTO
-        this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(), this.wolf.getUuid(),
+        this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(),
                 List.of(new SceneLocalizationEntryDto(wolfLsOneEn.getLocalizedId().getLocale(),
                                 wolfLsOneEn.getDescription()),
                         new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
@@ -333,7 +332,7 @@ public class DummyMovies {
 
     public String getInvalidRequestBodyWolfMovieLocalizationsJson = """
             {
-                "movieUuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
                 "localizations":
                     [
                         {
@@ -354,4 +353,101 @@ public class DummyMovies {
             }
             """;
 
+    public String getValidRequestBodyWolfSceneOneEnJson = """
+            {
+                "uuid":"a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8",
+                "lon":"13.35943",
+                "lat":"52.51263",
+                "locale":"en",
+                "description":"Dances with Wolves - Scene One Description",
+                "movie":
+                    {
+                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                        "title":"Dances with Wolves - Title",
+                        "tmdbId":1051896,
+                        "releaseYear":1970,
+                        "tagline":"Dances with Wolves - Tagline",
+                        "overview":"Dances with Wolves - Overview",
+                        "genres":
+                            {
+                                "80":"western",
+                                "85":"thriller"
+                             },
+                         "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
+                         "imdbId":"imdbId",
+                         "locale":"en"
+                    }
+            }
+            """;
+
+    public String getInvalidSceneLocaleRequestBodyWolfSceneOneEnJson = """
+            {
+                "uuid":"a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8",
+                "lon":"13.35943",
+                "lat":"52.51263",
+                "locale":"eng",
+                "description":"Dances with Wolves - Scene One Description",
+                "movie":
+                    {
+                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                        "title":"Dances with Wolves - Title",
+                        "tmdbId":1051896,
+                        "releaseYear":1970,
+                        "tagline":"Dances with Wolves - Tagline",
+                        "overview":"Dances with Wolves - Overview",
+                        "genres":
+                            {
+                                "80":"western",
+                                "85":"thriller"
+                             },
+                         "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
+                         "imdbId":"imdbId",
+                         "locale":"en"
+                    }
+            }
+            """;
+
+    public String getInvalidSceneLocaleRequestBodyWolfMovieOneEnJson = """
+            {
+                "uuid":"a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8",
+                "lon":"13.35943",
+                "lat":"52.51263",
+                "locale":"en",
+                "description":"Dances with Wolves - Scene One Description",
+                "movie":
+                    {
+                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
+                        "title":"Dances with Wolves - Title",
+                        "tmdbId":1051896,
+                        "releaseYear":1970,
+                        "tagline":"Dances with Wolves - Tagline",
+                        "overview":"Dances with Wolves - Overview",
+                        "genres":
+                            {
+                                "80":"western",
+                                "85":"thriller"
+                             },
+                         "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
+                         "imdbId":"imdbId",
+                         "locale":"eng"
+                    }
+            }
+            """;
+
+    public String getValidWolfSceneLocalizationsJson = """
+                {
+                    "sceneUuid":"a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8",
+                    "localizations":
+                        [
+                            {
+                                "locale":"en",
+                                "description":"Dances with Wolves - Scene One Description"
+                            },
+                            {
+                                "locale":"de",
+                                "description":"Der mit dem Wolf tanzt - Scene One Description"
+                            }
+                        ]
+                }
+            """;
 }

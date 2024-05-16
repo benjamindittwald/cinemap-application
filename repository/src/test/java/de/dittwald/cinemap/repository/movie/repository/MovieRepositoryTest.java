@@ -16,7 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie.repository;
 
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,12 +52,12 @@ class MovieRepositoryTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     public void setUp() throws URISyntaxException, MalformedURLException {
-        this.dummyMovies = new DummyMovies();
-        this.movieRepository.save(this.dummyMovies.getWolf());
+        this.dummyData = new DummyData();
+        this.movieRepository.save(this.dummyData.getWolf());
     }
 
     @Test
@@ -78,21 +78,21 @@ class MovieRepositoryTest {
 
     @Test
     public void shouldFindMovieByUuid() {
-        assertThat(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid()).get().getUuid()).isEqualTo(
-                this.dummyMovies.getWolf().getUuid());
+        assertThat(this.movieRepository.findByUuid(this.dummyData.getWolf().getUuid()).get().getUuid()).isEqualTo(
+                this.dummyData.getWolf().getUuid());
     }
 
     @Test
     public void shouldPersistMovie() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.save(this.dummyMovies.getNobody());
+        this.movieRepository.save(this.dummyData.getNobody());
         assertThat(this.movieRepository.count()).isEqualTo(2);
     }
 
     @Test
     public void shouldDeleteMovie() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.delete(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid()).get());
+        this.movieRepository.delete(this.movieRepository.findByUuid(this.dummyData.getWolf().getUuid()).get());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
@@ -121,20 +121,20 @@ class MovieRepositoryTest {
     @Test
     public void shouldDeleteByUuid() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.deleteByUuid(this.dummyMovies.getWolf().getUuid());
+        this.movieRepository.deleteByUuid(this.dummyData.getWolf().getUuid());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
     @Test
     public void shouldFailDeleteByUuidDueToNotFound() {
         assertThat(this.movieRepository.count()).isEqualTo(1);
-        this.movieRepository.deleteByUuid(this.dummyMovies.getWolf().getUuid());
+        this.movieRepository.deleteByUuid(this.dummyData.getWolf().getUuid());
         assertThat(this.movieRepository.count()).isEqualTo(0);
     }
 
     @Test
     public void shouldExist() {
-        assertThat(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).isEqualTo(true);
+        assertThat(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).isEqualTo(true);
     }
 
     @Test

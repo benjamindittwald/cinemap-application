@@ -17,7 +17,7 @@
 package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.repository.MovieLocalizedRepository;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,59 +49,59 @@ class MovieLocalizationServiceTest {
     @MockBean
     private MovieLocalizedRepository movieLocalizedRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldUpdateMovieAndLocalizationsNoOverride() throws NotFoundException {
-        when(this.movieRepository.findByUuid(this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenReturn(
-                Optional.of(this.dummyMovies.getWolf()));
-        when(this.movieRepository.save(this.dummyMovies.getWolf())).thenReturn(any());
+        when(this.movieRepository.findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolf()));
+        when(this.movieRepository.save(this.dummyData.getWolf())).thenReturn(any());
 
-        this.movieLocalizationService.update(this.dummyMovies.getWolfLocalizationDto(),
-                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+        this.movieLocalizationService.update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), false);
 
-        verify(this.movieRepository, times(1)).findByUuid(this.dummyMovies.getWolfLocalizationDto().movieUuid());
-        verify(this.movieRepository, times(1)).save(this.dummyMovies.getWolf());
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid());
+        verify(this.movieRepository, times(1)).save(this.dummyData.getWolf());
     }
 
     @Test
     void shouldFailUpdateMovieAndLocalizationsNoOverrideDueToNotFoundMovie() {
-        when(this.movieRepository.findByUuid(this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenReturn(
+        when(this.movieRepository.findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid())).thenReturn(
                 Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class, () -> {
-            this.movieLocalizationService.update(this.dummyMovies.getWolfLocalizationDto(),
-                    this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+            this.movieLocalizationService.update(this.dummyData.getWolfLocalizationDto(),
+                    this.dummyData.getWolfLocalizationDto().movieUuid(), false);
         });
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
-        verify(this.movieRepository, times(1)).findByUuid(this.dummyMovies.getWolfLocalizationDto().movieUuid());
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
     void shouldFindAllLocalizationsForMovieUuid() throws NotFoundException {
-        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
-                Optional.of(List.of(this.dummyMovies.getWolfLocalizedMovieEn(),
-                        this.dummyMovies.getWolfLocalizedMovieDe())));
-        assertThat(this.movieLocalizationService.getMovieLocalizations(this.dummyMovies.getWolf().getUuid())).isEqualTo(
-                this.dummyMovies.getWolfLocalizationDto());
+        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.of(List.of(this.dummyData.getWolfLocalizedMovieEn(),
+                        this.dummyData.getWolfLocalizedMovieDe())));
+        assertThat(this.movieLocalizationService.getMovieLocalizations(this.dummyData.getWolf().getUuid())).isEqualTo(
+                this.dummyData.getWolfLocalizationDto());
 
-        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyData.getWolf().getUuid());
     }
 
     @Test
     void shouldFailFindAllLocalizationsForMovieUuidDueToNotFoundLocalizations() throws NotFoundException {
-        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
+        when(this.movieLocalizedRepository.findAllByMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
                 Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class, () -> {
-            this.movieLocalizationService.getMovieLocalizations(this.dummyMovies.getWolf().getUuid());
+            this.movieLocalizationService.getMovieLocalizations(this.dummyData.getWolf().getUuid());
         });
         assertThat(exception.getMessage()).isEqualTo("No localized movies found");
-        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieLocalizedRepository, times(1)).findAllByMovieUuid(this.dummyData.getWolf().getUuid());
     }
 }

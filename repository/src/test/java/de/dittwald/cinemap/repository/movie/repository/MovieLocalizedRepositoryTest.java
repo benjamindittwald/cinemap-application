@@ -16,7 +16,7 @@
 
 package de.dittwald.cinemap.repository.movie.repository;
 
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +51,13 @@ class MovieLocalizedRepositoryTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
-        this.movieRepository.save(this.dummyMovies.getWolf());
-        this.movieRepository.save(this.dummyMovies.getNobody());
+        this.dummyData = new DummyData();
+        this.movieRepository.save(this.dummyData.getWolf());
+        this.movieRepository.save(this.dummyData.getNobody());
     }
 
     @Test
@@ -73,19 +73,19 @@ class MovieLocalizedRepositoryTest {
 
     @Test
     void shouldFindTwoLocalizedMoviesForWolf() {
-        assertThat(movieLocalizedRepository.findAllByMovieUuid(this.dummyMovies.getWolf().getUuid()).get()).hasSize(2);
+        assertThat(movieLocalizedRepository.findAllByMovieUuid(this.dummyData.getWolf().getUuid()).get()).hasSize(2);
     }
 
     @Test
     void shouldPersistLocalizedMoviesViaMovieSave() {
 
         // Remove Nobody before testing
-        this.movieRepository.deleteByUuid(this.dummyMovies.getNobody().getUuid());
+        this.movieRepository.deleteByUuid(this.dummyData.getNobody().getUuid());
 
         assertThat(this.movieRepository.count()).isEqualTo(1);
         assertThat(this.movieLocalizedRepository.count()).isEqualTo(2);
 
-        this.movieRepository.save(this.dummyMovies.getNobody());
+        this.movieRepository.save(this.dummyData.getNobody());
 
         assertThat(this.movieRepository.count()).isEqualTo(2);
         assertThat(this.movieLocalizedRepository.count()).isEqualTo(4);

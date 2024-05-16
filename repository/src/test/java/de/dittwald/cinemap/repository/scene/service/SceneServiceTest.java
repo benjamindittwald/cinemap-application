@@ -19,7 +19,7 @@ package de.dittwald.cinemap.repository.scene.service;
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,20 +50,20 @@ class SceneServiceTest {
     @MockBean
     private MovieRepository movieRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldFindMovieSceneByUuid() throws LocaleNotFoundException, NotFoundException {
-        when(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid())).thenReturn(
-                Optional.of(this.dummyMovies.getWolfSceneOne()));
-        assertThat(this.sceneService.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid(), "en")).isEqualTo(
-                this.dummyMovies.getWolfSceneOneFlatEnDto());
-        verify(this.sceneRepository, times(1)).findByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        when(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolfSceneOne()));
+        assertThat(this.sceneService.findByUuid(this.dummyData.getWolfSceneOne().getUuid(), "en")).isEqualTo(
+                this.dummyData.getWolfSceneOneFlatEnDto());
+        verify(this.sceneRepository, times(1)).findByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
@@ -79,83 +79,83 @@ class SceneServiceTest {
 
     @Test
     void shouldUpdateScene() throws NotFoundException {
-        when(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
-                Optional.of(this.dummyMovies.getWolf()));
-        when(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid())).thenReturn(
-                Optional.of(this.dummyMovies.getWolfSceneOne()));
-        this.sceneService.update(this.dummyMovies.getWolfSceneOneFlatEnDto(), this.dummyMovies.getWolf().getUuid(),
-                this.dummyMovies.getWolfSceneOne().getUuid());
-        verify(this.movieRepository, times(1)).findByUuid(this.dummyMovies.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).findByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        when(this.movieRepository.findByUuid(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolf()));
+        when(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolfSceneOne()));
+        this.sceneService.update(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid(),
+                this.dummyData.getWolfSceneOne().getUuid());
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
     void shouldUpdateSceneDueToMovieNotFound() {
-        when(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(Optional.empty());
+        when(this.movieRepository.findByUuid(this.dummyData.getWolf().getUuid())).thenReturn(Optional.empty());
         Exception exception = assertThrows(NotFoundException.class,
-                () -> this.sceneService.update(this.dummyMovies.getWolfSceneOneFlatEnDto(),
-                        this.dummyMovies.getWolf().getUuid(), this.dummyMovies.getWolfSceneOne().getUuid()));
+                () -> this.sceneService.update(this.dummyData.getWolfSceneOneFlatEnDto(),
+                        this.dummyData.getWolf().getUuid(), this.dummyData.getWolfSceneOne().getUuid()));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
-        verify(this.movieRepository, times(1)).findByUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolf().getUuid());
     }
 
     @Test
     void shouldUpdateSceneDueToSceneNotFound() {
-        when(this.movieRepository.findByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(
-                Optional.of(this.dummyMovies.getWolf()));
-        when(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid())).thenReturn(
+        when(this.movieRepository.findByUuid(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolf()));
+        when(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(
                 Optional.empty());
         Exception exception = assertThrows(NotFoundException.class,
-                () -> this.sceneService.update(this.dummyMovies.getWolfSceneOneFlatEnDto(),
-                        this.dummyMovies.getWolf().getUuid(), this.dummyMovies.getWolfSceneOne().getUuid()));
+                () -> this.sceneService.update(this.dummyData.getWolfSceneOneFlatEnDto(),
+                        this.dummyData.getWolf().getUuid(), this.dummyData.getWolfSceneOne().getUuid()));
         assertThat(exception.getMessage()).isEqualTo("Scene not found");
-        verify(this.movieRepository, times(1)).findByUuid(this.dummyMovies.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).findByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
     void shouldSaveScene() throws UuidInUseException, NotFoundException {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(true);
-        when(this.sceneRepository.existsByUuid(this.dummyMovies.getWolfSceneOne().getUuid())).thenReturn(false);
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
+        when(this.sceneRepository.existsByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(false);
 
-        this.sceneService.save(this.dummyMovies.getWolfSceneOneFlatEnDto(), this.dummyMovies.getWolf().getUuid());
+        this.sceneService.save(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid());
 
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).existsByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).existsByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
     void shouldFailSaveSceneDueToMovieNotFound() {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(false);
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(false);
 
         Exception exception = assertThrows(NotFoundException.class,
-                () -> this.sceneService.save(this.dummyMovies.getWolfSceneOneFlatEnDto(),
-                        this.dummyMovies.getWolf().getUuid()));
+                () -> this.sceneService.save(this.dummyData.getWolfSceneOneFlatEnDto(),
+                        this.dummyData.getWolf().getUuid()));
 
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
 
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
     }
 
     @Test
     void shouldFailSaveSceneDueToSceneAlreadyExists() {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(true);
-        when(this.sceneRepository.existsByUuid(this.dummyMovies.getWolfSceneOne().getUuid())).thenReturn(true);
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
+        when(this.sceneRepository.existsByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(true);
 
         Exception exception = assertThrows(UuidInUseException.class,
-                () -> this.sceneService.save(this.dummyMovies.getWolfSceneOneFlatEnDto(),
-                        this.dummyMovies.getWolf().getUuid()));
+                () -> this.sceneService.save(this.dummyData.getWolfSceneOneFlatEnDto(),
+                        this.dummyData.getWolf().getUuid()));
 
         assertThat(exception.getMessage()).isEqualTo("UUID already in use");
 
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).existsByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).existsByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
     void shouldFindAllMovieScenes() throws LocaleNotFoundException {
         when(this.sceneRepository.findAll()).thenReturn(
-                List.of(this.dummyMovies.getWolfSceneOne(), this.dummyMovies.getWolfSceneTwo()));
+                List.of(this.dummyData.getWolfSceneOne(), this.dummyData.getWolfSceneTwo()));
         assertThat(this.sceneService.findAll("en").size()).isEqualTo(2);
         verify(this.sceneRepository, times(1)).findAll();
     }
@@ -163,12 +163,12 @@ class SceneServiceTest {
     @Test
     void shouldFailFindAllMovieScenesDueTwoLocaleNotFound() {
         when(this.sceneRepository.findAll()).thenReturn(
-                List.of(this.dummyMovies.getWolfSceneOne(), this.dummyMovies.getWolfSceneTwo()));
+                List.of(this.dummyData.getWolfSceneOne(), this.dummyData.getWolfSceneTwo()));
 
         Exception exception = assertThrows(LocaleNotFoundException.class, () -> this.sceneService.findAll("nl"));
 
         assertThat(exception.getMessage()).isEqualTo(
-                "Locale \"nl\" not found for scene %s".formatted(this.dummyMovies.getWolfSceneOne()));
+                "Locale \"nl\" not found for scene %s".formatted(this.dummyData.getWolfSceneOne()));
 
         verify(this.sceneRepository, times(1)).findAll();
     }
@@ -201,24 +201,24 @@ class SceneServiceTest {
 
     @Test
     void shouldFindAllSceneOfMovie() throws NotFoundException, LocaleNotFoundException {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(true);
-        when(this.sceneRepository.findAllScenesOfMovie(this.dummyMovies.getWolf().getUuid())).thenReturn(
-                Optional.of(List.of(this.dummyMovies.getWolfSceneOne())));
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
+        when(this.sceneRepository.findAllScenesOfMovie(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.of(List.of(this.dummyData.getWolfSceneOne())));
 
-        assertThat(this.sceneService.findAllScenesOfMovie(this.dummyMovies.getWolf().getUuid(), "en")).isEqualTo(
-                List.of(this.dummyMovies.getWolfSceneOneFlatEnDto()));
+        assertThat(this.sceneService.findAllScenesOfMovie(this.dummyData.getWolf().getUuid(), "en")).isEqualTo(
+                List.of(this.dummyData.getWolfSceneOneFlatEnDto()));
 
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).findAllScenesOfMovie(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findAllScenesOfMovie(this.dummyData.getWolf().getUuid());
     }
 
     @Test
     void shouldFailFindAllSceneOfMovieDueToNotFoundMovie() throws NotFoundException, LocaleNotFoundException {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getWolf().getUuid())).thenReturn(false);
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(false);
 
         Exception exception = assertThrows(NotFoundException.class,
-                () -> this.sceneService.findAllScenesOfMovie(this.dummyMovies.getWolf().getUuid(), "en"));
+                () -> this.sceneService.findAllScenesOfMovie(this.dummyData.getWolf().getUuid(), "en"));
 
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getWolf().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
     }
 }

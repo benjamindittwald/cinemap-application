@@ -29,9 +29,9 @@ public class LocaleFallbackHandler {
             throw new LocaleNotFoundException("No locales found");
         } else if (movie.getLocalizedMovies().containsKey(locale)) {
             return locale;
-        } else if (movie.getLocalizedMovies().containsKey("en")) {
-            logChangedLocale(locale, "en");
-            return "en";
+        } else if (movie.getLocalizedMovies().containsKey(ConstantStrings.DEFAULT_LOCALE)) {
+            logChangedLocale(locale, ConstantStrings.DEFAULT_LOCALE);
+            return ConstantStrings.DEFAULT_LOCALE;
         } else {
             String fallbackLocale = movie.getLocalizedMovies().keySet().stream().findFirst().get();
             logChangedLocale(locale, fallbackLocale);
@@ -44,8 +44,8 @@ public class LocaleFallbackHandler {
             throw new LocaleNotFoundException("No locales found");
         } else if (scene.getLocalizedScenes().containsKey(locale)) {
             return locale;
-        } else if (scene.getLocalizedScenes().containsKey("en")) {
-            return "en";
+        } else if (scene.getLocalizedScenes().containsKey(ConstantStrings.DEFAULT_LOCALE)) {
+            return ConstantStrings.DEFAULT_LOCALE;
         } else {
             return scene.getLocalizedScenes().keySet().stream().findFirst().get();
         }

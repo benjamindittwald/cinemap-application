@@ -16,8 +16,7 @@
 
 package de.dittwald.cinemap.repository.scene.repository;
 
-import de.dittwald.cinemap.repository.movie.DummyMovies;
-import de.dittwald.cinemap.repository.movie.repository.MovieLocalizedRepository;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
@@ -57,13 +55,13 @@ class SceneLocalizedRepositoryTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
-        this.movieRepository.save(this.dummyMovies.getWolf());
-        this.sceneRepository.save(this.dummyMovies.getWolfSceneOne());
+        this.dummyData = new DummyData();
+        this.movieRepository.save(this.dummyData.getWolf());
+        this.sceneRepository.save(this.dummyData.getWolfSceneOne());
     }
 
     @Test
@@ -74,7 +72,7 @@ class SceneLocalizedRepositoryTest {
 
     @Test
     void findAllBySceneUuid() {
-        assertThat(this.sceneLocalizedRepository.findAllBySceneUuid(this.dummyMovies.getWolfSceneOne().getUuid())
+        assertThat(this.sceneLocalizedRepository.findAllBySceneUuid(this.dummyData.getWolfSceneOne().getUuid())
                 .get()
                 .size()).isEqualTo(2);
     }

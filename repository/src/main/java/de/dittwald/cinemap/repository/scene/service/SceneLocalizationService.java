@@ -46,12 +46,8 @@ public class SceneLocalizationService {
         this.movieRepository = movieRepository;
     }
 
-    public void update(SceneLocalizationDto sceneLocalizationDto, UUID movieUuid, UUID sceneUuid, boolean override)
+    public void update(SceneLocalizationDto sceneLocalizationDto, UUID sceneUuid, boolean override)
             throws NotFoundException {
-
-        if (!this.movieRepository.existsByUuid(movieUuid)) {
-            throw new NotFoundException("Movie not found");
-        }
 
         Optional<Scene> sceneOptional = this.sceneRepository.findByUuid(sceneUuid);
         Scene scene = null;
@@ -73,11 +69,7 @@ public class SceneLocalizationService {
         this.sceneRepository.save(scene);
     }
 
-    public SceneLocalizationDto getSceneLocalizationDto(UUID sceneUuid, UUID movieUuid) throws NotFoundException {
-
-        if (!this.movieRepository.existsByUuid(movieUuid)) {
-            throw new NotFoundException("Movie not found");
-        }
+    public SceneLocalizationDto getSceneLocalizationDto(UUID sceneUuid) throws NotFoundException {
 
         Optional<List<LocalizedScene>> localizedScenes = this.sceneLocalizedRepository.findAllBySceneUuid(sceneUuid);
         if (localizedScenes.isEmpty()) {
@@ -91,6 +83,6 @@ public class SceneLocalizationService {
                     localizedScene.getDescription()));
         }
 
-        return new SceneLocalizationDto(sceneUuid, movieUuid, localizedEntries);
+        return new SceneLocalizationDto(sceneUuid, localizedEntries);
     }
 }

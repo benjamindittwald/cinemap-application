@@ -18,7 +18,8 @@ package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
@@ -49,17 +50,16 @@ public class MovieServiceTest {
     @MockBean
     private MovieRepository movieRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     public void setUp() throws URISyntaxException, MalformedURLException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldFindTwoMovies() throws LocaleNotFoundException {
-        when(this.movieRepository.findAll()).thenReturn(
-                List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
+        when(this.movieRepository.findAll()).thenReturn(List.of(this.dummyData.getNobody(), this.dummyData.getWolf()));
         List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
         assertThat(movieFlatDtos.size()).isEqualTo(2);
         verify(this.movieRepository, times(1)).findAll();
@@ -67,8 +67,7 @@ public class MovieServiceTest {
 
     @Test
     void shouldFindTwoMoviesWhereFirstTitleIsNobodyEn() throws LocaleNotFoundException {
-        when(this.movieRepository.findAll()).thenReturn(
-                List.of(this.dummyMovies.getNobody(), this.dummyMovies.getWolf()));
+        when(this.movieRepository.findAll()).thenReturn(List.of(this.dummyData.getNobody(), this.dummyData.getWolf()));
         List<MovieFlatDto> movieFlatDtos = this.movieService.findAll("en");
         assertThat(movieFlatDtos.getFirst().title()).isEqualTo("My Name is Nobody - Title");
         assertThat(movieFlatDtos.getLast().title()).isEqualTo("Dances with Wolves - Title");
@@ -77,26 +76,26 @@ public class MovieServiceTest {
     }
 
     @Test
-    void shouldSaveMovie() throws LocaleNotFoundException, MalformedURLException, URISyntaxException {
-        when(this.movieRepository.save(this.dummyMovies.getWolf())).thenReturn(this.dummyMovies.getWolf());
-        this.movieService.save(this.dummyMovies.getWolfFlatEnDto());
-        verify(this.movieRepository, times(1)).save(this.dummyMovies.getWolf());
+    void shouldSaveMovie() throws UuidInUseException {
+        when(this.movieRepository.save(this.dummyData.getWolf())).thenReturn(this.dummyData.getWolf());
+        this.movieService.save(this.dummyData.getWolfFlatEnDto());
+        verify(this.movieRepository, times(1)).save(this.dummyData.getWolf());
     }
 
     @Test
     public void shouldFailSaveMovieDueToUuidAlreadyExists() {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getNobody().getUuid())).thenReturn(true);
-        Exception exception = assertThrows(DataIntegrityViolationException.class,
-                () -> this.movieService.save(LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getNobody(), "en")));
+        when(this.movieRepository.existsByUuid(this.dummyData.getNobody().getUuid())).thenReturn(true);
+        Exception exception = assertThrows(UuidInUseException.class,
+                () -> this.movieService.save(LocalizedMovieDtoMapper.entityToDto(this.dummyData.getNobody(), "en")));
         assertThat(exception.getMessage()).isEqualTo("UUID already in use");
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getNobody().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getNobody().getUuid());
     }
 
     @Test
     public void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
-        MovieFlatDto movieFlatDto = this.dummyMovies.getWolfFlatEnDto();
-        Optional<Movie> movieOptional = Optional.of(this.dummyMovies.getWolf());
-        Movie movie = this.dummyMovies.getWolf();
+        MovieFlatDto movieFlatDto = this.dummyData.getWolfFlatEnDto();
+        Optional<Movie> movieOptional = Optional.of(this.dummyData.getWolf());
+        Movie movie = this.dummyData.getWolf();
 
         when(this.movieRepository.findByUuid(movieFlatDto.uuid())).thenReturn(movieOptional);
         when(this.movieRepository.save(LocalizedMovieDtoMapper.dtoToEntity(movieFlatDto))).thenReturn(movie);
@@ -113,18 +112,18 @@ public class MovieServiceTest {
         when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(NotFoundException.class,
-                () -> this.movieService.update(this.dummyMovies.getWolfFlatEnDto(), notExistingMovieUuid));
+                () -> this.movieService.update(this.dummyData.getWolfFlatEnDto(), notExistingMovieUuid));
         assertThat(exception.getMessage()).isEqualTo("Movie not found");
         verify(this.movieRepository, times(1)).findByUuid(notExistingMovieUuid);
     }
 
     @Test
     public void shouldDeleteMovie() throws NotFoundException {
-        when(this.movieRepository.existsByUuid(this.dummyMovies.getNobody().getUuid())).thenReturn(true);
-        doNothing().when(this.movieRepository).deleteByUuid(this.dummyMovies.getNobody().getUuid());
-        this.movieService.deleteByUuid(this.dummyMovies.getNobody().getUuid());
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyMovies.getNobody().getUuid());
-        verify(this.movieRepository, times(1)).deleteByUuid(this.dummyMovies.getNobody().getUuid());
+        when(this.movieRepository.existsByUuid(this.dummyData.getNobody().getUuid())).thenReturn(true);
+        doNothing().when(this.movieRepository).deleteByUuid(this.dummyData.getNobody().getUuid());
+        this.movieService.deleteByUuid(this.dummyData.getNobody().getUuid());
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getNobody().getUuid());
+        verify(this.movieRepository, times(1)).deleteByUuid(this.dummyData.getNobody().getUuid());
     }
 
     @Test
@@ -139,10 +138,10 @@ public class MovieServiceTest {
 
     @Test
     public void shouldFindMovieByUuid() throws NotFoundException, LocaleNotFoundException {
-        Optional<Movie> persistedMovie = Optional.of(this.dummyMovies.getWolf());
+        Optional<Movie> persistedMovie = Optional.of(this.dummyData.getWolf());
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
         assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid(), "en").uuid()).isEqualTo(
-                this.dummyMovies.getWolfFlatEnDto().uuid());
+                this.dummyData.getWolfFlatEnDto().uuid());
         verify(this.movieRepository, times(1)).findByUuid(persistedMovie.get().getUuid());
     }
 

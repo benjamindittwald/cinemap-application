@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.scene.dto;
+package de.dittwald.cinemap.repository.util;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
-import java.util.UUID;
-
-public record SceneLocalizationDto(@NotNull UUID sceneUuid,
-                                   @NotNull List<@Valid SceneLocalizationEntryDto> localizations) {
+public class ConstantStrings {
+    public static final String DEFAULT_LOCALE = "en";
+    public static final String LOCALE_API_REQUEST_PARAM = "lang";
 }

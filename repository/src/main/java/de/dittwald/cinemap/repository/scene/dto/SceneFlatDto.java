@@ -37,5 +37,5 @@ public record SceneFlatDto(
 
         @Size(min = 1, max = 5000) String description,
 
-        @NotNull MovieFlatDto movie) {
+        @NotNull @Valid MovieFlatDto movie) {
 }

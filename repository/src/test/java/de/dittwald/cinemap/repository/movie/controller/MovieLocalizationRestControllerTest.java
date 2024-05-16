@@ -17,7 +17,7 @@
 package de.dittwald.cinemap.repository.movie.controller;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.service.MovieLocalizationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,105 +47,93 @@ class MovieLocalizationRestControllerTest {
     @MockBean
     private MovieLocalizationService movieLocalizationService;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldFindAllMovieLocalizations() throws Exception {
         when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenReturn(
-                this.dummyMovies.getWolfLocalizationDto());
+                this.dummyData.getWolfLocalizationDto().movieUuid())).thenReturn(
+                this.dummyData.getWolfLocalizationDto());
 
-        this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
+        this.mockMvc.perform(get("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/localizations"))
                 .andExpect(status().isOk())
                 .andExpect(
-                        jsonPath("$.movieUuid", is(this.dummyMovies.getWolfLocalizationDto().movieUuid().toString())))
+                        jsonPath("$.movieUuid", is(this.dummyData.getWolfLocalizationDto().movieUuid().toString())))
                 .andExpect(jsonPath("$.localizations[0].locale", is("en")))
                 .andExpect(jsonPath("$.localizations[0].title", is("Dances with Wolves - Title")))
                 .andExpect(jsonPath("$.localizations[1].locale", is("de")))
                 .andExpect(jsonPath("$.localizations[1].title", is("Der mit dem Wolf tanzt - Title")));
 
         verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid());
+                this.dummyData.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
-    void shouldFailFindAllMovieLocalizationsDueToNoLocalizationsFound() throws Exception {
+    void shouldFailFindAllMovieLocalizationsDueToMovieNotFound() throws Exception {
         when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenThrow(NotFoundException.class);
+                this.dummyData.getWolfLocalizationDto().movieUuid())).thenThrow(NotFoundException.class);
 
-        this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
+        this.mockMvc.perform(get("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/localizations"))
                 .andExpect(status().isNotFound());
 
         verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid());
-    }
-
-    @Test
-    void shouldFailFindAllMovieLocalizationsDueToInvalidRequestBody() throws Exception {
-        when(this.movieLocalizationService.getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid())).thenThrow(NotFoundException.class);
-
-        this.mockMvc.perform(get("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations"))
-                .andExpect(status().isNotFound());
-
-        verify(this.movieLocalizationService, times(1)).getMovieLocalizations(
-                this.dummyMovies.getWolfLocalizationDto().movieUuid());
+                this.dummyData.getWolfLocalizationDto().movieUuid());
     }
 
     @Test
     void shouldUpdateMovieNoOverride() throws Exception {
         doNothing().when(this.movieLocalizationService)
-                .update(this.dummyMovies.getWolfLocalizationDto(),
-                        this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+                .update(this.dummyData.getWolfLocalizationDto(),
+                        this.dummyData.getWolfLocalizationDto().movieUuid(), false);
 
         this.mockMvc.perform(
-                        put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations").contentType(
+                        put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/localizations").contentType(
                                         MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .characterEncoding("UTF-8")
-                                .content(this.dummyMovies.getValidWolfMovieLocalizationsJson))
+                                .content(this.dummyData.getValidWolfMovieLocalizationsJson))
                 .andExpect(status().isNoContent());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
-                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), false);
     }
 
     @Test
-    void shouldUpdateMovieWithOverride() throws Exception {
+    void shouldUpdateMovieLocalizationsWithOverride() throws Exception {
         doNothing().when(this.movieLocalizationService)
-                .update(this.dummyMovies.getWolfLocalizationDto(),
-                        this.dummyMovies.getWolfLocalizationDto().movieUuid(), true);
+                .update(this.dummyData.getWolfLocalizationDto(),
+                        this.dummyData.getWolfLocalizationDto().movieUuid(), true);
 
-        this.mockMvc.perform(put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() +
+        this.mockMvc.perform(put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() +
                 "/localizations?override=true").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
-                .content(this.dummyMovies.getValidWolfMovieLocalizationsJson)).andExpect(status().isNoContent());
+                .content(this.dummyData.getValidWolfMovieLocalizationsJson)).andExpect(status().isNoContent());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
-                this.dummyMovies.getWolfLocalizationDto().movieUuid(), true);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), true);
     }
 
     @Test
-    void shouldFailUpdateMovieNoOverrideDueToMovieNotFound() throws Exception {
+    void shouldFailUpdateMovieLocalizationsNoOverrideDueToMovieNotFound() throws Exception {
 
-        doThrow(NotFoundException.class).when(this.movieLocalizationService).update(this.dummyMovies.getWolfLocalizationDto(),
-                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+        doThrow(NotFoundException.class).when(this.movieLocalizationService).update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), false);
 
         this.mockMvc.perform(
-                        put("/api/v1/movies/" + this.dummyMovies.getWolf().getUuid() + "/localizations").contentType(
+                        put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/localizations").contentType(
                                         MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .characterEncoding("UTF-8")
-                                .content(this.dummyMovies.getValidWolfMovieLocalizationsJson))
+                                .content(this.dummyData.getValidWolfMovieLocalizationsJson))
                 .andExpect(status().isNotFound());
 
-        verify(this.movieLocalizationService, times(1)).update(this.dummyMovies.getWolfLocalizationDto(),
-                this.dummyMovies.getWolfLocalizationDto().movieUuid(), false);
+        verify(this.movieLocalizationService, times(1)).update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), false);
     }
 }

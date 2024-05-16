@@ -16,12 +16,12 @@
 
 package de.dittwald.cinemap.repository.scene.repository;
 
-import de.dittwald.cinemap.repository.movie.*;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
+import de.dittwald.cinemap.repository.util.DummyData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,13 +62,13 @@ class SceneRepositoryTest {
     @Autowired
     private LocalizedSceneRepository localizedSceneRepository;
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws URISyntaxException, MalformedURLException {
-        dummyMovies = new DummyMovies();
-        this.movieRepository.save(this.dummyMovies.getWolf());
-        this.sceneRepository.save(this.dummyMovies.getWolfSceneOne());
+        dummyData = new DummyData();
+        this.movieRepository.save(this.dummyData.getWolf());
+        this.sceneRepository.save(this.dummyData.getWolfSceneOne());
     }
 
     @Test
@@ -95,7 +95,7 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldUpdateScene() {
-        Scene scene = this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid()).get();
+        Scene scene = this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid()).get();
 
         LocalizedScene lmsEn = scene.getLocalizedScenes().get("de");
         lmsEn.setDescription("Der mit dem Wolf tanzt - Scene One New Description");
@@ -103,7 +103,7 @@ class SceneRepositoryTest {
         scene.getLocalizedScenes().put("de", lmsEn);
         this.sceneRepository.save(scene);
         assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
-        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid())
+        assertThat(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())
                 .get()
                 .getLocalizedScenes()
                 .get("de")
@@ -120,13 +120,13 @@ class SceneRepositoryTest {
     @Test
     public void shouldFailPersistMovieSceneDueToAlreadyExistingUuid() {
 
-        this.movieRepository.save(this.dummyMovies.getNobody());
+        this.movieRepository.save(this.dummyData.getNobody());
 
         Scene scene = new Scene();
-        scene.setUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        scene.setUuid(this.dummyData.getWolfSceneOne().getUuid());
         scene.setLat(52.51263);
         scene.setLon(13.35943);
-        scene.setMovie(this.dummyMovies.getWolf());
+        scene.setMovie(this.dummyData.getWolf());
 
         LocalizedScene lmsEn = new LocalizedScene();
         lmsEn.setLocalizedId(new LocalizedId("en"));
@@ -141,13 +141,13 @@ class SceneRepositoryTest {
 
     @Test
     public void shouldFindMovieSceneByUuid() {
-        assertThat(this.sceneRepository.findByUuid(this.dummyMovies.getWolfSceneOne().getUuid()).get()).isNotNull();
+        assertThat(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid()).get()).isNotNull();
     }
 
     @Test
     public void shouldDeleteMovieSceneByUuid() {
         assertThat(this.sceneRepository.count()).isEqualTo(1);
-        this.sceneRepository.deleteByUuid(this.dummyMovies.getWolfSceneOne().getUuid());
+        this.sceneRepository.deleteByUuid(this.dummyData.getWolfSceneOne().getUuid());
         assertThat(this.sceneRepository.count()).isEqualTo(0);
     }
 

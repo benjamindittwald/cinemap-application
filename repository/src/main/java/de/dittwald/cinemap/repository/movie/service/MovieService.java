@@ -18,6 +18,7 @@ package de.dittwald.cinemap.repository.movie.service;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
@@ -56,9 +57,9 @@ public class MovieService {
         return LocalizedMovieDtoMapper.entityToDto(movie, LocaleFallbackHandler.getMovieLocale(movie, locale));
     }
 
-    public void save(MovieFlatDto movieFlatDto) throws DataIntegrityViolationException {
+    public void save(MovieFlatDto movieFlatDto) throws UuidInUseException {
         if (this.movieRepository.existsByUuid(movieFlatDto.uuid())) {
-            throw new DataIntegrityViolationException("UUID already in use");
+            throw new UuidInUseException("UUID already in use");
         } else {
             this.movieRepository.save(LocalizedMovieDtoMapper.dtoToEntity(movieFlatDto));
         }

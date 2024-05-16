@@ -17,7 +17,7 @@
 package de.dittwald.cinemap.repository.movie.util;
 
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
-import de.dittwald.cinemap.repository.movie.DummyMovies;
+import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,22 +30,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MovieFlatDtoMapperTest {
 
-    private DummyMovies dummyMovies;
+    private DummyData dummyData;
 
     @BeforeEach
     void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyMovies = new DummyMovies();
+        this.dummyData = new DummyData();
     }
 
     @Test
     void shouldMapEntityToDto() throws LocaleNotFoundException {
-        MovieFlatDto movieFlatDto = LocalizedMovieDtoMapper.entityToDto(this.dummyMovies.getWolf(),"en");
-        assertEquals(this.dummyMovies.getWolfFlatEnDto(), movieFlatDto);
+        MovieFlatDto movieFlatDto = LocalizedMovieDtoMapper.entityToDto(this.dummyData.getWolf(),"en");
+        assertEquals(this.dummyData.getWolfFlatEnDto(), movieFlatDto);
     }
 
     @Test
     void shouldMapDtoToEntity() {
-        Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyMovies.getWolfFlatEnDto());
-        assertEquals(this.dummyMovies.getWolf(), movie);
+        Movie movie = LocalizedMovieDtoMapper.dtoToEntity(this.dummyData.getWolfFlatEnDto());
+        assertEquals(this.dummyData.getWolf(), movie);
     }
 }
