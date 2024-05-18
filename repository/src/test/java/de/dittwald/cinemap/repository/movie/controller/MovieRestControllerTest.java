@@ -289,42 +289,42 @@ public class MovieRestControllerTest {
     @Test
     public void shouldCreateNewScene() throws Exception {
         doNothing().when(this.sceneService)
-                .save(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid());
+                .save(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid());
         this.mockMvc.perform(post("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes").contentType(
                         MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
-                .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isCreated());
+                .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isNoContent());
 
-        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneFlatEnDto(),
+        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneCreationEnDto(),
                 this.dummyData.getWolf().getUuid());
     }
 
     @Test
     public void shouldFailCreateNewSceneDueToMovieNotFound() throws Exception {
         doThrow(NotFoundException.class).when(this.sceneService)
-                .save(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid());
+                .save(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid());
         this.mockMvc.perform(post("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes").contentType(
                         MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isNotFound());
 
-        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneFlatEnDto(),
+        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneCreationEnDto(),
                 this.dummyData.getWolf().getUuid());
     }
 
     @Test
     public void shouldFailCreateNewSceneDueToMovieUuidAlreadyExist() throws Exception {
         doThrow(UuidInUseException.class).when(this.sceneService)
-                .save(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid());
+                .save(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid());
         this.mockMvc.perform(post("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes").contentType(
                         MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isConflict());
 
-        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneFlatEnDto(),
+        verify(this.sceneService, times(1)).save(this.dummyData.getWolfSceneOneCreationEnDto(),
                 this.dummyData.getWolf().getUuid());
     }
 
@@ -339,16 +339,6 @@ public class MovieRestControllerTest {
     }
 
     @Test
-    public void shouldFailCreateSceneDueToInvalidRequestBodyMovie() throws Exception {
-        this.mockMvc.perform(post("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes").contentType(
-                                MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(this.dummyData.getInvalidSceneLocaleRequestBodyWolfMovieOneEnJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void shouldDeleteAllMovies() throws Exception {
         doNothing().when(this.movieService).deleteAll();
         this.mockMvc.perform(delete("/api/v1/movies")).andExpect(status().isNoContent());
@@ -358,22 +348,22 @@ public class MovieRestControllerTest {
     @Test
     public void shouldUpdateScene() throws Exception {
         doNothing().when(this.sceneService)
-                .update(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid(),
+                .update(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid(),
                         this.dummyData.getWolfSceneOne().getUuid());
 
         this.mockMvc.perform(put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes/" +
                 this.dummyData.getWolfSceneOne().getUuid()).contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
-                .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isOk());
-        verify(this.sceneService, times(1)).update(this.dummyData.getWolfSceneOneFlatEnDto(),
+                .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isNoContent());
+        verify(this.sceneService, times(1)).update(this.dummyData.getWolfSceneOneCreationEnDto(),
                 this.dummyData.getWolf().getUuid(), this.dummyData.getWolfSceneOne().getUuid());
     }
 
     @Test
     public void shouldFailUpdateSceneDueToMovieOrSceneNotExist() throws Exception {
         doThrow(NotFoundException.class).when(this.sceneService)
-                .update(this.dummyData.getWolfSceneOneFlatEnDto(), this.dummyData.getWolf().getUuid(),
+                .update(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid(),
                         this.dummyData.getWolfSceneOne().getUuid());
 
         this.mockMvc.perform(put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes/" +
@@ -382,27 +372,18 @@ public class MovieRestControllerTest {
                 .characterEncoding("UTF-8")
                 .content(this.dummyData.getValidRequestBodyWolfSceneOneEnJson)).andExpect(status().isNotFound());
 
-        verify(this.sceneService, times(1)).update(this.dummyData.getWolfSceneOneFlatEnDto(),
+        verify(this.sceneService, times(1)).update(this.dummyData.getWolfSceneOneCreationEnDto(),
                 this.dummyData.getWolf().getUuid(), this.dummyData.getWolfSceneOne().getUuid());
     }
 
+
     @Test
-    public void shouldFailUpdateSceneDueToMovieOrSceneRequestBodyIsInvalidScene() throws Exception {
+    public void shouldFailUpdateSceneDueToSceneRequestBodyIsInvalidScene() throws Exception {
         this.mockMvc.perform(put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes/" +
                         this.dummyData.getWolfSceneOne().getUuid()).contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(this.dummyData.getInvalidSceneLocaleRequestBodyWolfSceneOneEnJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void shouldFailUpdateSceneDueToMovieOrSceneRequestBodyIsInvalidMovie() throws Exception {
-        this.mockMvc.perform(put("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes/" +
-                        this.dummyData.getWolfSceneOne().getUuid()).contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(this.dummyData.getInvalidSceneLocaleRequestBodyWolfMovieOneEnJson))
                 .andExpect(status().isBadRequest());
     }
 
@@ -415,6 +396,7 @@ public class MovieRestControllerTest {
         verify(this.sceneService, times(1)).deleteByUuid(this.dummyData.getWolfSceneOne().getUuid());
     }
 
+    // Fixme: No more movie
     @Test
     public void shouldFailDeleteSceneDueToNotFoundMovieOrScene() throws Exception {
         doThrow(NotFoundException.class).when(this.sceneService)

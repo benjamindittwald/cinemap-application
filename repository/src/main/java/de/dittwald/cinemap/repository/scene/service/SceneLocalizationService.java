@@ -26,6 +26,7 @@ import de.dittwald.cinemap.repository.scene.entity.Scene;
 import de.dittwald.cinemap.repository.scene.repository.SceneLocalizedRepository;
 import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +38,15 @@ public class SceneLocalizationService {
 
     private final SceneRepository sceneRepository;
     private final SceneLocalizedRepository sceneLocalizedRepository;
-    private final MovieRepository movieRepository;
 
-    public SceneLocalizationService(SceneRepository sceneRepository, SceneLocalizedRepository sceneLocalizedRepository,
-                                    MovieRepository movieRepository) {
+    public SceneLocalizationService(SceneRepository sceneRepository,
+                                    SceneLocalizedRepository sceneLocalizedRepository) {
         this.sceneRepository = sceneRepository;
         this.sceneLocalizedRepository = sceneLocalizedRepository;
-        this.movieRepository = movieRepository;
     }
 
+    // Fixme: May not work due to duplicate potential UUIDs
+    @Transactional
     public void update(SceneLocalizationDto sceneLocalizationDto, UUID sceneUuid, boolean override)
             throws NotFoundException {
 
@@ -69,6 +70,7 @@ public class SceneLocalizationService {
         this.sceneRepository.save(scene);
     }
 
+    @Transactional
     public SceneLocalizationDto getSceneLocalizationDto(UUID sceneUuid) throws NotFoundException {
 
         Optional<List<LocalizedScene>> localizedScenes = this.sceneLocalizedRepository.findAllBySceneUuid(sceneUuid);

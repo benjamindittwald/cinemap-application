@@ -22,6 +22,7 @@ import de.dittwald.cinemap.repository.movie.dto.MovieLocalizationDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
+import de.dittwald.cinemap.repository.scene.dto.SceneCreationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationEntryDto;
@@ -189,14 +190,20 @@ public class DummyData {
                                 wolfLsOneEn.getDescription()),
                         new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
                                 wolfLsOneDe.getDescription())));
+
+        // Wold scene creation DTO
+        this.wolfSceneOneCreationEnDto =
+                new SceneCreationDto(this.getWolfSceneOne().getUuid(), this.wolfSceneOne.getLon(),
+                        this.wolfSceneOne.getLat(), "en",
+                        this.wolfSceneOne.getLocalizedScenes().get("en").getDescription());
     }
 
     private Movie wolf;
     private MovieFlatDto wolfFlatEnDto;
+    private MovieFlatDto wolfFlatDeDto;
     private LocalizedMovie wolfLocalizedMovieEn;
     private LocalizedMovie wolfLocalizedMovieDe;
     private MovieLocalizationDto wolfLocalizationDto;
-    private MovieFlatDto wolfFlatDeDto;
 
     private Scene wolfSceneOne;
     private Scene wolfSceneTwo;
@@ -206,6 +213,7 @@ public class DummyData {
     private LocalizedScene wolfLsTwoEn;
     private LocalizedScene wolfLsTwoDe;
     private SceneFlatDto wolfSceneOneFlatEnDto;
+    private SceneCreationDto wolfSceneOneCreationEnDto;
 
     private Movie nobody;
     private MovieFlatDto nobodyFlatEnDto;
@@ -359,24 +367,7 @@ public class DummyData {
                 "lon":"13.35943",
                 "lat":"52.51263",
                 "locale":"en",
-                "description":"Dances with Wolves - Scene One Description",
-                "movie":
-                    {
-                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
-                        "title":"Dances with Wolves - Title",
-                        "tmdbId":1051896,
-                        "releaseYear":1970,
-                        "tagline":"Dances with Wolves - Tagline",
-                        "overview":"Dances with Wolves - Overview",
-                        "genres":
-                            {
-                                "80":"western",
-                                "85":"thriller"
-                             },
-                         "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
-                         "imdbId":"imdbId",
-                         "locale":"en"
-                    }
+                "description":"Dances with Wolves - Scene One Description"
             }
             """;
 
@@ -403,33 +394,6 @@ public class DummyData {
                          "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
                          "imdbId":"imdbId",
                          "locale":"en"
-                    }
-            }
-            """;
-
-    public String getInvalidSceneLocaleRequestBodyWolfMovieOneEnJson = """
-            {
-                "uuid":"a9f669e3-3f7e-4cb3-899d-2e03e28ab2e8",
-                "lon":"13.35943",
-                "lat":"52.51263",
-                "locale":"en",
-                "description":"Dances with Wolves - Scene One Description",
-                "movie":
-                    {
-                        "uuid":"aa7acd67-4052-421d-a63f-90440c683e6d",
-                        "title":"Dances with Wolves - Title",
-                        "tmdbId":1051896,
-                        "releaseYear":1970,
-                        "tagline":"Dances with Wolves - Tagline",
-                        "overview":"Dances with Wolves - Overview",
-                        "genres":
-                            {
-                                "80":"western",
-                                "85":"thriller"
-                             },
-                         "posterUrl":"https://image.tmdb.org/t/p//w300//g09UIYfShY8uWGMGP3HkvWp8L8n.jpg",
-                         "imdbId":"imdbId",
-                         "locale":"eng"
                     }
             }
             """;

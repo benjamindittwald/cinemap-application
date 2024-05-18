@@ -29,6 +29,7 @@ import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -42,6 +43,7 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
+    @Transactional
     public List<MovieFlatDto> findAll(String locale) throws LocaleNotFoundException {
         List<MovieFlatDto> movieFlatDtos = new ArrayList<>();
 
@@ -52,6 +54,7 @@ public class MovieService {
         return movieFlatDtos;
     }
 
+    @Transactional
     public MovieFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException, LocaleNotFoundException {
         Movie movie = this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found"));
         return LocalizedMovieDtoMapper.entityToDto(movie, LocaleFallbackHandler.getMovieLocale(movie, locale));
@@ -65,19 +68,30 @@ public class MovieService {
         }
     }
 
+    @Transactional
     public void update(MovieFlatDto movieFlatDto, UUID uuid) throws NotFoundException {
 
         Movie movie = this.movieRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Movie not found"));
 
-        movie.setUuid(uuid);
         movie.setGenres(movieFlatDto.genres());
         movie.setReleaseYear(movieFlatDto.releaseYear());
         movie.setTmdbId(movieFlatDto.tmdbId());
         movie.setImdbId(movieFlatDto.imdbId());
-        movie.getLocalizedMovies()
-                .put(movieFlatDto.locale(),
-                        new LocalizedMovie(new LocalizedId(movieFlatDto.locale()), movie, movieFlatDto.title(),
-                                movieFlatDto.overview(), movieFlatDto.tagline(), movieFlatDto.posterUrl()));
+
+        if (movie.getLocalizedMovies().containsKey(movieFlatDto.locale())) {
+            LocalizedMovie updatedLocalizedMovie = movie.getLocalizedMovies().get(movieFlatDto.locale());
+            updatedLocalizedMovie.setTitle(movieFlatDto.title());
+            updatedLocalizedMovie.setTagline(movieFlatDto.tagline());
+            updatedLocalizedMovie.setOverview(movieFlatDto.overview());
+            updatedLocalizedMovie.setPosterUrl(movieFlatDto.posterUrl());
+            updatedLocalizedMovie.setMovie(movie);
+            movie.getLocalizedMovies().replace(movieFlatDto.locale(), updatedLocalizedMovie);
+        } else {
+            movie.getLocalizedMovies()
+                    .put(movieFlatDto.locale(),
+                            new LocalizedMovie(new LocalizedId(movieFlatDto.locale()), movie, movieFlatDto.title(),
+                                    movieFlatDto.overview(), movieFlatDto.tagline(), movieFlatDto.posterUrl()));
+        }
         this.movieRepository.save(movie);
     }
 

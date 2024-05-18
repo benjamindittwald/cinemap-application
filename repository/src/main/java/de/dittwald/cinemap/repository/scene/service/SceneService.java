@@ -22,6 +22,7 @@ import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.scene.dto.SceneCreationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
@@ -30,6 +31,7 @@ import de.dittwald.cinemap.repository.scene.util.LocalizedSceneDtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,45 +51,54 @@ public class SceneService {
     }
 
 
+    @Transactional
     public SceneFlatDto findByUuid(UUID uuid, String locale) throws NotFoundException, LocaleNotFoundException {
         Scene scene = this.sceneRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Scene not found"));
         return LocalizedSceneDtoMapper.entityToDto(scene, LocaleFallbackHandler.getSceneLocale(scene, locale));
     }
 
-    public void update(SceneFlatDto sceneFlatDto, UUID movieUuid, UUID sceneUuid) throws NotFoundException {
+    @Transactional
+    public void update(SceneCreationDto sceneCreationDto, UUID movieUuid, UUID sceneUuid) throws NotFoundException {
 
         Movie movie =
                 this.movieRepository.findByUuid(movieUuid).orElseThrow(() -> new NotFoundException("Movie not found"));
 
         Scene scene =
                 this.sceneRepository.findByUuid(sceneUuid).orElseThrow(() -> new NotFoundException("Scene not found"));
-        scene.setUuid(sceneUuid);
-        scene.setLat(sceneFlatDto.lat());
-        scene.setLon(sceneFlatDto.lon());
+        scene.setLat(sceneCreationDto.lat());
+        scene.setLon(sceneCreationDto.lon());
 
-        LocalizedScene localizedScene = new LocalizedScene();
-        localizedScene.setDescription(sceneFlatDto.description());
-        localizedScene.setLocalizedId(new LocalizedId(sceneFlatDto.locale()));
 
-        scene.getLocalizedScenes().put(sceneFlatDto.locale(), localizedScene);
-        scene.setMovie(movie);
-    }
-
-    // Todo: Cross check given movie with movie in given dto
-    public void save(SceneFlatDto sceneFlatDto, UUID movieUuid) throws NotFoundException, UuidInUseException {
-
-        if (!this.movieRepository.existsByUuid(movieUuid)) {
-            throw new NotFoundException("Movie not found");
+        if (scene.getLocalizedScenes().containsKey(sceneCreationDto.locale())) {
+            LocalizedScene updatedlocalizedScene = scene.getLocalizedScenes().get(sceneCreationDto.locale());
+            updatedlocalizedScene.setScene(scene);
+            updatedlocalizedScene.setDescription(sceneCreationDto.description());
+            scene.getLocalizedScenes().replace(sceneCreationDto.locale(), updatedlocalizedScene);
+        } else {
+            scene.getLocalizedScenes()
+                    .put(sceneCreationDto.locale(),
+                            new LocalizedScene(new LocalizedId(sceneCreationDto.locale()), scene,
+                                    sceneCreationDto.description()));
         }
 
-        if (!this.sceneRepository.existsByUuid(sceneFlatDto.uuid())) {
-            Scene Scene = LocalizedSceneDtoMapper.dtoToEntity(sceneFlatDto);
-            this.sceneRepository.save(Scene);
+        this.sceneRepository.save(scene);
+    }
+
+    public void save(SceneCreationDto sceneCreationDto, UUID movieUuid) throws NotFoundException, UuidInUseException {
+
+        Movie movie =
+                this.movieRepository.findByUuid(movieUuid).orElseThrow(() -> new NotFoundException("Movie not found"));
+
+        if (!this.sceneRepository.existsByUuid(sceneCreationDto.uuid())) {
+            Scene scene = LocalizedSceneDtoMapper.dtoToEntity(sceneCreationDto);
+            scene.setMovie(movie);
+            this.sceneRepository.save(scene);
         } else {
             throw new UuidInUseException("UUID already in use");
         }
     }
 
+    @Transactional
     public List<SceneFlatDto> findAll(String locale) throws LocaleNotFoundException {
         List<SceneFlatDto> movieSceneDtos = new ArrayList<>();
         for (Scene scene : this.sceneRepository.findAll()) {
@@ -109,6 +120,7 @@ public class SceneService {
         this.sceneRepository.deleteAll();
     }
 
+    @Transactional
     public List<SceneFlatDto> findAllScenesOfMovie(UUID movieUuid, String locale)
             throws NotFoundException, LocaleNotFoundException {
         List<SceneFlatDto> sceneListDto = new ArrayList<>();

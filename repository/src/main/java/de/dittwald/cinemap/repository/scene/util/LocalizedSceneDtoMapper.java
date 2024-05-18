@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.scene.util;
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
+import de.dittwald.cinemap.repository.scene.dto.SceneCreationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
@@ -40,6 +41,7 @@ public class LocalizedSceneDtoMapper {
         entity.setMovie(LocalizedMovieDtoMapper.dtoToEntity(dto.movie()));
         entity.setLat(dto.lat());
         entity.setLon(dto.lon());
+        entity.setUuid(dto.uuid());
 
         LocalizedScene localizedEntity = new LocalizedScene();
         LocalizedId localizedId = new LocalizedId(dto.locale());
@@ -51,4 +53,23 @@ public class LocalizedSceneDtoMapper {
 
         return entity;
     }
+
+    public static Scene dtoToEntity(SceneCreationDto dto) {
+        Scene entity = new Scene();
+        //        entity.setMovie(LocalizedMovieDtoMapper.dtoToEntity(dto.movie()));
+        entity.setLat(dto.lat());
+        entity.setLon(dto.lon());
+        entity.setUuid(dto.uuid());
+
+        LocalizedScene localizedEntity = new LocalizedScene();
+        LocalizedId localizedId = new LocalizedId(dto.locale());
+        localizedEntity.setDescription(dto.description());
+        localizedEntity.setLocalizedId(localizedId);
+        localizedEntity.setScene(entity);
+
+        entity.getLocalizedScenes().put(localizedId.getLocale(), localizedEntity);
+
+        return entity;
+    }
+
 }

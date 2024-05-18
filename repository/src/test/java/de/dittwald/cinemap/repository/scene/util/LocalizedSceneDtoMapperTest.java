@@ -48,4 +48,11 @@ class LocalizedSceneDtoMapperTest {
         Scene scene = LocalizedSceneDtoMapper.dtoToEntity(this.dummyData.getWolfSceneOneFlatEnDto());
         assertEquals(this.dummyData.getWolfSceneOne(), scene);
     }
+
+    @Test
+    void shouldMapCreationDtoToEntity() {
+        Scene scene = LocalizedSceneDtoMapper.dtoToEntity(this.dummyData.getWolfSceneOneCreationEnDto());
+        assertEquals(this.dummyData.getWolfSceneOne().getUuid(), this.dummyData.getWolfSceneOneCreationEnDto().uuid());
+        assertNull(scene.getMovie());
+    }
 }

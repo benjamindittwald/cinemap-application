@@ -21,6 +21,7 @@ import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.service.MovieService;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
+import de.dittwald.cinemap.repository.scene.dto.SceneCreationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneFlatDto;
 import de.dittwald.cinemap.repository.scene.service.SceneService;
 import de.dittwald.cinemap.repository.util.ConstantStrings;
@@ -114,7 +115,7 @@ public class MovieRestController {
     @PostMapping(value = "{movieUuid}/scenes",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Create a scene",
             description = "Creates a scene with the given parameters. The corresponding movie must exist " +
                     "before the scene gets created.")
@@ -122,10 +123,10 @@ public class MovieRestController {
             responseCode = "400",
             description = "Invalid movie scene given or given UUID is not a valid UUID"),
             @ApiResponse(responseCode = "409", description = "Given UUID is already in use")})
-    public void createScene(@RequestBody @Valid SceneFlatDto sceneFlatDto,
+    public void createScene(@RequestBody @Valid SceneCreationDto sceneCreationDto,
                             @PathVariable("movieUuid") @Valid UUID movieUuid)
             throws NotFoundException, UuidInUseException {
-        this.sceneService.save(sceneFlatDto, movieUuid);
+        this.sceneService.save(sceneCreationDto, movieUuid);
     }
 
     @DeleteMapping
@@ -140,15 +141,15 @@ public class MovieRestController {
     @PutMapping(value = "{movieUuid}/scenes/{sceneUuid}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates a scene",
             description = "Updates a scene with the given parameters. The corresponding movie and scene must exist.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie scene was created"),
             @ApiResponse(responseCode = "400", description = "Invalid scene given or given UUID is not a valid UUID")})
-    public void updateMovieScene(@RequestBody @Valid SceneFlatDto sceneOnlyDto,
+    public void updateMovieScene(@RequestBody @Valid SceneCreationDto sceneCreationDto,
                                  @PathVariable("movieUuid") @Valid UUID movieUuid,
                                  @PathVariable("sceneUuid") @Valid UUID sceneUuid) throws NotFoundException {
-        this.sceneService.update(sceneOnlyDto, movieUuid, sceneUuid);
+        this.sceneService.update(sceneCreationDto, movieUuid, sceneUuid);
     }
 
     @DeleteMapping(value = "{movieUuid}/scenes/{sceneUuid}")

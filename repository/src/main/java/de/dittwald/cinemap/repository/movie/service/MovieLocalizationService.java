@@ -25,6 +25,7 @@ import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieLocalizedRepository;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -40,6 +41,8 @@ public class MovieLocalizationService {
         this.movieLocalizedRepository = movieLocalizedRepository;
     }
 
+    // Fixme: May not work due to duplicate potential UUIDs
+    @Transactional
     public void update(MovieLocalizationDto movieLocalizationDto, UUID movieUuid, boolean override)
             throws NotFoundException {
         Optional<Movie> movieOptional = this.movieRepository.findByUuid(movieUuid);
@@ -52,7 +55,7 @@ public class MovieLocalizationService {
         }
 
         if (override) {
-            movie.setLocalizedMovies(new HashMap<>());
+            movie.getLocalizedMovies().clear();
         }
 
         for (MovieLocalizationEntryDto dto : movieLocalizationDto.localizations()) {
@@ -65,6 +68,7 @@ public class MovieLocalizationService {
         this.movieRepository.save(movie);
     }
 
+    @Transactional
     public MovieLocalizationDto getMovieLocalizations(UUID movieUuid) throws NotFoundException {
         Optional<List<LocalizedMovie>> localizedMovies = this.movieLocalizedRepository.findAllByMovieUuid(movieUuid);
 
