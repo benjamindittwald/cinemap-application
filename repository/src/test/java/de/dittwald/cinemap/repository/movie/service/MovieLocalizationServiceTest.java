@@ -68,6 +68,21 @@ class MovieLocalizationServiceTest {
         verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid());
         verify(this.movieRepository, times(1)).save(this.dummyData.getWolf());
     }
+    @Test
+    void shouldUpdateMovieAndLocalizationsWithOverride() throws NotFoundException {
+        when(this.movieRepository.findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolf()));
+        when(this.movieRepository.save(this.dummyData.getWolf())).thenReturn(this.dummyData.getWolf());
+        when(this.movieRepository.save(this.dummyData.getWolf())).thenReturn(this.dummyData.getWolf());
+
+        this.movieLocalizationService.update(this.dummyData.getWolfLocalizationDto(),
+                this.dummyData.getWolfLocalizationDto().movieUuid(), false);
+
+        verify(this.movieRepository, times(1)).findByUuid(this.dummyData.getWolfLocalizationDto().movieUuid());
+        verify(this.movieRepository, times(1)).save(this.dummyData.getWolf());
+        verify(this.movieRepository, times(1)).save(this.dummyData.getWolf());
+
+    }
 
     @Test
     void shouldFailUpdateMovieAndLocalizationsNoOverrideDueToNotFoundMovie() {

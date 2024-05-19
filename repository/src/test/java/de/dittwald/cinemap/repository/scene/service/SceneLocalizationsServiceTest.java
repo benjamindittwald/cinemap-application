@@ -71,6 +71,19 @@ public class SceneLocalizationsServiceTest {
         verify(this.sceneRepository, times(1)).save(this.dummyData.getWolfSceneOne());
     }
 
+    @Test
+    void shouldUpdateSceneAndLocalizationsWithOverride() throws NotFoundException {
+        when(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())).thenReturn(
+                Optional.of(this.dummyData.getWolfSceneOne()));
+        when(this.sceneRepository.save(this.dummyData.getWolfSceneOne())).thenReturn(any());
+
+        this.sceneLocalizationService.update(this.dummyData.getWolfSceneOneLocalizationDto(),
+                this.dummyData.getWolfSceneOne().getUuid(), false);
+
+        verify(this.sceneRepository, times(1)).save(this.dummyData.getWolfSceneOne());
+        verify(this.sceneRepository, times(1)).save(this.dummyData.getWolfSceneOne());
+    }
+
 
     @Test
     void shouldFailUpdateSceneAndLocalizationsNoOverrideDueToNotFoundScene() {
