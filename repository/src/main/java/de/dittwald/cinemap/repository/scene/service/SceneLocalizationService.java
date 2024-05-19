@@ -18,7 +18,6 @@ package de.dittwald.cinemap.repository.scene.service;
 
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
-import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationDto;
 import de.dittwald.cinemap.repository.scene.dto.SceneLocalizationEntryDto;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
@@ -45,13 +44,12 @@ public class SceneLocalizationService {
         this.sceneLocalizedRepository = sceneLocalizedRepository;
     }
 
-    // Fixme: May not work due to duplicate potential UUIDs
     @Transactional
     public void update(SceneLocalizationDto sceneLocalizationDto, UUID sceneUuid, boolean override)
             throws NotFoundException {
 
         Optional<Scene> sceneOptional = this.sceneRepository.findByUuid(sceneUuid);
-        Scene scene = null;
+        Scene scene;
         if (sceneOptional.isPresent()) {
             scene = sceneOptional.get();
         } else {
@@ -60,11 +58,18 @@ public class SceneLocalizationService {
 
         if (override) {
             scene.getLocalizedScenes().clear();
+            this.sceneRepository.save(scene);
         }
 
         for (SceneLocalizationEntryDto dto : sceneLocalizationDto.localizations()) {
-            scene.getLocalizedScenes()
-                    .put(dto.locale(), new LocalizedScene(new LocalizedId(dto.locale()), scene, dto.description()));
+            if (scene.getLocalizedScenes().containsKey(dto.locale())) {
+             LocalizedScene localizedScene = scene.getLocalizedScenes().get(dto.locale());
+             localizedScene.setDescription(dto.description());
+             scene.getLocalizedScenes().replace(dto.locale(), localizedScene);
+            } else {
+                scene.getLocalizedScenes()
+                        .put(dto.locale(), new LocalizedScene(new LocalizedId(dto.locale()), scene, dto.description()));
+            }
         }
 
         this.sceneRepository.save(scene);

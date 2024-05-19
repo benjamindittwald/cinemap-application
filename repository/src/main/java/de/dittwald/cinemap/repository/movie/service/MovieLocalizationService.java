@@ -41,12 +41,11 @@ public class MovieLocalizationService {
         this.movieLocalizedRepository = movieLocalizedRepository;
     }
 
-    // Fixme: May not work due to duplicate potential UUIDs
     @Transactional
     public void update(MovieLocalizationDto movieLocalizationDto, UUID movieUuid, boolean override)
             throws NotFoundException {
         Optional<Movie> movieOptional = this.movieRepository.findByUuid(movieUuid);
-        Movie movie = null;
+        Movie movie;
 
         if (movieOptional.isPresent()) {
             movie = movieOptional.get();
@@ -56,13 +55,24 @@ public class MovieLocalizationService {
 
         if (override) {
             movie.getLocalizedMovies().clear();
+            this.movieRepository.save(movie);
         }
 
         for (MovieLocalizationEntryDto dto : movieLocalizationDto.localizations()) {
-            movie.getLocalizedMovies()
-                    .put(dto.locale(),
-                            new LocalizedMovie(new LocalizedId(dto.locale()), movie, dto.title(), dto.overview(),
-                                    dto.tagline(), dto.posterUrl()));
+            if (movie.getLocalizedMovies().containsKey(dto.locale())) {
+                LocalizedMovie updatedLocalizedMovie = movie.getLocalizedMovies().get(dto.locale());
+                updatedLocalizedMovie.setTitle(dto.title());
+                updatedLocalizedMovie.setTagline(dto.tagline());
+                updatedLocalizedMovie.setOverview(dto.overview());
+                updatedLocalizedMovie.setPosterUrl(dto.posterUrl());
+                updatedLocalizedMovie.setMovie(movie);
+                movie.getLocalizedMovies().replace(dto.locale(), updatedLocalizedMovie);
+            } else {
+                movie.getLocalizedMovies()
+                        .put(dto.locale(),
+                                new LocalizedMovie(new LocalizedId(dto.locale()), movie, dto.title(), dto.overview(),
+                                        dto.tagline(), dto.posterUrl()));
+            }
         }
 
         this.movieRepository.save(movie);
