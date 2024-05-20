@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repositoryui.tmdb;
+package de.dittwald.cinemap.repositoryui.movies;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class TmdbId {
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-    @Min(value = -2147483648) // From TMDB API Reference movie Details
-    @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-    @NotNull
-    Integer id;
+public record MovieLocalizationDto(@NotNull UUID movieUuid, @NotNull List<MovieLocalizationEntryDto> localizations) {
 }

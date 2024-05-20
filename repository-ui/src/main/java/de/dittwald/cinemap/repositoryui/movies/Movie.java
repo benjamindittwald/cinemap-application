@@ -16,29 +16,25 @@
 
 package de.dittwald.cinemap.repositoryui.movies;
 
-
-import de.dittwald.cinemap.repositoryui.validation.Iso639Constraint;
+import de.dittwald.cinemap.repositoryui.validation.Iso6391Constraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Movie {
 
-    private UUID uuid;
-
     @NotNull
-    private Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> title = new HashMap<>();
+    private UUID uuid;
 
     @Min(value = -2147483648) // From TMDB API Reference movie Details
     @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
@@ -47,23 +43,12 @@ public class Movie {
     @Min(value = 1700)
     private Integer releaseYear;
 
-    private Map<@Iso639Constraint String, @Size(min = 1, max = 500) String> tagline = new HashMap<>();
+    private Map<Integer, @Size(max = 50) String> genres = new HashMap<>();
 
-    private Map<@Iso639Constraint String, @Size(min = 1, max = 5000) String> overview = new HashMap<>();
-
-    private Map<Integer, @Size(min = 1, max = 50) String> genres = new HashMap<>();
-
-    private String poster;
-
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     private String imdbId;
 
-    @Override
-    public String toString() {
-        return "Movie{" + "uuid=" + uuid + ", title=" + title + ", tmdbId=" + tmdbId + ", releaseYear=" + releaseYear +
-                ", tagline=" + tagline + ", overview=" + overview + ", genres=" + genres + ", poster='" + poster +
-                '\'' + ", imdbId='" + imdbId + '\'' + '}';
-    }
+    private Map<@Iso6391Constraint String, LocalizedMovie> localizedMovies = new HashMap<>();
 
     @Override
     public boolean equals(Object o) {
@@ -71,13 +56,12 @@ public class Movie {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-
         Movie movie = (Movie) o;
         return Objects.equals(uuid, movie.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(uuid);
+        return getClass().hashCode();
     }
 }

@@ -14,35 +14,57 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repository.movie.dto;
+package de.dittwald.cinemap.repositoryui.movies;
 
-import de.dittwald.cinemap.repository.validation.Iso6391Constraint;
+import de.dittwald.cinemap.repositoryui.validation.Iso6391Constraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
-public record MovieFlatDto(
-        @NotNull UUID uuid,
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MovieFlat implements Comparable<MovieFlat> {
+
+        private @NotNull UUID uuid;
+
         @Min(value = -2147483648) // From TMDB API Reference movie Details
         @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-        Integer tmdbId,
+        private Integer tmdbId;
+
         @Min(value = 1700)
-        Integer releaseYear,
-        Map<Integer, @Size(max = 50) String> genres,
+        private Integer releaseYear;
+
+        private Map<Integer, @Size(max = 50) String> genres;
+
         @Size(max = 50)
-        String imdbId,
+        private String imdbId;
+
         @Iso6391Constraint
-        String locale,
+        private String locale;
+
         @Size(max = 255)
-        String title,
+        private String title;
+
         @Size(max = 5000)
-        String overview,
+        private String overview;
+
         @Size(max = 255)
-        String tagline,
-        URL posterUrl) {
+        private String tagline;
+
+        private URL posterUrl;
+
+        @Override
+        public int compareTo(MovieFlat o) {
+                return StringUtils.compare(getTitle(), o.getTitle());
+        }
 }

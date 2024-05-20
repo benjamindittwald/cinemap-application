@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repositoryui.validation;
+package de.dittwald.cinemap.repositoryui.movies;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import de.dittwald.cinemap.repositoryui.validation.Iso6391Constraint;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-import java.lang.annotation.*;
+import java.io.Serializable;
+import java.net.URL;
 
-@Documented
-@Constraint(validatedBy = UuidValidator.class)
-@Target({ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface UuidConstraint {
-    String message() default "Invalid UUID given";
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LocalizedMovie implements Serializable {
 
-    Class<?>[] groups() default {};
+    @Iso6391Constraint
+    private String locale;
 
-    Class<? extends Payload>[] payload() default {};
+    @Size(max = 255)
+    private String title;
+
+    @Size(max = 5000)
+    private String overview;
+
+    @Size(max = 255)
+    private String tagline;
+
+    private URL posterUrl;
 }

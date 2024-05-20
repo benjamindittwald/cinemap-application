@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repositoryui.tmdb;
+package de.dittwald.cinemap.repositoryui.validation;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class TmdbId {
+import java.lang.annotation.*;
 
-    @Min(value = -2147483648) // From TMDB API Reference movie Details
-    @Max(value = 2147483647) // https://developer.themoviedb.org/reference/movie-details
-    @NotNull
-    Integer id;
+@Documented
+@Constraint(validatedBy = Iso6391Validator.class)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Iso6391Constraint {
+    String message() default "Invalid ISO 638-1 language code given";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

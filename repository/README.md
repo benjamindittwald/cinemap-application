@@ -1,16 +1,13 @@
 # Readme
 
-This is the repository of the `cinemap` project. It provides RESTful services
-for movie CRUD operations.
+This is the repository ui of the `cinemap` project. It provides a UI for
+operating on the repository API services.
 
 This service is still under development.
 
 # Run the repository
 
-Currently, the repository is only tested locally and with Docker-PostgreSQL.
-
-> [!NOTE]
-> Due to the current setup the database is recreated with every restart.
+Currently, the repository ui is only tested locally.
 
 ## Pre-requisites
 
@@ -21,19 +18,23 @@ repository:
 - Maven 3.9.6
 - Docker 26
 
+A running instance of the cinemap repository must be accessible.
+
 ## Build
 
-The database connection is configured via env variable. The following is an
-example for local development purposes. This corresponds with the
-given `compose.yaml` for testing.
+The repository connection is configured via env variable. The following is an
+example for local development purposes.
+
+In order to use the TMDB API features you need to create an account
+at [TMDB](https://developer.themoviedb.org/docs/getting-started) and
+set 'de.cinemap.repositoryui.tmdb.api.readtoken' with your TMDB API read token.
 
 ```
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-spring.datasource.url=jdbc:postgresql://localhost:5432/cinemap
-spring.datasource.username=cinemap
-spring.datasource.password=cinemap
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.jpa.hibernate.ddl-auto=create-drop
+de.cinemap.repository.server.port=8080
+de.cinemap.repository.server.url=http://localhost
+de.cinemap.repositoryui.server.port=8081
+de.cinemap.repositoryui.tmdb.api.readtoken=YOUR TOKEN
+
 ```
 
 Build the application with Maven:
@@ -58,3 +59,8 @@ mvn spring-boot:run
 
 You can access the API documentation by
 visiting [http://localhost:8080/](http://localhost:8080/).
+
+# Attribution
+
+* The movie fallback
+  poster: https://www.pexels.com/photo/delicious-pink-popcorns-in-close-shot-7676085/

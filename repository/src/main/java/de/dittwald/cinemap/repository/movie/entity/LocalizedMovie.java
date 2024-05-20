@@ -53,14 +53,14 @@ public class LocalizedMovie implements Serializable {
     @JoinColumn(name = "id")
     private Movie movie;
 
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String title;
 
     @Lob
-    @Size(min = 1, max = 5000)
+    @Size(max = 5000)
     private String overview;
 
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String tagline;
 
     private URL posterUrl;

@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repositoryui.validation;
+package de.dittwald.cinemap.repositoryui.movies;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import de.dittwald.cinemap.repositoryui.validation.Iso6391Constraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import java.lang.annotation.*;
+import java.net.URL;
 
-@Documented
-@Constraint(validatedBy = Iso639Validator.class)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Iso639Constraint {
-    String message() default "Invalid ISO 638 language code given";
-
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
+public record MovieLocalizationEntryDto(
+        @NotNull
+        @Iso6391Constraint
+        String locale,
+        @Size(max = 255)
+        String title,
+        @Size(max = 5000)
+        String overview,
+        @Size(max = 255)
+        String tagline,
+        URL posterUrl
+) {
 }

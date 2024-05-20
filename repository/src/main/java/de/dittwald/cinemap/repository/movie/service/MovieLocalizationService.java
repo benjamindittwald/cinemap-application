@@ -55,6 +55,7 @@ public class MovieLocalizationService {
 
         if (override) {
             movie.getLocalizedMovies().clear();
+            this.movieLocalizedRepository.deleteAll(this.movieLocalizedRepository.findAllByMovieUuid(movie.getUuid()).get());
             this.movieRepository.save(movie);
         }
 
@@ -89,9 +90,9 @@ public class MovieLocalizationService {
         List<MovieLocalizationEntryDto> localizedMoviesDto = new ArrayList<>();
 
         for (LocalizedMovie localizedMovie : localizedMovies.get()) {
-            localizedMoviesDto.add(
-                    new MovieLocalizationEntryDto(localizedMovie.getLocalizedId().getLocale(), localizedMovie.getTitle(),
-                            localizedMovie.getOverview(), localizedMovie.getTagline(), localizedMovie.getPosterUrl()));
+            localizedMoviesDto.add(new MovieLocalizationEntryDto(localizedMovie.getLocalizedId().getLocale(),
+                    localizedMovie.getTitle(), localizedMovie.getOverview(), localizedMovie.getTagline(),
+                    localizedMovie.getPosterUrl()));
         }
 
         return new MovieLocalizationDto(movieUuid, localizedMoviesDto);

@@ -73,7 +73,7 @@ public class Movie {
             joinColumns = {@JoinColumn(name = "number_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "genres_id")
     @Column(name = "genres")
-    private Map<Integer, @Size(min = 1, max = 50) String> genres = new HashMap<>();
+    private Map<Integer, @Size(max = 50) String> genres = new HashMap<>();
 
     @Column
     @Size(min = 1, max = 50)

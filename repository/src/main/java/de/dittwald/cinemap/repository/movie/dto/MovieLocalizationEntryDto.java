@@ -26,11 +26,11 @@ public record MovieLocalizationEntryDto(
         @NotNull
         @Iso6391Constraint
         String locale,
-        @Size(min = 1, max = 255)
+        @Size(max = 255)
         String title,
-        @Size(min = 1, max = 5000)
+        @Size(max = 5000)
         String overview,
-        @Size(min = 1, max = 255)
+        @Size(max = 255)
         String tagline,
         URL posterUrl
 ) {

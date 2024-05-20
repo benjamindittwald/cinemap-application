@@ -29,7 +29,7 @@
     <artifactId>repository-ui</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>repository-ui</name>
-    <description>repository-ui</description>
+    <description>The cinemap repository UI</description>
 
     <dependencies>
         <dependency>

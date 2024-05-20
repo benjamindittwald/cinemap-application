@@ -18,24 +18,24 @@ package de.dittwald.cinemap.repositoryui.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.UUID;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Set;
 
-public class UuidValidator implements ConstraintValidator<UuidConstraint, String> {
+public class Iso6391Validator implements ConstraintValidator<Iso6391Constraint, String> {
     @Override
-    public void initialize(UuidConstraint constraintAnnotation) {
+    public void initialize(Iso6391Constraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(String uuidString, ConstraintValidatorContext constraintValidatorContext) {
-        boolean valid = true;
-
-        try {
-            UUID uuid = UUID.fromString(uuidString);
-        } catch (IllegalArgumentException e) {
-            valid = false;
-        }
-        return valid;
+    public boolean isValid(String langCode, ConstraintValidatorContext constraintValidatorContext) {
+        Set<String> isoLanguages = Set.of(Locale.getISOLanguages());
+        return isoLanguages.contains(langCode);
     }
 }

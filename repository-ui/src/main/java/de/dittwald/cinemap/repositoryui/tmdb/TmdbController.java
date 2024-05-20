@@ -16,16 +16,16 @@
 
 package de.dittwald.cinemap.repositoryui.tmdb;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.dittwald.cinemap.repositoryui.movies.Movie;
-import de.dittwald.cinemap.repositoryui.movies.RepositoryClient;
+import de.dittwald.cinemap.repositoryui.repository.RepositoryClient;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Controller
@@ -42,10 +42,24 @@ public class TmdbController {
     @PostMapping("/tmdb")
     public String createMovieByTmdbId(@Valid @ModelAttribute TmdbId tmdbId) {
 
-        Movie movie = this.tmdbClient.getMovieTmdb(tmdbId.getId());
+        // Todo: Error handling
+        Movie movie = null;
+        try {
+            movie = this.tmdbClient.getMovieDetails(tmdbId.getId());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         movie.setUuid(UUID.randomUUID());
-        this.repositoryClient.createMovieByTmdbId(movie);
+        try {
+            this.repositoryClient.createMovieByTmdbId(movie);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        return "index";
+        return "redirect:/";
     }
 }
