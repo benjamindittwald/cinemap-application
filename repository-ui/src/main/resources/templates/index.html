@@ -61,9 +61,11 @@
                             class="text-body-secondary"><span
                             th:text="*{movie.releaseYear != null} ? *{movie.releaseYear} : #{movies_list.poster_card.fallback_text.release_year}"> Release Year </span></small>
                     </p>
-                    <p class="card-text multi-line-truncate"><span
-                            th:text="*{!movie.tagline.isBlank()} ? *{movie.tagline} : #{movies_list.poster_card.fallback_text.tagline}"> Tagline </span>
-                    </p>
+                    <div th:if="${movie.tagline != null && !movie.tagline.isBlank()}">
+                        <p class="card-text multi-line-truncate"><span
+                                th:text="*{!movie.tagline.isBlank()} ? *{movie.tagline} : #{movies_list.poster_card.fallback_text.tagline}"> Tagline </span>
+                        </p>
+                    </div>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <div>

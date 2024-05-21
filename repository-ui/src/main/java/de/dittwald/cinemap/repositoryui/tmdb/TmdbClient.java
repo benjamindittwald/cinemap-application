@@ -55,7 +55,7 @@ public class TmdbClient {
 
         JsonNode movieNode = objectMapper.readTree(this.webClientConfig.tmdbWebClient()
                 .get()
-                .uri(id + "?language=en-Us")
+                .uri(id + "?language=en-US")
                 .headers(h -> h.setBearerAuth(this.properties.getTmdbApiReadToken()))
                 .retrieve()
                 .bodyToMono(String.class)
@@ -92,23 +92,44 @@ public class TmdbClient {
             movie.setGenres(genres);
         }
 
+        // Use en-US localisations if translations for the following properties are not available
+        String titleEnUs = movieNode.has("title") ? movieNode.get("title").asText() : null;
+        String posterIdEnUs = movieNode.has("poster_path") ? movieNode.get("poster_path").asText() : null;
+        String overviewEnUs = movieNode.has("overview") ? movieNode.get("overview").asText() : null;
+        String taglineEnUs = movieNode.has("tagline") ? movieNode.get("tagline").asText() : null;
+
         for (JsonNode translation : translationsNode.get("translations")) {
             JsonNode dataNode = translation.get("data");
             LocalizedMovie localizedMovie = new LocalizedMovie();
-            localizedMovie.setTitle(dataNode.has("title") ? dataNode.get("title").asText() : null);
-            localizedMovie.setOverview(dataNode.has("overview") ? dataNode.get("overview").asText() : null);
-            localizedMovie.setTagline(dataNode.has("tagline") ? dataNode.get("tagline").asText() : null);
+            localizedMovie.setTitle(
+                    dataNode.has("title") && !dataNode.get("title").isEmpty() ? dataNode.get("title").asText() :
+                            titleEnUs);
+            localizedMovie.setOverview(dataNode.has("overview") && !dataNode.get("overview").isEmpty() ?
+                    dataNode.get("overview").asText() : overviewEnUs);
+            localizedMovie.setTagline(
+                    dataNode.has("tagline") && !dataNode.get("tagline").isEmpty() ? dataNode.get("tagline").asText() :
+                            taglineEnUs);
+
 
             for (JsonNode imageNode : imagesNode.get("posters")) {
                 if (!imageNode.get("iso_639_1").isNull() && StringUtils.equals(imageNode.get("iso_639_1").asText(),
                         translation.get("iso_639_1").asText())) {
-                    localizedMovie.setPosterUrl(imageNode.has("file_path") && (imageNode.get("file_path") != null) ?
-                            new URI(String.format("%s/w300%s", ConfigConstants.TMDB_IMAGE_BASE_URL,
-                                    imageNode.get("file_path").asText())).toURL() :
-                            new URI(String.format("%s/w300/3JWLA3OYN6olbJXg6dDWLWiCxpn.jpg",
-                                    ConfigConstants.TMDB_IMAGE_BASE_URL)).toURL());
+
+                    // Todo: Check imageNode.get("width") for null and presence
+                    if (imageNode.has("file_path") && imageNode.get("file_path") != null &&
+                            !imageNode.get("file_path").isEmpty() && imageNode.get("width").asInt() <= 850)
+                        localizedMovie.setPosterUrl(
+                                new URI(String.format("%s/w300%s", ConfigConstants.TMDB_IMAGE_BASE_URL,
+                                        imageNode.get("file_path").asText())).toURL());
                 }
             }
+
+            // Set en_US poster if a poster for the current locale is not yet given
+            if (localizedMovie.getPosterUrl() == null) {
+                localizedMovie.setPosterUrl(
+                        new URI(String.format("%s/w300%s", ConfigConstants.TMDB_IMAGE_BASE_URL, posterIdEnUs)).toURL());
+            }
+
             localizedMovie.setLocale(translation.has("iso_639_1") ? translation.get("iso_639_1").asText() : null);
             movie.getLocalizedMovies().put(localizedMovie.getLocale(), localizedMovie);
         }
