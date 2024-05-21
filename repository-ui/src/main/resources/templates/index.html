@@ -39,9 +39,9 @@
         </form>
     </div>
 
-    <div class="row align-items-start text-center">
-        <div th:each="movie : ${movies}" class="col-md gy-4">
-            <div class="card shadow bg-body-tertiary rounded"
+    <div class="row">
+        <div th:each="movie : ${movies}" class="col-md gy-4 align-items-start text-center">
+            <div class="card shadow bg-body-tertiary rounded h-100"
                  style="width: 18rem;">
                 <div th:if="${movie.posterUrl != null}">
                     <img th:src="${movie.posterUrl}"
@@ -71,6 +71,10 @@
                     <div>
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                            href="#"><i class="bi bi-pencil-fill"></i></a>
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                           href="/scenes"><i class="bi bi-collection-play-fill"></i></a>
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                           href="#"><i class="bi bi-trash3-fill"></i></a>
                     </div>
                     <div th:if="${!movie.imdbId.isBlank()}">
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"

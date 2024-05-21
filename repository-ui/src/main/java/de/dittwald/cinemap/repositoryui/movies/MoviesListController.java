@@ -28,11 +28,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Controller
-public class MoviesList {
+public class MoviesListController {
 
     private final RepositoryClient repositoryClient;
 
-    public MoviesList(RepositoryClient repositoryClient) {
+    public MoviesListController(RepositoryClient repositoryClient) {
         this.repositoryClient = repositoryClient;
     }
 
