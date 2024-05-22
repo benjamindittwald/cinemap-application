@@ -29,6 +29,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -44,7 +45,7 @@ public class RepositoryClient {
     }
 
     // Todo: make reactive
-    public List<MovieFlat> getAllMovies() throws JsonProcessingException {
+    public List<MovieFlat> getAllMovies() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<MovieFlat> movies = new ArrayList<>();
@@ -69,6 +70,17 @@ public class RepositoryClient {
         }
 
         return movies;
+    }
+
+    // Todo: make reactive
+    public MovieFlat getMovie(UUID movieUuid) {
+
+        return this.webClientConfig.repositoryWebClient()
+                .get()
+                .uri("/api/v1/movies/%s?lang=%s".formatted(movieUuid, LocaleContextHolder.getLocale().getLanguage()))
+                .retrieve()
+                .bodyToMono(MovieFlat.class)
+                .block();
     }
 
     // Todo: make reactive

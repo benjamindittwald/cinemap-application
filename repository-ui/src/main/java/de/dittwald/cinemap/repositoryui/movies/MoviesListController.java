@@ -36,7 +36,7 @@ public class MoviesListController {
         this.repositoryClient = repositoryClient;
     }
 
-    @GetMapping("/")
+    @GetMapping("/movies")
     public String index(Model model) throws JsonProcessingException {
 
         List<MovieFlat> movies = new ArrayList<>(repositoryClient.getAllMovies());

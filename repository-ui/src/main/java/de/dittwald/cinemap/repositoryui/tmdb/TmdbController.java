@@ -60,6 +60,6 @@ public class TmdbController {
             throw new RuntimeException(e);
         }
 
-        return "redirect:/";
+        return "redirect:/movies";
     }
 }

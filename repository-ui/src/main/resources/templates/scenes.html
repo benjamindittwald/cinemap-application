@@ -28,6 +28,308 @@
     </div>
 </div>
 
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-sm-2 col-md-3 align-items-start text-center">
+            <div class="card shadow bg-body-tertiary rounded" style="max-width: 18rem">
+                <div th:if="${movie.posterUrl != null}">
+                    <img th:src="${movie.posterUrl}"
+                         class="img-fluid rounded-top"
+                         alt="Movie poster">
+                </div>
+                <div th:if="${movie.posterUrl == null}">
+                    <img th:src="@{/images/movie_fallback_poster.jpg}"
+                         class="img-fluid rounded-top"
+                         alt="Movie poster">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><span
+                            th:text="*{!movie.title.isBlank()} ? *{movie.title} : #{movies_list.poster_card.fallback_text.title}"> Title </span>
+                    </h5>
+                    <p class="card-text"><small
+                            class="text-body-secondary"><span
+                            th:text="*{movie.releaseYear != null} ? *{movie.releaseYear} : #{movies_list.poster_card.fallback_text.release_year}"> Release Year </span></small>
+                    </p>
+                    <div th:if="${movie.tagline != null && !movie.tagline.isBlank()}">
+                        <p class="card-text multi-line-truncate"><span
+                                th:text="*{!movie.tagline.isBlank()} ? *{movie.tagline} : #{movies_list.poster_card.fallback_text.tagline}"> Tagline </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-md-9">
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="card mb-3 shadow bg-body-tertiary">
+                    <div class="row g-0">
+                        <div class="col-9">
+                            <div class="card-body">
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                                    at lacus porttitor, feugiat libero vitae, efficitur risus. Nulla commodo dapibus
+                                    lorem. Nullam sit amet magna nec velit vestibulum vulputate. Nam suscipit, urna in
+                                    porta elementum, velit dolor tincidunt nunc, vitae semper eros nulla.
+                                </p>
+                                <p>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-pencil-fill"></i></a>
+                                    <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                                       href="#"><i class="bi bi-trash3-fill"></i></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="card-body">
+                                <p class="card-text"><small class="text-body-secondary">lon 13.35943</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">lat 52.51263</small>
+                                </p>
+                                <p class="card-text"><small class="text-body-secondary">Baruther Straße 21, 10961
+                                    Berlin, Germany</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
 
 <script type="text/javascript"
         th:src="@{/js/bootstrap.bundle.min.js}"></script>

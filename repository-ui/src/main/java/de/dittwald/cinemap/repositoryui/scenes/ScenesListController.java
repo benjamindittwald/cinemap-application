@@ -16,15 +16,30 @@
 
 package de.dittwald.cinemap.repositoryui.scenes;
 
+import de.dittwald.cinemap.repositoryui.repository.RepositoryClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.UUID;
 
 @Controller
+@RequestMapping("/movies")
 public class ScenesListController {
 
-    @GetMapping("/scenes")
-    public String getAllScenesOfMovie(Model model) {
+    private final RepositoryClient repositoryClient;
+
+    public ScenesListController(RepositoryClient repositoryClient) {
+        this.repositoryClient = repositoryClient;
+    }
+
+    @GetMapping("{movieUuid}/scenes")
+    public String getAllScenesOfMovie(@PathVariable("movieUuid") UUID movieUuid, Model model) {
+
+        model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+
         return "scenes";
     }
 }
