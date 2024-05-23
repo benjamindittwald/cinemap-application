@@ -95,6 +95,7 @@ public class MovieService {
         this.movieRepository.save(movie);
     }
 
+    @Transactional
     public void deleteByUuid(UUID uuid) throws NotFoundException {
         if (this.movieRepository.existsByUuid(uuid)) {
             this.movieRepository.deleteByUuid(uuid);
