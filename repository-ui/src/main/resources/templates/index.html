@@ -32,7 +32,7 @@
               method="post">
             <div class="input-group mb-3 col-1">
                 <input type="number" class="form-control" id="inputTmdbId" th:field="*{id}" placeholder="TMDB id"
-                                                        aria-describedby="create-movie-submit">
+                       aria-describedby="create-movie-submit">
                 <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
                         th:text="#{movies_list.form.button.create_movie}"></span></button>
             </div>
@@ -40,7 +40,8 @@
     </div>
 
     <div class="row">
-        <div th:each="movie : ${movies}" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 gy-4 align-items-start text-center">
+        <div th:each="movie : ${movies}"
+             class="col-xs-12 col-sm-6 col-md-4 col-lg-3 gy-4 align-items-start text-center">
             <div class="card shadow bg-body-tertiary rounded h-100"
                  style="max-width: 18rem;">
                 <div th:if="${movie.posterUrl != null}">
@@ -72,9 +73,40 @@
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                            href="#"><i class="bi bi-pencil-fill"></i></a>
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                           th:href="'/movies/' + ${movie.uuid} + '/scenes'"><i class="bi bi-collection-play-fill"></i></a>
+                           th:href="'/movies/' + ${movie.uuid} + '/scenes'"><i
+                                class="bi bi-collection-play-fill"></i></a>
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                           data-bs-toggle="modal" data-bs-target="#confirmDeleteModel"
                            href="#"><i class="bi bi-trash3-fill"></i></a>
+                        <form method="post" action="#" th:action="@{/movies/{uuid}(uuid=${movie.uuid})}"
+                              data-bs-toggle="modal" data-bs-target="#confirmDeleteModel">
+                            <div class="modal fade" id="confirmDeleteModel" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel"
+                                                th:text="#{movies_list.modal.delete_movie.title}">Delete Movie?</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start"
+                                             th:text="#{movies_list.modal.delete_movie.text}">
+                                            Really delete movie... ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                    th:text="#{movies_list.modal.delete_movie.button.cancel}">Cancel
+                                            </button>
+                                            <button type="submit" class="btn btn-primary"
+                                                    th:text="#{movies_list.modal.delete_movie.button.confirm}">Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
                     </div>
                     <div th:if="${!movie.imdbId.isBlank()}">
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"

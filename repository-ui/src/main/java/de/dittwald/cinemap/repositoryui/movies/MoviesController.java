@@ -21,29 +21,41 @@ import de.dittwald.cinemap.repositoryui.repository.RepositoryClient;
 import de.dittwald.cinemap.repositoryui.tmdb.TmdbId;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
-public class MoviesListController {
+public class MoviesController {
 
     private final RepositoryClient repositoryClient;
 
-    public MoviesListController(RepositoryClient repositoryClient) {
+    public MoviesController(RepositoryClient repositoryClient) {
         this.repositoryClient = repositoryClient;
     }
 
     @GetMapping("/movies")
     public String index(Model model) throws JsonProcessingException {
 
-        List<MovieFlat> movies = new ArrayList<>(repositoryClient.getAllMovies());
+        List<MovieFlat> movies = new ArrayList<>(this.repositoryClient.getAllMovies());
         Collections.sort(movies);
         model.addAttribute("movies", movies);
         model.addAttribute("tmdbId", new TmdbId());
 
         return "index";
+    }
+
+    @PostMapping("/movies/{movieUuid}")
+    public String deleteMovie(@PathVariable UUID movieUuid, Model model) {
+
+        this.repositoryClient.deleteMovie(movieUuid);
+
+        return "redirect:/movies";
     }
 }

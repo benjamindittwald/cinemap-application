@@ -124,4 +124,15 @@ public class RepositoryClient {
                 .block();
     }
 
+    // Todo: make reactive
+    public void deleteMovie(UUID movieUuid) {
+        this.webClientConfig.repositoryWebClient()
+                .delete()
+                .uri(String.format("/api/v1/movies/%s", movieUuid))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
 }

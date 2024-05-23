@@ -98,22 +98,21 @@ public class TmdbClient {
         String overviewEnUs = movieNode.has("overview") ? movieNode.get("overview").asText() : null;
         String taglineEnUs = movieNode.has("tagline") ? movieNode.get("tagline").asText() : null;
 
-        for (JsonNode translation : translationsNode.get("translations")) {
-            JsonNode dataNode = translation.get("data");
+        for (JsonNode translationNode : translationsNode.get("translations")) {
+            JsonNode dataNode = translationNode.get("data");
             LocalizedMovie localizedMovie = new LocalizedMovie();
             localizedMovie.setTitle(
                     dataNode.has("title") && !dataNode.get("title").isEmpty() ? dataNode.get("title").asText() :
                             titleEnUs);
             localizedMovie.setOverview(dataNode.has("overview") && !dataNode.get("overview").isEmpty() ?
                     dataNode.get("overview").asText() : overviewEnUs);
-            localizedMovie.setTagline(
-                    dataNode.has("tagline") && !dataNode.get("tagline").isEmpty() ? dataNode.get("tagline").asText() :
-                            taglineEnUs);
+             localizedMovie.setTagline((dataNode.has("tagline") && !dataNode.get("tagline").isEmpty() &&
+                    !dataNode.get("tagline").isNull()) ? dataNode.get("tagline").asText() : taglineEnUs);
 
 
             for (JsonNode imageNode : imagesNode.get("posters")) {
                 if (!imageNode.get("iso_639_1").isNull() && StringUtils.equals(imageNode.get("iso_639_1").asText(),
-                        translation.get("iso_639_1").asText())) {
+                        translationNode.get("iso_639_1").asText())) {
 
                     // Todo: Check imageNode.get("width") for null and presence
                     if (imageNode.has("file_path") && imageNode.get("file_path") != null &&
@@ -121,6 +120,7 @@ public class TmdbClient {
                         localizedMovie.setPosterUrl(
                                 new URI(String.format("%s/w300%s", ConfigConstants.TMDB_IMAGE_BASE_URL,
                                         imageNode.get("file_path").asText())).toURL());
+                    break;
                 }
             }
 
@@ -130,7 +130,7 @@ public class TmdbClient {
                         new URI(String.format("%s/w300%s", ConfigConstants.TMDB_IMAGE_BASE_URL, posterIdEnUs)).toURL());
             }
 
-            localizedMovie.setLocale(translation.has("iso_639_1") ? translation.get("iso_639_1").asText() : null);
+            localizedMovie.setLocale(translationNode.has("iso_639_1") ? translationNode.get("iso_639_1").asText() : null);
             movie.getLocalizedMovies().put(localizedMovie.getLocale(), localizedMovie);
         }
 
