@@ -78,12 +78,14 @@ public class DummyData {
         this.wolfSceneOne.setMovie(this.getWolf());
 
         this.wolfLsOneEn = new LocalizedScene();
+        this.wolfLsOneEn.setTitle("Dances with Wolves - Scene One Title");
         this.wolfLsOneEn.setDescription("Dances with Wolves - Scene One Description");
         this.wolfLsOneEn.setLocalizedId(new LocalizedId("en"));
         this.wolfLsOneEn.setScene(wolfSceneOne);
         this.wolfSceneOne.getLocalizedScenes().put("en", wolfLsOneEn);
 
         this.wolfLsOneDe = new LocalizedScene();
+        this.wolfLsOneDe.setTitle("Dances with Wolves - Scene One Title");
         this.wolfLsOneDe.setDescription("Der mit dem Wolf tanzt - Scene One Description");
         this.wolfLsOneDe.setLocalizedId(new LocalizedId("de"));
         this.wolfLsOneDe.setScene(wolfSceneOne);
@@ -97,12 +99,14 @@ public class DummyData {
         this.wolfSceneTwo.setMovie(this.getWolf());
 
         this.wolfLsTwoEn = new LocalizedScene();
+        this.wolfLsTwoEn.setTitle("Dances with Wolves - Scene Two Title");
         this.wolfLsTwoEn.setDescription("Dances with Wolves - Scene Two Description");
         this.wolfLsTwoEn.setLocalizedId(new LocalizedId("en"));
         this.wolfLsTwoEn.setScene(wolfSceneTwo);
         this.wolfSceneTwo.getLocalizedScenes().put("en", wolfLsTwoEn);
 
         this.wolfLsTwoDe = new LocalizedScene();
+        this.wolfLsTwoDe.setTitle("Dances with Wolves - Scene Two Title");
         this.wolfLsTwoDe.setDescription("Der mit dem Wolf tanzt - Scene Two Description");
         this.wolfLsTwoDe.setLocalizedId(new LocalizedId("de"));
         this.wolfLsTwoDe.setScene(wolfSceneTwo);
@@ -181,20 +185,20 @@ public class DummyData {
 
         // Wold scene flat DTO
         this.wolfSceneOneFlatEnDto = new SceneFlatDto(this.getWolfSceneOne().getUuid(), this.wolfSceneOne.getLon(),
-                this.wolfSceneOne.getLat(), "en", this.wolfSceneOne.getLocalizedScenes().get("en").getDescription(),
-                this.wolfFlatEnDto);
+                this.wolfSceneOne.getLat(), "en", this.getWolfLsOneEn().getTitle(),
+                this.wolfSceneOne.getLocalizedScenes().get("en").getDescription(), this.wolfFlatEnDto);
 
         // Wolf Scene Localization DTO
         this.wolfSceneOneLocalizationDto = new SceneLocalizationDto(this.wolfSceneOne.getUuid(),
                 List.of(new SceneLocalizationEntryDto(wolfLsOneEn.getLocalizedId().getLocale(),
-                                wolfLsOneEn.getDescription()),
+                                this.getWolfLsOneEn().getTitle(), wolfLsOneEn.getDescription()),
                         new SceneLocalizationEntryDto(wolfLsOneDe.getLocalizedId().getLocale(),
-                                wolfLsOneDe.getDescription())));
+                                this.getWolfLsOneEn().getTitle(), wolfLsOneDe.getDescription())));
 
         // Wold scene creation DTO
         this.wolfSceneOneCreationEnDto =
                 new SceneCreationDto(this.getWolfSceneOne().getUuid(), this.wolfSceneOne.getLon(),
-                        this.wolfSceneOne.getLat(), "en",
+                        this.wolfSceneOne.getLat(), "en", this.getWolfLsOneEn().getTitle(),
                         this.wolfSceneOne.getLocalizedScenes().get("en").getDescription());
     }
 
@@ -367,6 +371,7 @@ public class DummyData {
                 "lon":"13.35943",
                 "lat":"52.51263",
                 "locale":"en",
+                "title":"Dances with Wolves - Scene One Title",
                 "description":"Dances with Wolves - Scene One Description"
             }
             """;
@@ -377,6 +382,7 @@ public class DummyData {
                 "lon":"13.35943",
                 "lat":"52.51263",
                 "locale":"eng",
+                "title":"Dances with Wolves - Scene One Title",
                 "description":"Dances with Wolves - Scene One Description",
                 "movie":
                     {
@@ -405,10 +411,12 @@ public class DummyData {
                         [
                             {
                                 "locale":"en",
+                                "title":"Dances with Wolves - Scene One Title",
                                 "description":"Dances with Wolves - Scene One Description"
                             },
                             {
                                 "locale":"de",
+                                "title":"Dances with Wolves - Scene One Title",
                                 "description":"Der mit dem Wolf tanzt - Scene One Description"
                             }
                         ]

@@ -315,7 +315,7 @@ public class MovieRestControllerTest {
     }
 
     @Test
-    public void shouldFailCreateNewSceneDueToMovieUuidAlreadyExist() throws Exception {
+    public void shouldFailCreateNewSceneDueToSceneUuidAlreadyExist() throws Exception {
         doThrow(UuidInUseException.class).when(this.sceneService)
                 .save(this.dummyData.getWolfSceneOneCreationEnDto(), this.dummyData.getWolf().getUuid());
         this.mockMvc.perform(post("/api/v1/movies/" + this.dummyData.getWolf().getUuid() + "/scenes").contentType(

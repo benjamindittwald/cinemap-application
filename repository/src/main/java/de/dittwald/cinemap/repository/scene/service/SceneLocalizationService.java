@@ -63,12 +63,13 @@ public class SceneLocalizationService {
 
         for (SceneLocalizationEntryDto dto : sceneLocalizationDto.localizations()) {
             if (scene.getLocalizedScenes().containsKey(dto.locale())) {
-             LocalizedScene localizedScene = scene.getLocalizedScenes().get(dto.locale());
-             localizedScene.setDescription(dto.description());
-             scene.getLocalizedScenes().replace(dto.locale(), localizedScene);
+                LocalizedScene localizedScene = scene.getLocalizedScenes().get(dto.locale());
+                localizedScene.setDescription(dto.description());
+                scene.getLocalizedScenes().replace(dto.locale(), localizedScene);
             } else {
                 scene.getLocalizedScenes()
-                        .put(dto.locale(), new LocalizedScene(new LocalizedId(dto.locale()), scene, dto.description()));
+                        .put(dto.locale(), new LocalizedScene(new LocalizedId(dto.locale()), scene, dto.title(),
+                                dto.description()));
             }
         }
 
@@ -87,7 +88,7 @@ public class SceneLocalizationService {
 
         for (LocalizedScene localizedScene : localizedScenes.get()) {
             localizedEntries.add(new SceneLocalizationEntryDto(localizedScene.getLocalizedId().getLocale(),
-                    localizedScene.getDescription()));
+                    localizedScene.getTitle(), localizedScene.getDescription()));
         }
 
         return new SceneLocalizationDto(sceneUuid, localizedEntries);

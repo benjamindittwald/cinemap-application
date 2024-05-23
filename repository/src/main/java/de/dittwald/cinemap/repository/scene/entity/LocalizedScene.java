@@ -35,9 +35,10 @@ public class LocalizedScene implements Serializable {
         this.localizedId = new LocalizedId();
     }
 
-    public LocalizedScene(LocalizedId localizedId, Scene scene, String description) {
+    public LocalizedScene(LocalizedId localizedId, Scene scene, String title, String description) {
         this.localizedId = localizedId;
         this.scene = scene;
+        this.title = title;
         this.description = description;
     }
 
@@ -48,6 +49,9 @@ public class LocalizedScene implements Serializable {
     @MapsId("id")
     @JoinColumn(name = "id")
     private Scene scene;
+
+    @Size(min = 1, max = 50)
+    private String title;
 
     @Lob
     @Size(min = 1, max = 5000)

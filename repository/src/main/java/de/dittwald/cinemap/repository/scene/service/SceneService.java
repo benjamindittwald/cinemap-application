@@ -77,7 +77,7 @@ public class SceneService {
         } else {
             scene.getLocalizedScenes()
                     .put(sceneCreationDto.locale(),
-                            new LocalizedScene(new LocalizedId(sceneCreationDto.locale()), scene,
+                            new LocalizedScene(new LocalizedId(sceneCreationDto.locale()), scene, sceneCreationDto.title(),
                                     sceneCreationDto.description()));
         }
 

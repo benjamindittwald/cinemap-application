@@ -21,6 +21,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record SceneLocalizationEntryDto(@NotNull @Iso6391Constraint String locale,
+                                        @Size(min = 1, max = 50) String title,
                                         @Size(min = 1, max = 5000) String description
 
 ) {

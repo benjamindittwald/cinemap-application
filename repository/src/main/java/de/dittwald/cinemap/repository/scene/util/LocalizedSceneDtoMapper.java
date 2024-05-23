@@ -32,6 +32,7 @@ public class LocalizedSceneDtoMapper {
         }
 
         return new SceneFlatDto(entity.getUuid(), entity.getLon(), entity.getLat(), locale,
+                entity.getLocalizedScenes().get(locale).getTitle(),
                 entity.getLocalizedScenes().get(locale).getDescription(),
                 LocalizedMovieDtoMapper.entityToDto(entity.getMovie(), locale));
     }
