@@ -104,13 +104,6 @@ public class TmdbClient {
             localizedMovie.setTitle(
                     dataNode.get("title") != null && !StringUtils.isBlank(dataNode.get("title").asText()) ?
                             dataNode.get("title").asText() : titleEnUs);
-
-            //            if (dataNode.get("title") != null && !StringUtils.isBlank(dataNode.get("title").asText())) {
-            //                localizedMovie.setTitle(dataNode.get("title").asText());
-            //            } else {
-            //                localizedMovie.setTitle(titleEnUs);
-            //            }
-
             localizedMovie.setOverview(
                     dataNode.get("overview") != null && !StringUtils.isBlank(dataNode.get("overview").asText()) ?
                             dataNode.get("overview").asText() : overviewEnUs);

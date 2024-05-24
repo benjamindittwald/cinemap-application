@@ -16,12 +16,13 @@
 
 package de.dittwald.cinemap.repositoryui.scenes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.dittwald.cinemap.repositoryui.repository.RepositoryClient;
+import jakarta.validation.Valid;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -38,8 +39,22 @@ public class ScenesListController {
     @GetMapping("{movieUuid}/scenes")
     public String getAllScenesOfMovie(@PathVariable("movieUuid") UUID movieUuid, Model model) {
 
+        Scene scene = new Scene();
+        scene.setLocale(LocaleContextHolder.getLocale().getLanguage());
+        scene.setUuid(UUID.randomUUID());
+
+        model.addAttribute("newScene", scene);
         model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
 
         return "scenes";
+    }
+
+    @PostMapping("{movieUuid}/scenes")
+    public String createScene(@PathVariable("movieUuid") UUID movieUuid, @Valid @ModelAttribute Scene scene)
+            throws JsonProcessingException {
+
+        this.repositoryClient.createScene(scene, movieUuid);
+
+        return "redirect:/movies/%s/scenes".formatted(movieUuid);
     }
 }

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.dittwald.cinemap.repositoryui.movies.*;
 import de.dittwald.cinemap.repositoryui.properties.Properties;
+import de.dittwald.cinemap.repositoryui.scenes.Scene;
 import de.dittwald.cinemap.repositoryui.tmdb.WebClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -130,6 +131,19 @@ public class RepositoryClient {
                 .delete()
                 .uri(String.format("/api/v1/movies/%s", movieUuid))
                 .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    // Todo: make reactive
+    public void createScene(Scene scene, UUID movieUuid) throws JsonProcessingException {
+        this.webClientConfig.repositoryWebClient()
+                .post()
+                .uri(String.format("/api/v1/movies/%s/scenes", movieUuid))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(scene), Scene.class)
                 .retrieve()
                 .toBodilessEntity()
                 .block();

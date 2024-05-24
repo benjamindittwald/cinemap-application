@@ -19,7 +19,7 @@
 <div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - Movies List')}"></div>
 <body>
 
-<div th:replace="~{navbar :: navbar}"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
 <div class="container">
@@ -34,7 +34,7 @@
                 <input type="number" class="form-control" id="inputTmdbId" th:field="*{id}" placeholder="TMDB id"
                        aria-describedby="create-movie-submit">
                 <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
-                        th:text="#{movies_list.form.button.create_movie}"></span></button>
+                        th:text="#{movies_list.form.button.add_movie}"></span></button>
             </div>
         </form>
     </div>
