@@ -24,10 +24,11 @@ import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedMovie;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
+import de.dittwald.cinemap.repository.scene.entity.Scene;
+import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
 import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +39,11 @@ import java.util.*;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final SceneRepository sceneRepository;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, SceneRepository sceneRepository) {
         this.movieRepository = movieRepository;
+        this.sceneRepository = sceneRepository;
     }
 
     @Transactional
@@ -98,14 +101,23 @@ public class MovieService {
     @Transactional
     public void deleteByUuid(UUID uuid) throws NotFoundException {
         if (this.movieRepository.existsByUuid(uuid)) {
+
+            // Deletes all scenes of a movie if present
+            Optional<List<Scene>> scenesOptional = this.sceneRepository.findAllScenesOfMovieUuid(uuid);
+            if (scenesOptional.isPresent()) {
+                List<Long> sceneIds = scenesOptional.get().stream().map(Scene::getId).toList();
+                this.sceneRepository.deleteAllById(sceneIds);
+            }
             this.movieRepository.deleteByUuid(uuid);
         } else {
             throw new NotFoundException("Movie not found");
         }
     }
 
+    @Transactional
     public void deleteAll() {
         log.info("Deleting all movies");
+        this.sceneRepository.deleteAll();
         this.movieRepository.deleteAll();
     }
 }

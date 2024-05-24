@@ -52,7 +52,7 @@ public class LocaleFallbackHandler {
     }
 
     private static void logChangedLocale(String expectedLocale, String actualLocale) {
-        log.warn("Locale {} not found. Using {} instead.", expectedLocale, actualLocale);
+        log.debug("Locale {} not found. Using {} instead.", expectedLocale, actualLocale);
     }
 
 

@@ -28,4 +28,5 @@ import java.util.UUID;
 public interface SceneLocalizedRepository extends ListCrudRepository<LocalizedScene, String> {
 
     Optional<List<LocalizedScene>> findAllBySceneUuid(UUID sceneUuid);
+
 }

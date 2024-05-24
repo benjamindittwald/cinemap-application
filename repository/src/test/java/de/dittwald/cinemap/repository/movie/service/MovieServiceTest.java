@@ -19,6 +19,7 @@ package de.dittwald.cinemap.repository.movie.service;
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
+import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
 import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
@@ -30,13 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -49,6 +50,9 @@ public class MovieServiceTest {
 
     @MockBean
     private MovieRepository movieRepository;
+
+    @MockBean
+    private SceneRepository sceneRepository;
 
     private DummyData dummyData;
 
@@ -118,12 +122,31 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldDeleteMovie() throws NotFoundException {
-        when(this.movieRepository.existsByUuid(this.dummyData.getNobody().getUuid())).thenReturn(true);
-        doNothing().when(this.movieRepository).deleteByUuid(this.dummyData.getNobody().getUuid());
-        this.movieService.deleteByUuid(this.dummyData.getNobody().getUuid());
-        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getNobody().getUuid());
-        verify(this.movieRepository, times(1)).deleteByUuid(this.dummyData.getNobody().getUuid());
+    public void shouldDeleteMovieInclScenes() throws NotFoundException {
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
+        when(this.sceneRepository.findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.of(List.of(this.dummyData.getWolfSceneOne(), this.dummyData.getWolfSceneTwo())));
+        this.movieService.deleteByUuid(this.dummyData.getWolf().getUuid());
+
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid());
+        // Todo: Find a better way in testing this for real
+        verify(this.sceneRepository, times(1)).deleteAllById(any());
+        verify(this.movieRepository, times(1)).deleteByUuid(this.dummyData.getWolf().getUuid());
+    }
+
+    @Test
+    public void shouldDeleteMovieWithOutScenes() throws NotFoundException {
+        when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
+        when(this.sceneRepository.findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
+                Optional.empty());
+        doNothing().when(this.movieRepository).deleteByUuid(this.dummyData.getWolf().getUuid());
+
+        this.movieService.deleteByUuid(this.dummyData.getWolf().getUuid());
+
+        verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid());
+        verify(this.movieRepository, times(1)).deleteByUuid(this.dummyData.getWolf().getUuid());
     }
 
     @Test
@@ -157,8 +180,10 @@ public class MovieServiceTest {
 
     @Test
     public void shouldDeleteAllMovies() {
+        doNothing().when(this.sceneRepository).deleteAll();
         doNothing().when(this.movieRepository).deleteAll();
         this.movieService.deleteAll();
         verify(this.movieRepository, times(1)).deleteAll();
+        verify(this.sceneRepository, times(1)).deleteAll();
     }
 }

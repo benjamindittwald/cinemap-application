@@ -18,7 +18,6 @@ package de.dittwald.cinemap.repository.scene.repository;
 
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
-import de.dittwald.cinemap.repository.scene.LocalizedSceneRepository;
 import de.dittwald.cinemap.repository.scene.entity.LocalizedScene;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
 import de.dittwald.cinemap.repository.util.DummyData;
@@ -44,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-        classes = {SceneRepository.class, MovieRepository.class, LocalizedSceneRepository.class}))
+        classes = {SceneRepository.class, MovieRepository.class, SceneLocalizedRepository.class}))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class SceneRepositoryTest {
 
@@ -60,7 +59,7 @@ class SceneRepositoryTest {
     private MovieRepository movieRepository;
 
     @Autowired
-    private LocalizedSceneRepository localizedSceneRepository;
+    private SceneLocalizedRepository sceneLocalizedRepository;
 
     private DummyData dummyData;
 
@@ -99,10 +98,10 @@ class SceneRepositoryTest {
 
         LocalizedScene lmsEn = scene.getLocalizedScenes().get("de");
         lmsEn.setDescription("Der mit dem Wolf tanzt - Scene One New Description");
-        assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
+        assertThat(this.sceneLocalizedRepository.count()).isEqualTo(2);
         scene.getLocalizedScenes().put("de", lmsEn);
         this.sceneRepository.save(scene);
-        assertThat(this.localizedSceneRepository.count()).isEqualTo(2);
+        assertThat(this.sceneLocalizedRepository.count()).isEqualTo(2);
         assertThat(this.sceneRepository.findByUuid(this.dummyData.getWolfSceneOne().getUuid())
                 .get()
                 .getLocalizedScenes()

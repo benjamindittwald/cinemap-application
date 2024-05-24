@@ -32,7 +32,7 @@ import java.util.UUID;
 @Table(name = "scenes")
 @Getter
 @Setter
-@NamedQuery(name = "Scene.findAllScenesOfMovie",
+@NamedQuery(name = "Scene.findAllScenesOfMovieUuid",
         query = "select s from Scene s where s.movie.uuid = :movieUuid")
 public class Scene {
 

@@ -33,5 +33,5 @@ public interface SceneRepository extends ListCrudRepository<Scene, Long> {
 
     boolean existsByUuid(UUID uuid);
 
-    Optional<List<Scene>> findAllScenesOfMovie(UUID movieUuid);
+    Optional<List<Scene>> findAllScenesOfMovieUuid(UUID movieUuid);
 }

@@ -129,7 +129,7 @@ public class SceneService {
             throw new NotFoundException("Movie not found");
         }
 
-        Optional<List<Scene>> scenesOptional = this.sceneRepository.findAllScenesOfMovie(movieUuid);
+        Optional<List<Scene>> scenesOptional = this.sceneRepository.findAllScenesOfMovieUuid(movieUuid);
         if (scenesOptional.isPresent()) {
             for (Scene scene : scenesOptional.get()) {
                 sceneListDto.add(LocalizedSceneDtoMapper.entityToDto(scene, locale));

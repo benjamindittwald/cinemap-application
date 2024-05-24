@@ -202,14 +202,14 @@ class SceneServiceTest {
     @Test
     void shouldFindAllSceneOfMovie() throws NotFoundException, LocaleNotFoundException {
         when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
-        when(this.sceneRepository.findAllScenesOfMovie(this.dummyData.getWolf().getUuid())).thenReturn(
+        when(this.sceneRepository.findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
                 Optional.of(List.of(this.dummyData.getWolfSceneOne())));
 
         assertThat(this.sceneService.findAllScenesOfMovie(this.dummyData.getWolf().getUuid(), "en")).isEqualTo(
                 List.of(this.dummyData.getWolfSceneOneFlatEnDto()));
 
         verify(this.movieRepository, times(1)).existsByUuid(this.dummyData.getWolf().getUuid());
-        verify(this.sceneRepository, times(1)).findAllScenesOfMovie(this.dummyData.getWolf().getUuid());
+        verify(this.sceneRepository, times(1)).findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid());
     }
 
     @Test
