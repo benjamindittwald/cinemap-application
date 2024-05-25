@@ -48,6 +48,7 @@ public class LocalizedSceneDtoMapper {
         LocalizedId localizedId = new LocalizedId(dto.locale());
         localizedEntity.setDescription(dto.description());
         localizedEntity.setLocalizedId(localizedId);
+        localizedEntity.setTitle(dto.title());
         localizedEntity.setScene(entity);
 
         entity.getLocalizedScenes().put(localizedId.getLocale(), localizedEntity);
@@ -66,6 +67,7 @@ public class LocalizedSceneDtoMapper {
         LocalizedId localizedId = new LocalizedId(dto.locale());
         localizedEntity.setDescription(dto.description());
         localizedEntity.setLocalizedId(localizedId);
+        localizedEntity.setTitle(dto.title());
         localizedEntity.setScene(entity);
 
         entity.getLocalizedScenes().put(localizedId.getLocale(), localizedEntity);
