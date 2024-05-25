@@ -146,9 +146,9 @@ public class MovieRestController {
             description = "Updates a scene with the given parameters. The corresponding movie and scene must exist.")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Movie scene was created"),
             @ApiResponse(responseCode = "400", description = "Invalid scene given or given UUID is not a valid UUID")})
-    public void updateMovieScene(@RequestBody @Valid SceneCreationDto sceneCreationDto,
-                                 @PathVariable("movieUuid") @Valid UUID movieUuid,
-                                 @PathVariable("sceneUuid") @Valid UUID sceneUuid) throws NotFoundException {
+    public void updateScene(@RequestBody @Valid SceneCreationDto sceneCreationDto,
+                            @PathVariable("movieUuid") @Valid UUID movieUuid,
+                            @PathVariable("sceneUuid") @Valid UUID sceneUuid) throws NotFoundException {
         this.sceneService.update(sceneCreationDto, movieUuid, sceneUuid);
     }
 

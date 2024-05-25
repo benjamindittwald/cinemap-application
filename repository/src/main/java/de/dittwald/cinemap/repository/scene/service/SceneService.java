@@ -73,6 +73,7 @@ public class SceneService {
             LocalizedScene updatedlocalizedScene = scene.getLocalizedScenes().get(sceneCreationDto.locale());
             updatedlocalizedScene.setScene(scene);
             updatedlocalizedScene.setDescription(sceneCreationDto.description());
+            updatedlocalizedScene.setTitle(sceneCreationDto.title());
             scene.getLocalizedScenes().replace(sceneCreationDto.locale(), updatedlocalizedScene);
         } else {
             scene.getLocalizedScenes()

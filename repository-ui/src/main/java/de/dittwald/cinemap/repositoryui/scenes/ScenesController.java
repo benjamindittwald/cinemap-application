@@ -45,19 +45,28 @@ public class ScenesController {
 
         model.addAttribute("newScene", scene);
         model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
-        model.addAttribute("scenes", this.repositoryClient.getSceneForMovie(movieUuid));
+        model.addAttribute("scenes", this.repositoryClient.getScenesForMovie(movieUuid));
 
         return "scenes";
     }
 
     @GetMapping("{movieUuid}/scenes/{sceneUuid}")
-    public String showSceneEditPage(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
-                                    @Valid @ModelAttribute Scene scene,  Model model) {
+    public String showSceneEditPage(@PathVariable("movieUuid") UUID movieUuid,
+                                    @PathVariable("sceneUuid") UUID sceneUuid, Model model) {
 
         model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
-        model.addAttribute("scene", scene);
+        model.addAttribute("scene", this.repositoryClient.getScene(sceneUuid, movieUuid));
 
         return "scenes_edit";
+    }
+
+    @PostMapping("{movieUuid}/scenes/{sceneUuid}/update")
+    public String updateScene(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
+                              @Valid @ModelAttribute Scene scene, Model model) {
+
+        this.repositoryClient.updateScene(movieUuid, scene);
+
+        return "redirect:/movies/%s/scenes".formatted(movieUuid);
     }
 
     @PostMapping("{movieUuid}/scenes")

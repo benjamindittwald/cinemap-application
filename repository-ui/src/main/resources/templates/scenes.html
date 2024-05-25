@@ -23,6 +23,15 @@
 
 
 <div class="container">
+    <div class="row mt-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" th:text="#{breadcrumb.home}">Home</a></li>
+                <li class="breadcrumb-item"><a href="/movies" th:text="#{breadcrumb.movies}">Movies</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${movie.title}">Movie Title</li>
+            </ol>
+        </nav>
+    </div>
     <div class="row mt-5">
         <h1><span th:text="#{scenes_list.heading.all_scenes}"></span></h1>
     </div>
@@ -72,16 +81,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-sm-3">
                             <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
-                                    th:text="#{scenes_list.form.button.create_scene}"></span></button>
+                                    th:text="#{scenes_list.form.button.add_scene}"></span></button>
                         </div>
                     </div>
+                    <hr/>
                 </form>
             </div>
 
             <div class="row">
+                <div class="d-flex align-items-center justify-content-center">
+                    <div th:if="${scenes.isEmpty()}" class="">
+                        <p class="fw-bolder fs-4"><i class="bi bi-emoji-tear"></i> <span
+                                th:text="#{scenes_list.paragraph_no_scenes}"></span></p>
+                    </div>
+                </div>
                 <div th:each="scene : ${scenes}">
                     <div class="card mb-3 shadow bg-body-tertiary">
                         <div class="row g-0">
@@ -96,7 +112,8 @@
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                               href="#"><i class="bi bi-pencil-fill"></i></a>
+                                               th:href="'/movies/' + ${movie.uuid} + '/scenes/' + ${scene.uuid}"><i
+                                                    class="bi bi-pencil-fill"></i></a>
                                             <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                                                href="#" data-bs-target="#confirmDeleteModel" data-bs-toggle="modal"><i
                                                     class="bi bi-trash3-fill"></i></a>
@@ -154,7 +171,7 @@
 
 </div>
 
-
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script type="text/javascript"
         th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>

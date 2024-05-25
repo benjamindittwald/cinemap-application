@@ -21,7 +21,6 @@ import de.dittwald.cinemap.repositoryui.repository.RepositoryClient;
 import de.dittwald.cinemap.repositoryui.tmdb.TmdbId;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +47,7 @@ public class MoviesController {
         model.addAttribute("movies", movies);
         model.addAttribute("tmdbId", new TmdbId());
 
-        return "index";
+        return "movies";
     }
 
     @PostMapping("/movies/{movieUuid}")

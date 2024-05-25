@@ -150,7 +150,7 @@ public class RepositoryClient {
     }
 
     // Todo: make reactive
-    public List<Scene> getSceneForMovie(UUID movieUuid) {
+    public List<Scene> getScenesForMovie(UUID movieUuid) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<Scene> scenes = new ArrayList<>();
@@ -177,6 +177,32 @@ public class RepositoryClient {
         }
     }
 
+    // Todo: make reactive
+    public Scene getScene(UUID sceneUuid, UUID movieUuid) {
+
+        return this.webClientConfig.repositoryWebClient()
+                .get()
+                .uri("/api/v1/movies/%s/scenes/%s?lang=%s".formatted(movieUuid, sceneUuid,
+                        LocaleContextHolder.getLocale().getLanguage()))
+                .retrieve()
+                .bodyToMono(Scene.class)
+                .block();
+    }
+
+    // Todo: make reactive
+    public void updateScene(UUID movieUuid, Scene scene) {
+        this.webClientConfig.repositoryWebClient()
+                .put()
+                .uri(String.format("/api/v1/movies/%s/scenes/%s", movieUuid, scene.getUuid()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(scene), Scene.class)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    // Todo: Make reactive
     public void deleteScene(UUID sceneUuid, UUID movieUuid) {
         this.webClientConfig.repositoryWebClient()
                 .delete()
