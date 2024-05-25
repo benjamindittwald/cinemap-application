@@ -37,7 +37,7 @@ public class ScenesController {
     }
 
     @GetMapping("{movieUuid}/scenes")
-    public String getAllScenesOfMovie(@PathVariable("movieUuid") UUID movieUuid, Model model) {
+    public String showScenesListPage(@PathVariable("movieUuid") UUID movieUuid, Model model) {
 
         Scene scene = new Scene();
         scene.setLocale(LocaleContextHolder.getLocale().getLanguage());
@@ -48,6 +48,16 @@ public class ScenesController {
         model.addAttribute("scenes", this.repositoryClient.getSceneForMovie(movieUuid));
 
         return "scenes";
+    }
+
+    @GetMapping("{movieUuid}/scenes/{sceneUuid}")
+    public String showSceneEditPage(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
+                                    @Valid @ModelAttribute Scene scene,  Model model) {
+
+        model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+        model.addAttribute("scene", scene);
+
+        return "scenes_edit";
     }
 
     @PostMapping("{movieUuid}/scenes")
@@ -62,10 +72,7 @@ public class ScenesController {
     @PostMapping("{movieUuid}/scenes/{sceneUuid}")
     public String deleteScene(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
                               Model model) {
-
         this.repositoryClient.deleteScene(sceneUuid, movieUuid);
-
         return "redirect:/movies/%s/scenes".formatted(movieUuid);
-
     }
 }

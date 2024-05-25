@@ -16,7 +16,7 @@
 
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - Scenes List')}"></div>
+<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - ' + #{scenes_list.meta.page.title})}"></div>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -31,37 +31,7 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col col-sm-2 col-md-3 align-items-start text-center">
-            <div class="card shadow bg-body-tertiary rounded" style="max-width: 18rem">
-                <div th:if="${movie.posterUrl != null}">
-                    <img th:src="${movie.posterUrl}"
-                         class="img-fluid rounded-top"
-                         alt="Movie poster">
-                </div>
-                <div th:if="${movie.posterUrl == null}">
-                    <img th:src="@{/images/movie_fallback_poster.jpg}"
-                         class="img-fluid rounded-top"
-                         alt="Movie poster">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><span
-                            th:text="*{!movie.title.isBlank()} ? *{movie.title} : #{movies_list.poster_card.fallback_text.title}"> Title </span>
-                    </h5>
-                    <p class="card-text"><small
-                            class="text-body-secondary"><span
-                            th:text="*{movie.releaseYear != null} ? *{movie.releaseYear} : #{movies_list.poster_card.fallback_text.release_year}"> Release Year </span></small>
-                    </p>
-                    <div th:if="${movie.tagline != null && !movie.tagline.isBlank()}">
-                        <p class="card-text multi-line-truncate"><span
-                                th:text="*{!movie.tagline.isBlank()} ? *{movie.tagline} : #{movies_list.poster_card.fallback_text.tagline}"> Tagline </span>
-                        </p>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div th:text="${movie.overview}" class="text-start fw-lighter mt-4">
-                        Overview
-                    </div>
-                </div>
-            </div>
+            <div th:replace="~{fragments/scene_movie_sidebar :: scene_movie_sidebar (posterUrl=${movie.posterUrl}, title=${movie.title}, releaseYear=${movie.releaseYear}, tagline=${movie.tagline}, overview=${movie.overview})}"></div>
         </div>
 
         <div class="col col-sm-10 col-md-9">
@@ -70,17 +40,7 @@
                 <form class="mt-3" th:action="@{/movies/{uuid}/scenes(uuid=${movie.uuid})}" th:object="${newScene}"
                       method="post">
                     <div class="row">
-                        <div class="col">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
-                                <input type="text" aria-label="input-lon" class="form-control" th:field="*{lon}"
-                                       th:placeholder="#{scenes_list.form.input.placeholder.lon}">
-                                <input type="text" aria-label="input-lat" class="form-control" th:field="*{lat}"
-                                       th:placeholder="#{scenes_list.form.input.placeholder.lat}">
-                            </div>
-                        </div>
-
-                        <div class="col">
+                        <div class="col-8">
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="input-title"><i class="bi bi-feather"></i></span>
                                 <input type="text" class="form-control" th:field="*{title}"
@@ -90,6 +50,15 @@
                             <div class="d-none">
                                 <input type="text" aria-label="input-uuid" th:field="*{uuid}">
                                 <input type="text" aria-label="input-locale" th:field="*{locale}">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                <input type="text" aria-label="input-lon" class="form-control" th:field="*{lon}"
+                                       th:placeholder="#{scenes_list.form.input.placeholder.lon}">
+                                <input type="text" aria-label="input-lat" class="form-control" th:field="*{lat}"
+                                       th:placeholder="#{scenes_list.form.input.placeholder.lat}">
                             </div>
                         </div>
                     </div>
@@ -129,8 +98,10 @@
                                             <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                                                href="#"><i class="bi bi-pencil-fill"></i></a>
                                             <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                               href="#" data-bs-target="#confirmDeleteModel" data-bs-toggle="modal"><i class="bi bi-trash3-fill"></i></a>
-                                            <form method="post" action="#" th:action="@{/movies/{movieUuid}/scenes/{sceneUuid}(movieUuid=${movie.uuid}, sceneUuid=${scene.uuid})}"
+                                               href="#" data-bs-target="#confirmDeleteModel" data-bs-toggle="modal"><i
+                                                    class="bi bi-trash3-fill"></i></a>
+                                            <form method="post" action="#"
+                                                  th:action="@{/movies/{movieUuid}/scenes/{sceneUuid}(movieUuid=${movie.uuid}, sceneUuid=${scene.uuid})}"
                                                   data-bs-toggle="modal" data-bs-target="#confirmDeleteModel">
                                                 <div class="modal fade" id="confirmDeleteModel" tabindex="-1"
                                                      aria-labelledby="confirmDeleteModel" aria-hidden="true">
@@ -138,8 +109,10 @@
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h1 class="modal-title fs-5" id="exampleModalLabel"
-                                                                    th:text="#{scenes_list.modal.delete_scene.title}">Modal Title</h1>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    th:text="#{scenes_list.modal.delete_scene.title}">
+                                                                    Modal Title</h1>
+                                                                <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body text-start"
@@ -147,11 +120,13 @@
                                                                 Really delete movie... ?
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal"
                                                                         th:text="#{common.button.label.cancel}">Cancel
                                                                 </button>
                                                                 <button type="submit" class="btn btn-primary"
-                                                                        th:text="#{scenes_list.modal.delete_scene.button.label.confirm}">Delete
+                                                                        th:text="#{scenes_list.modal.delete_scene.button.label.confirm}">
+                                                                    Delete
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -163,8 +138,8 @@
                                             <span class="card-text"><small class="text-body-secondary"
                                                                            th:text="'lon ' + ${scene.lon}">lon 13.35943</small>
                                             </span>
-                                                <span class="card-text"><small class="text-body-secondary"
-                                                                               th:text="'lan ' + ${scene.lat}">lat 52.51263</small>
+                                            <span class="card-text"><small class="text-body-secondary"
+                                                                           th:text="'lan ' + ${scene.lat}">lat 52.51263</small>
                                              </span>
                                         </div>
                                     </div>

@@ -1,0 +1,93 @@
+<!--
+  ~ Copyright 2024 Benjamin Dittwald
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - ' + #{scene_edit.meta.page.title})}"></div>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+<div class="container">
+    <div class="row mt-5">
+        <h1><span th:text="#{scenes_list.heading.all_scenes}"></span></h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col col-sm-2 col-md-3 align-items-start text-center">
+            <div th:replace="~{fragments/scene_movie_sidebar :: scene_movie_sidebar (posterUrl=${movie.posterUrl}, title=${movie.title}, releaseYear=${movie.releaseYear}, tagline=${movie.tagline}, overview=${movie.overview})}"></div>
+        </div>
+
+        <div class="col col-sm-10 col-md-9">
+            <div class="row mb-5">
+                <h2 th:text="#{scenes_list.heading.add_scene}">Add Scene</h2>
+                <form class="mt-3" th:action="@{/movies/{uuid}/scenes(uuid=${movie.uuid})}" th:object="${scene}"
+                      method="post">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="input-title"><i class="bi bi-feather"></i></span>
+                                <input type="text" class="form-control" th:field="*{title}"
+                                       th:placeholder="#{scenes_list.form.input.placeholder.title}" aria-label="title"
+                                       aria-describedby="input-title">
+                            </div>
+                            <div class="d-none">
+                                <input type="text" aria-label="input-uuid" th:field="*{uuid}">
+                                <input type="text" aria-label="input-locale" th:field="*{locale}">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                <input type="text" aria-label="input-lon" class="form-control" th:field="*{lon}"
+                                       th:placeholder="#{scenes_list.form.input.placeholder.lon}">
+                                <input type="text" aria-label="input-lat" class="form-control" th:field="*{lat}"
+                                       th:placeholder="#{scenes_list.form.input.placeholder.lat}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                <textarea class="form-control" aria-label="description"
+                                          th:field="*{description}"
+                                          th:placeholder="#{scenes_list.form.input.placeholder.description}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
+                                    th:text="#{scenes_list.form.button.create_scene}"></span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript"
+        th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+</body>
+</html>

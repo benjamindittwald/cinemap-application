@@ -16,7 +16,7 @@
 
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - Movies List')}"></div>
+<div th:replace="~{fragments/head :: head (title='Cinemap Repository UI - ' + #{movies_list.meta.page.title})}"></div>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
