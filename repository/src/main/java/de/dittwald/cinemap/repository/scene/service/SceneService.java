@@ -107,6 +107,7 @@ public class SceneService {
         return movieSceneDtos;
     }
 
+    @Transactional
     public void deleteByUuid(UUID uuid) throws NotFoundException {
         if (this.sceneRepository.existsByUuid(uuid)) {
             this.sceneRepository.deleteByUuid(uuid);
