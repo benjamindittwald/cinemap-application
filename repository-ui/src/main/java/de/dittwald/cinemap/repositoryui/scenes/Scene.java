@@ -16,6 +16,8 @@
 
 package de.dittwald.cinemap.repositoryui.scenes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.dittwald.cinemap.repositoryui.movies.MovieFlat;
 import de.dittwald.cinemap.repositoryui.validation.Iso6391Constraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -48,4 +50,7 @@ public class Scene {
 
     @Size(min = 1, max = 5000)
     private String description;
+
+    @JsonIgnore
+    private MovieFlat movie;
 }

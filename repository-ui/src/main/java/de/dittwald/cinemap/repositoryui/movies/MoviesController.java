@@ -51,7 +51,6 @@ public class MoviesController {
         return "index";
     }
 
-    // Todo: Change to delete!
     @PostMapping("/movies/{movieUuid}")
     public String deleteMovie(@PathVariable UUID movieUuid, Model model) {
 

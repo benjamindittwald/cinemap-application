@@ -28,11 +28,11 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/movies")
-public class ScenesListController {
+public class ScenesController {
 
     private final RepositoryClient repositoryClient;
 
-    public ScenesListController(RepositoryClient repositoryClient) {
+    public ScenesController(RepositoryClient repositoryClient) {
         this.repositoryClient = repositoryClient;
     }
 
@@ -45,6 +45,7 @@ public class ScenesListController {
 
         model.addAttribute("newScene", scene);
         model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+        model.addAttribute("scenes", this.repositoryClient.getSceneForMovie(movieUuid));
 
         return "scenes";
     }
@@ -56,5 +57,15 @@ public class ScenesListController {
         this.repositoryClient.createScene(scene, movieUuid);
 
         return "redirect:/movies/%s/scenes".formatted(movieUuid);
+    }
+
+    @PostMapping("{movieUuid}/scenes/{sceneUuid}")
+    public String deleteScene(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
+                              Model model) {
+
+        this.repositoryClient.deleteScene(sceneUuid, movieUuid);
+
+        return "redirect:/movies/%s/scenes".formatted(movieUuid);
+
     }
 }

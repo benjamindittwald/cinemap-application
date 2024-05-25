@@ -36,7 +36,7 @@ import java.util.UUID;
 @Slf4j
 public class RepositoryClient {
 
-    final Properties properties;
+    private final Properties properties;
 
     private final WebClientConfig webClientConfig;
 
@@ -107,19 +107,19 @@ public class RepositoryClient {
                 .toBodilessEntity()
                 .block();
 
-        List<MovieLocalizationEntryDto> localizedMovies = new ArrayList<>();
+        List<MovieLocalizationEntry> localizedMovies = new ArrayList<>();
         for (LocalizedMovie localizedMovie : movie.getLocalizedMovies().values()) {
-            localizedMovies.add(new MovieLocalizationEntryDto(localizedMovie.getLocale(), localizedMovie.getTitle(),
+            localizedMovies.add(new MovieLocalizationEntry(localizedMovie.getLocale(), localizedMovie.getTitle(),
                     localizedMovie.getOverview(), localizedMovie.getTagline(), localizedMovie.getPosterUrl()));
         }
-        MovieLocalizationDto movieLocalizationDto = new MovieLocalizationDto(movie.getUuid(), localizedMovies);
+        MovieLocalization movieLocalization = new MovieLocalization(movie.getUuid(), localizedMovies);
 
         this.webClientConfig.repositoryWebClient()
                 .put()
                 .uri(String.format("/api/v1/movies/%s/localizations?override=true", movie.getUuid()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(movieLocalizationDto), MovieLocalizationDto.class)
+                .body(Mono.just(movieLocalization), MovieLocalization.class)
                 .retrieve()
                 .toBodilessEntity()
                 .block();
@@ -144,6 +144,44 @@ public class RepositoryClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(scene), Scene.class)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    // Todo: make reactive
+    public List<Scene> getSceneForMovie(UUID movieUuid) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Scene> scenes = new ArrayList<>();
+
+        try {
+            objectMapper.readTree(this.webClientConfig.repositoryWebClient()
+                    .get()
+                    .uri("/api/v1/movies/%s/scenes?lang=%s".formatted(movieUuid,
+                            LocaleContextHolder.getLocale().getLanguage()))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block()).forEach(node -> {
+
+                try {
+                    scenes.add(objectMapper.treeToValue(node, Scene.class));
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+            return scenes;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteScene(UUID sceneUuid, UUID movieUuid) {
+        this.webClientConfig.repositoryWebClient()
+                .delete()
+                .uri(String.format("/api/v1/movies/%s/scenes/%s", movieUuid, sceneUuid))
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toBodilessEntity()
                 .block();

@@ -96,22 +96,25 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                                    th:text="#{movies_list.modal.delete_movie.button.cancel}">Cancel
+                                                    th:text="#{common.button.label.cancel}">Cancel
                                             </button>
                                             <button type="submit" class="btn btn-primary"
-                                                    th:text="#{movies_list.modal.delete_movie.button.confirm}">Delete
+                                                    th:text="#{movies_list.modal.delete_movie.button.label.confirm}">Delete
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                     <div th:if="${!movie.imdbId.isBlank()}">
                         <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                            target="_blank" rel="noopener noreferrer"
                            th:href="'https://www.imdb.com/title/' + ${movie.imdbId}">IMDb</a>
+
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                           target="_blank" rel="noopener noreferrer"
+                           th:href="'https://www.themoviedb.org/movie/' + ${movie.tmdbId}">TMDB</a>
                     </div>
                 </div>
             </div>
