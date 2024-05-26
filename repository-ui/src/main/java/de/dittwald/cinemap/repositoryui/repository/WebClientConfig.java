@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package de.dittwald.cinemap.repositoryui.tmdb;
+package de.dittwald.cinemap.repositoryui.repository;
 
-import de.dittwald.cinemap.repositoryui.properties.ConfigConstants;
 import de.dittwald.cinemap.repositoryui.properties.Properties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -52,14 +51,6 @@ public class WebClientConfig {
         return WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .baseUrl(properties.getRepositoryUrl() + ":" + this.properties.getRepositoryPort())
-                .build();
-    }
-
-    @Bean
-    public WebClient tmdbWebClient() {
-        return WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(ConfigConstants.TMDB_API_BASE_URL)
                 .build();
     }
 }

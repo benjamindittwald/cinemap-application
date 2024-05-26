@@ -25,10 +25,6 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 @Getter
 public class Properties {
-
-    @Value("${de.cinemap.repositoryui.tmdb.api.readtoken}")
-    private String tmdbApiReadToken;
-
     @Value("${de.cinemap.repository.server.port}")
     private String repositoryPort;
 
