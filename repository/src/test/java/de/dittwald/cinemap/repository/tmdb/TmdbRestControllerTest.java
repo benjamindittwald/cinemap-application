@@ -17,8 +17,6 @@
 package de.dittwald.cinemap.repository.tmdb;
 
 import de.dittwald.cinemap.repository.movie.service.MovieService;
-import de.dittwald.cinemap.repository.util.DummyData;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,10 +24,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,23 +37,14 @@ class TmdbRestControllerTest {
     @MockBean
     private MovieService movieService;
 
-    private DummyData dummyData;
-
-    @BeforeEach
-    void setUp() throws MalformedURLException, URISyntaxException {
-        this.dummyData = new DummyData();
-    }
-
     @Test
     void shouldAccessTmdbEndpoint() throws Exception {
         int dunePart2TmdbId = 693134;
-        this.mockMvc.perform(put("/api/v1/tmdb/%s".formatted(dunePart2TmdbId)))
-                .andExpect(status().isOk());
+        this.mockMvc.perform(put("/api/v1/tmdb/%s".formatted(dunePart2TmdbId))).andExpect(status().isNoContent());
     }
 
     @Test
     void shouldThrowIntExceptionWhenTryToCreateMovieViaTmdbId() throws Exception {
-        this.mockMvc.perform(put("/api/v1/tmdb/3147483647"))
-                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(put("/api/v1/tmdb/3147483647")).andExpect(status().isBadRequest());
     }
 }

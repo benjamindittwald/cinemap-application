@@ -132,7 +132,8 @@ public class MovieService {
     @Transactional
     public void createMovieViaTmdbId(int tmdbId) throws TmdbReadException {
         try {
-            this.movieRepository.save(this.tmdbClient.getMovieDetails(tmdbId));
+            Movie movie = this.tmdbClient.getMovieDetails(tmdbId);
+            this.movieRepository.save(movie);
         } catch (URISyntaxException | MalformedURLException | JsonProcessingException e) {
             throw new TmdbReadException(e.getMessage());
         }

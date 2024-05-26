@@ -21,6 +21,7 @@ import de.dittwald.cinemap.repository.movie.service.MovieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class TmdbRestController {
     }
 
     @PutMapping("/{tmdbId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Create movie via TMDB ID",
             description = "You can  provide a TMDB ID and the repository gathers all required movie detail from TMDB " +
                     "(https://www.themoviedb.org). The repository also collects all available localisations for the " +

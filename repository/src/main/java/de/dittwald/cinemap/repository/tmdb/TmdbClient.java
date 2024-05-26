@@ -121,7 +121,7 @@ public class TmdbClient {
                     // Todo: Check imageNode.get("width") for null and presence
                     if (dataNode.get("title") != null && !StringUtils.isBlank(dataNode.get("title").asText()))
                         localizedMovie.setPosterUrl(
-                                new URI(String.format("%s/w300%s", this.properties.getTmdbApiBaseUrl(),
+                                new URI(String.format("%s/w300%s", this.properties.getTmdbImgBaseUrl(),
                                         imageNode.get("file_path").asText())).toURL());
                     break;
                 }
@@ -135,6 +135,7 @@ public class TmdbClient {
 
             localizedMovie.setLocalizedId(new LocalizedId(
                     translationNode.has("iso_639_1") ? translationNode.get("iso_639_1").asText() : null));
+            localizedMovie.setMovie(movie);
             movie.getLocalizedMovies().put(localizedMovie.getLocalizedId().getLocale(), localizedMovie);
         }
 
