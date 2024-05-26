@@ -66,13 +66,15 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="input-group mb-3">
+                            <div class="input-group has-validation mb-3">
                                 <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
                                 <input type="text" aria-label="input-lon" class="form-control" th:field="*{lon}"
                                        th:placeholder="#{scenes_list.form.input.placeholder.lon}">
                                 <input type="text" aria-label="input-lat" class="form-control" th:field="*{lat}"
                                        th:placeholder="#{scenes_list.form.input.placeholder.lat}">
                             </div>
+
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('lon')}" th:errors="*{lon}"></div>
                         </div>
                     </div>
                     <div class="row">

@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -70,8 +71,15 @@ public class ScenesController {
     }
 
     @PostMapping("{movieUuid}/scenes")
-    public String createScene(@PathVariable("movieUuid") UUID movieUuid, @Valid @ModelAttribute Scene scene)
-            throws JsonProcessingException {
+    public String createScene(@PathVariable("movieUuid") @Valid UUID movieUuid, @Valid @ModelAttribute Scene scene,
+                              BindingResult bindingResult, Model model) throws JsonProcessingException {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("newScene", scene);
+            model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+            model.addAttribute("scenes", this.repositoryClient.getScenesForMovie(movieUuid));
+            return "scenes";
+        }
 
         this.repositoryClient.createScene(scene, movieUuid);
 

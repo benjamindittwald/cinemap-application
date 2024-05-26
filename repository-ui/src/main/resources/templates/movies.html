@@ -33,16 +33,23 @@
         <h1><span th:text="#{movies_list.heading.all_movies}"></span></h1>
     </div>
 
-    <form action="#" th:action="@{/tmdb}" th:object="${tmdbId}" class="row mt-5" method="post">
+    <form action="#" th:action="@{/movies}" th:object="${tmdbId}" class="row mt-5" method="post">
         <div class="input-group mb-3">
             <input type="number" class="form-control" id="inputTmdbId" th:field="*{id}" placeholder="TMDB id"
-                   aria-describedby="create-movie-submit">
+                   aria-describedby="create-movie-submit" required>
             <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
                     th:text="#{movies_list.form.button.add_movie}"></span></button>
         </div>
+        <div th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
     </form>
 
     <div class="row">
+        <div class="d-flex align-items-start justify-content-start mt-5">
+            <div th:if="${movies.isEmpty()}">
+                <p class="fw-bolder fs-4"><i class="bi bi-emoji-tear-fill"></i> <span
+                        th:text="#{movies_list.paragraph_no_movies}"></span></p>
+            </div>
+        </div>
         <div th:each="movie : ${movies}"
              class="col-xs-12 col-sm-6 col-md-4 col-lg-3 gy-4 align-items-start text-center">
             <div class="card shadow bg-body-tertiary rounded h-100"

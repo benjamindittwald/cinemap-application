@@ -16,6 +16,8 @@
 
 package de.dittwald.cinemap.repositoryui.tmdb;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -25,5 +27,7 @@ import lombok.*;
 public class TmdbId {
 
     @NotNull
+    @Min(0)
+    @Max(3)
     Integer id;
 }
