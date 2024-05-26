@@ -16,7 +16,6 @@
 
 package de.dittwald.cinemap.repository.exceptions;
 
-import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,7 +55,8 @@ public class RestResponseExceptionsHandler extends ResponseEntityExceptionHandle
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
+                                                                        WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
@@ -80,5 +80,13 @@ public class RestResponseExceptionsHandler extends ResponseEntityExceptionHandle
     protected ResponseEntity<Object> handleURISyntaxException(URISyntaxException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {TmdbReadException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<Object> handleTmdbReadException(TmdbReadException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR,
+                request);
     }
 }

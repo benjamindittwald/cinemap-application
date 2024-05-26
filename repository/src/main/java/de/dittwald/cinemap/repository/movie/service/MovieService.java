@@ -16,8 +16,10 @@
 
 package de.dittwald.cinemap.repository.movie.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.TmdbReadException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.LocalizedId;
@@ -26,12 +28,15 @@ import de.dittwald.cinemap.repository.movie.entity.Movie;
 import de.dittwald.cinemap.repository.movie.repository.MovieRepository;
 import de.dittwald.cinemap.repository.scene.entity.Scene;
 import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
+import de.dittwald.cinemap.repository.tmdb.TmdbClient;
 import de.dittwald.cinemap.repository.util.LocaleFallbackHandler;
 import de.dittwald.cinemap.repository.movie.util.LocalizedMovieDtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 @Service
@@ -40,10 +45,13 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
     private final SceneRepository sceneRepository;
+    private final TmdbClient tmdbClient;
 
-    public MovieService(MovieRepository movieRepository, SceneRepository sceneRepository) {
+    public MovieService(MovieRepository movieRepository, SceneRepository sceneRepository,
+                        TmdbClient tmdbClient) {
         this.movieRepository = movieRepository;
         this.sceneRepository = sceneRepository;
+        this.tmdbClient = tmdbClient;
     }
 
     @Transactional
@@ -119,5 +127,14 @@ public class MovieService {
         log.info("Deleting all movies");
         this.sceneRepository.deleteAll();
         this.movieRepository.deleteAll();
+    }
+
+    @Transactional
+    public void createMovieViaTmdbId(int tmdbId) throws TmdbReadException {
+        try {
+            this.movieRepository.save(this.tmdbClient.getMovieDetails(tmdbId));
+        } catch (URISyntaxException | MalformedURLException | JsonProcessingException e) {
+            throw new TmdbReadException(e.getMessage());
+        }
     }
 }

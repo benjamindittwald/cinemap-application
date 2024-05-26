@@ -16,10 +16,13 @@
 
 package de.dittwald.cinemap.repository.movie.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.dittwald.cinemap.repository.exceptions.LocaleNotFoundException;
 import de.dittwald.cinemap.repository.exceptions.NotFoundException;
+import de.dittwald.cinemap.repository.exceptions.TmdbReadException;
 import de.dittwald.cinemap.repository.exceptions.UuidInUseException;
 import de.dittwald.cinemap.repository.scene.repository.SceneRepository;
+import de.dittwald.cinemap.repository.tmdb.TmdbClient;
 import de.dittwald.cinemap.repository.util.DummyData;
 import de.dittwald.cinemap.repository.movie.dto.MovieFlatDto;
 import de.dittwald.cinemap.repository.movie.entity.Movie;
@@ -54,10 +57,13 @@ public class MovieServiceTest {
     @MockBean
     private SceneRepository sceneRepository;
 
+    @MockBean
+    private TmdbClient tmdbClient;
+
     private DummyData dummyData;
 
     @BeforeEach
-    public void setUp() throws URISyntaxException, MalformedURLException {
+    void setUp() throws URISyntaxException, MalformedURLException {
         this.dummyData = new DummyData();
     }
 
@@ -87,7 +93,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFailSaveMovieDueToUuidAlreadyExists() {
+    void shouldFailSaveMovieDueToUuidAlreadyExists() {
         when(this.movieRepository.existsByUuid(this.dummyData.getNobody().getUuid())).thenReturn(true);
         Exception exception = assertThrows(UuidInUseException.class,
                 () -> this.movieService.save(LocalizedMovieDtoMapper.entityToDto(this.dummyData.getNobody(), "en")));
@@ -96,7 +102,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
+    void shouldUpdateMovie() throws NotFoundException, MalformedURLException, URISyntaxException {
         MovieFlatDto movieFlatDto = this.dummyData.getWolfFlatEnDto();
         Optional<Movie> movieOptional = Optional.of(this.dummyData.getWolf());
         Movie movie = this.dummyData.getWolf();
@@ -111,7 +117,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFailUpdateMovieDueToMovieDoesNotExist() {
+    void shouldFailUpdateMovieDueToMovieDoesNotExist() {
         UUID notExistingMovieUuid = UUID.randomUUID();
         when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
 
@@ -122,7 +128,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldDeleteMovieInclScenes() throws NotFoundException {
+    void shouldDeleteMovieInclScenes() throws NotFoundException {
         when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
         when(this.sceneRepository.findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
                 Optional.of(List.of(this.dummyData.getWolfSceneOne(), this.dummyData.getWolfSceneTwo())));
@@ -136,7 +142,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldDeleteMovieWithOutScenes() throws NotFoundException {
+    void shouldDeleteMovieWithOutScenes() throws NotFoundException {
         when(this.movieRepository.existsByUuid(this.dummyData.getWolf().getUuid())).thenReturn(true);
         when(this.sceneRepository.findAllScenesOfMovieUuid(this.dummyData.getWolf().getUuid())).thenReturn(
                 Optional.empty());
@@ -150,7 +156,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFailDeleteMoveDueToMovieDoesNotExist() {
+    void shouldFailDeleteMoveDueToMovieDoesNotExist() {
         UUID notExistingMovieUuid = UUID.randomUUID();
         when(this.movieRepository.existsByUuid(notExistingMovieUuid)).thenReturn(false);
         Exception exception =
@@ -160,7 +166,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFindMovieByUuid() throws NotFoundException, LocaleNotFoundException {
+    void shouldFindMovieByUuid() throws NotFoundException, LocaleNotFoundException {
         Optional<Movie> persistedMovie = Optional.of(this.dummyData.getWolf());
         when(this.movieRepository.findByUuid(persistedMovie.get().getUuid())).thenReturn(persistedMovie);
         assertThat(this.movieService.findByUuid(persistedMovie.get().getUuid(), "en").uuid()).isEqualTo(
@@ -169,7 +175,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldFailFindMovieByUuidDueToMovieDoesNotExist() {
+    void shouldFailFindMovieByUuidDueToMovieDoesNotExist() {
         UUID notExistingMovieUuid = UUID.randomUUID();
         when(this.movieRepository.findByUuid(notExistingMovieUuid)).thenReturn(Optional.empty());
         Exception exception =
@@ -179,11 +185,23 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void shouldDeleteAllMovies() {
+    void shouldDeleteAllMovies() {
         doNothing().when(this.sceneRepository).deleteAll();
         doNothing().when(this.movieRepository).deleteAll();
         this.movieService.deleteAll();
         verify(this.movieRepository, times(1)).deleteAll();
         verify(this.sceneRepository, times(1)).deleteAll();
+    }
+
+    @Test
+    void shouldCreateMovieViaTmdbId()
+            throws MalformedURLException, URISyntaxException, JsonProcessingException, TmdbReadException {
+        when(this.tmdbClient.getMovieDetails(anyInt())).thenReturn(this.dummyData.getWolf());
+        when(this.movieRepository.save(any())).thenReturn(this.dummyData.getWolf());
+
+        this.movieService.createMovieViaTmdbId(5);
+
+        verify(this.tmdbClient, times(1)).getMovieDetails(anyInt());
+        verify(this.movieRepository, times(1)).save(any());
     }
 }
