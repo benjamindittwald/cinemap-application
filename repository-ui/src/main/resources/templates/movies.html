@@ -26,7 +26,9 @@
     <div class="row mt-5">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/" th:text="#{breadcrumb.home}">Home</a></li>
+                <li class="breadcrumb-item"><a
+                        class="link-primary link-underline-opacity-25 link-underline-opacity-100-hover" href="/"
+                        th:text="#{breadcrumb.home}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page" th:text="#{breadcrumb.movies}">Movies</li>
             </ol>
         </nav>
@@ -34,11 +36,12 @@
     </div>
 
     <form action="#" th:action="@{/movies}" th:object="${tmdbId}" class="row mt-5" method="post">
-        <div class="input-group mb-3">
-            <input type="number" class="form-control" id="inputTmdbId" th:field="*{id}" placeholder="TMDB id"
+        <div class="input-group has-validation mb-3">
+            <input type="number" class="form-control is-invalid" id="inputTmdbId" th:field="*{id}" placeholder="TMDB id"
                    aria-describedby="create-movie-submit" required>
             <button type="submit" class="btn btn-primary" id="create-movie-submit"><span
                     th:text="#{movies_list.form.button.add_movie}"></span></button>
+            <div class="invalid-feedback">Die Eingabe ist nicht korrekt.</div>
         </div>
         <div th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
     </form>

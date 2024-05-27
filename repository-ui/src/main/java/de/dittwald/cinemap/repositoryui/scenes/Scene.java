@@ -35,20 +35,20 @@ public class Scene {
     @NotNull
     private UUID uuid;
 
-    @NotNull
+    @NotNull(message = "{scene_form.form.validation.lon.not_null}")
     private Double lon;
 
-    @NotNull
+    @NotNull(message = "{scene_form.form.validation.lat.not_null}")
     private Double lat;
 
     @NotNull
     @Iso6391Constraint
     private String locale;
 
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "{scene_form.form.validation.title.size}")
     private String title;
 
-    @Size(min = 1, max = 5000)
+    @Size(min = 1, max = 5000, message = "{scene_form.form.validation.description.size}")
     private String description;
 
     @JsonIgnore
