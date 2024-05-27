@@ -57,8 +57,8 @@ public class ScenesController {
     }
 
     @PostMapping("{movieUuid}/scenes/add")
-    public String addScene(@PathVariable("movieUuid") UUID movieUuid, @Valid @ModelAttribute Scene scene, BindingResult result, Model model)
-            throws JsonProcessingException {
+    public String addScene(@PathVariable("movieUuid") UUID movieUuid, @Valid @ModelAttribute Scene scene,
+                           BindingResult result, Model model) throws JsonProcessingException {
 
         if (result.hasErrors()) {
             scene = new Scene();
@@ -76,8 +76,13 @@ public class ScenesController {
 
     @PostMapping("{movieUuid}/scenes/edit")
     public String editScene(@PathVariable("movieUuid") UUID movieUuid, @Valid @ModelAttribute Scene scene,
-                            Model model) {
+                            BindingResult result, Model model) {
 
+        if (result.hasErrors()) {
+            model.addAttribute("operation", "edit");
+            model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+            return "scene_form";
+        }
 
         this.repositoryClient.updateScene(movieUuid, scene);
 
@@ -105,21 +110,22 @@ public class ScenesController {
         return "scene_form";
     }
 
-//    @PostMapping("{movieUuid}/scenes")
-//    public String createScene(@PathVariable("movieUuid") @Valid UUID movieUuid, @Valid @ModelAttribute Scene scene,
-//                              BindingResult bindingResult, Model model) throws JsonProcessingException {
-//
-//        if (bindingResult.hasErrors()) {
-//            model.addAttribute("newScene", scene);
-//            model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
-//            model.addAttribute("scenes", this.repositoryClient.getScenesForMovie(movieUuid));
-//            return "scenes";
-//        }
-//
-//        this.repositoryClient.createScene(scene, movieUuid);
-//
-//        return "redirect:/movies/%s/scenes".formatted(movieUuid);
-//    }
+    //    @PostMapping("{movieUuid}/scenes")
+    //    public String createScene(@PathVariable("movieUuid") @Valid UUID movieUuid, @Valid @ModelAttribute Scene
+    //    scene,
+    //                              BindingResult bindingResult, Model model) throws JsonProcessingException {
+    //
+    //        if (bindingResult.hasErrors()) {
+    //            model.addAttribute("newScene", scene);
+    //            model.addAttribute("movie", this.repositoryClient.getMovie(movieUuid));
+    //            model.addAttribute("scenes", this.repositoryClient.getScenesForMovie(movieUuid));
+    //            return "scenes";
+    //        }
+    //
+    //        this.repositoryClient.createScene(scene, movieUuid);
+    //
+    //        return "redirect:/movies/%s/scenes".formatted(movieUuid);
+    //    }
 
     @PostMapping("{movieUuid}/scenes/{sceneUuid}")
     public String deleteScene(@PathVariable("movieUuid") UUID movieUuid, @PathVariable("sceneUuid") UUID sceneUuid,
